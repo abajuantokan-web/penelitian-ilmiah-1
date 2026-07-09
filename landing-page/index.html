@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description"
+    content="OpenPeo — Platform pre-order premium untuk produk artisan NTT. Tenun ikat, kuliner khas, dan aksesoris tradisional Nusa Tenggara Timur langsung dari pengrajin lokal.">
+  <title>OpenPeo — Warisan Budaya NTT, Keindahan Abadi</title>
+
+  <!-- Google Fonts: Montserrat 400 & 500 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="site-header" id="site-header" role="banner">
+    <div class="container header-inner">
+
+      <!-- Logo -->
+      <div class="logo">
+        <a href="/" aria-label="OpenPeo — Home">OpenPeo</a>
+      </div>
+
+      <!-- Navigation Links (Desktop) -->
+      <nav class="nav-links" id="nav-links" role="navigation" aria-label="Main navigation">
+        <a href="#" class="active">Beranda</a>
+        <a href="#products">Koleksi</a>
+        <a href="#story">Cerita Kami</a>
+        <a href="#">Kategori</a>
+        <a href="#">Tentang</a>
+      </nav>
+
+      <!-- Header Icons -->
+      <div class="header-icons">
+        <!-- Search -->
+        <button class="icon-btn" id="btn-search" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
+
+        <!-- Account -->
+        <button class="icon-btn" id="btn-account" aria-label="Account">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+        </button>
+
+        <!-- Cart -->
+        <button class="icon-btn cart-btn" id="btn-cart" aria-label="Cart (2 items)">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <path d="M16 10a4 4 0 0 1-8 0" />
+          </svg>
+          <span class="cart-badge" aria-hidden="true">2</span>
+        </button>
+
+        <!-- Mobile Menu Toggle -->
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle mobile menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Overlay -->
+  <div class="mobile-nav" id="mobile-nav" role="dialog" aria-label="Mobile navigation">
+    <a href="#">Beranda</a>
+    <a href="#products">Koleksi</a>
+    <a href="#story">Cerita Kami</a>
+    <a href="#">Kategori</a>
+    <a href="#">Tentang</a>
+  </div>
+
+
+  <!-- ========== MAIN CONTENT ========== -->
+  <main>
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero" id="hero" aria-label="Hero banner">
+      <div class="hero-image">
+        <img src="images/hero.png"
+          alt="Seorang perempuan mengenakan kain tenun ikat tradisional NTT dengan latar bebatuan alam" loading="eager"
+          fetchpriority="high">
+      </div>
+      <div class="hero-overlay" aria-hidden="true"></div>
+
+      <!-- Decorative Motifs -->
+      <div class="hero-motif hero-motif--top-left" aria-hidden="true">
+        <svg viewBox="0 0 48 48">
+          <line x1="24" y1="0" x2="24" y2="48" />
+          <line x1="16" y1="4" x2="16" y2="44" />
+          <line x1="32" y1="4" x2="32" y2="44" />
+          <line x1="8" y1="12" x2="8" y2="36" />
+          <line x1="40" y1="12" x2="40" y2="36" />
+        </svg>
+      </div>
+      <div class="hero-motif hero-motif--bottom-right" aria-hidden="true">
+        <svg viewBox="0 0 48 48">
+          <circle cx="24" cy="24" r="20" stroke-dasharray="4 4" />
+          <circle cx="24" cy="24" r="12" stroke-dasharray="2 6" />
+          <circle cx="24" cy="24" r="4" />
+        </svg>
+      </div>
+
+      <div class="hero-content container">
+        <h1 class="hero-heading reveal">Bawa Produk Autentik<br>Nusa Tenggara Timur<br>ke Rumah Anda</h1>
+        <p class="hero-subheading reveal reveal-delay-1">Platform e-commerce pre-order yang menghubungkan Anda langsung
+          dengan berbagai UMKM kreatif NTT. Temukan ragam warisan budaya, mulai dari keindahan tenun ikat legendaris
+          hingga kriya dan kuliner lokal pilihan.</p>
+        <a href="#products" class="btn-primary reveal reveal-delay-2" id="hero-cta">Belanja Sekarang</a>
+      </div>
+    </section>
+
+
+    <!-- ===== PRODUCT GRID SECTION ===== -->
+    <section class="section-products" id="products" aria-label="Product collection">
+      <div class="container">
+
+        <div class="section-header reveal">
+          <h2 class="section-title">Koleksi Tenun NTT</h2>
+          <a href="#" class="section-link">Lihat Semua</a>
+        </div>
+
+        <div class="product-grid">
+
+          <!-- Product 1 -->
+          <article class="product-card reveal reveal-delay-1" id="product-1">
+            <a href="#" aria-label="Lihat produk Kaftan Indigo Sumba">
+              <div class="product-card-image">
+                <img src="images/product-1.png"
+                  alt="Kaftan tenun ikat berwarna indigo biru tua dengan motif geometris putih dari Sumba"
+                  loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Kaftan Indigo Sumba</h3>
+                <p class="product-card-price">Rp 2.850.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product 2 -->
+          <article class="product-card reveal reveal-delay-2" id="product-2">
+            <a href="#" aria-label="Lihat produk Selendang Merah Sabu">
+              <div class="product-card-image">
+                <img src="images/product-2.png"
+                  alt="Selendang tenun berwarna merah coral dengan garis-garis halus dan motif tradisional Sabu"
+                  loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Selendang Merah Sabu</h3>
+                <p class="product-card-price">Rp 1.950.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product 3 -->
+          <article class="product-card reveal reveal-delay-3" id="product-3">
+            <a href="#" aria-label="Lihat produk Syal Tenun Amarasi">
+              <div class="product-card-image">
+                <img src="images/product-3.png"
+                  alt="Syal tenun ikat berwarna coklat dan krem dengan motif tradisional Amarasi" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Syal Tenun Amarasi</h3>
+                <p class="product-card-price">Rp 1.250.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product 4 -->
+          <article class="product-card reveal reveal-delay-4" id="product-4">
+            <a href="#" aria-label="Lihat produk Tunik Hitam Rote">
+              <div class="product-card-image">
+                <img src="images/product-4.png"
+                  alt="Tunik tenun ikat berwarna hitam dengan motif emas dan krem dari Pulau Rote" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Tunik Hitam Rote</h3>
+                <p class="product-card-price">Rp 3.150.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product 5 -->
+          <article class="product-card reveal reveal-delay-1" id="product-5">
+            <a href="#" aria-label="Lihat produk Outer Tenun Ikat Sumba">
+              <div class="product-card-image">
+                <img src="images/tenun-outer.png" alt="Outer Tenun Ikat Sumba" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Outer Tenun Ikat Sumba</h3>
+                <p class="product-card-price">Rp 1.450.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product 6 -->
+          <article class="product-card reveal reveal-delay-2" id="product-6">
+            <a href="#" aria-label="Lihat produk Kemeja Tenun Ende Pria">
+              <div class="product-card-image">
+                <img src="images/tenun-kemeja.png" alt="Kemeja Tenun Ende Pria" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Kemeja Tenun Ende Pria</h3>
+                <p class="product-card-price">Rp 950.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product 7 -->
+          <article class="product-card reveal reveal-delay-3" id="product-7">
+            <a href="#" aria-label="Lihat produk Dress Tenun Manggarai">
+              <div class="product-card-image">
+                <img src="images/tenun-dress.png" alt="Dress Tenun Manggarai" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Dress Tenun Manggarai</h3>
+                <p class="product-card-price">Rp 2.100.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product 8 -->
+          <article class="product-card reveal reveal-delay-4" id="product-8">
+            <a href="#" aria-label="Lihat produk Blouse Tenun Alor">
+              <div class="product-card-image">
+                <img src="images/tenun-blouse.png" alt="Blouse Tenun Alor" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Blouse Tenun Alor</h3>
+                <p class="product-card-price">Rp 1.150.000</p>
+              </div>
+            </a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ===== DIVIDER: COFFEE FARMER ===== -->
+    <section class="section-divider reveal" aria-label="Coffee farmer banner">
+      <div class="section-divider__image">
+        <img src="images/divider-coffee.png"
+          alt="Petani kopi Bajawa di Flores memegang buah kopi merah segar di perkebunan pegunungan hijau"
+          loading="lazy">
+      </div>
+      <div class="section-divider__overlay" aria-hidden="true"></div>
+      <div class="section-divider__content">
+        <span class="section-divider__label">Langsung dari Petani</span>
+        <h2 class="section-divider__heading">Dari Pegunungan Flores ke Meja Anda</h2>
+        <p class="section-divider__subtitle">Setiap produk kuliner kami bersumber langsung dari petani dan pengrajin
+          lokal NTT.</p>
+      </div>
+    </section>
+
+
+    <!-- ===== CITA RASA LOKAL SECTION ===== -->
+    <section class="section-products section-products--alt" id="culinary" aria-label="Culinary collection">
+      <div class="container">
+
+        <div class="section-header reveal">
+          <div class="section-header-text">
+            <h2 class="section-title">Cita Rasa Lokal</h2>
+            <p class="section-description">Sistem pre-order kami memastikan produk kuliner khas bumi Flobamora
+              diproduksi dan dikirim dalam kondisi paling segar.</p>
+          </div>
+          <a href="#" class="section-link">Lihat Semua</a>
+        </div>
+
+        <div class="product-grid">
+
+          <!-- Product: Sei Babi -->
+          <article class="product-card reveal reveal-delay-1" id="product-sei-babi">
+            <a href="#" aria-label="Lihat produk Sei Babi Asap Kupang">
+              <div class="product-card-image">
+                <img src="images/sei-babi.png"
+                  alt="Sei babi asap tradisional dari Kupang dengan irisan daging berwarna amber keemasan"
+                  loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Sei Babi Asap Kupang</h3>
+                <p class="product-card-price">Rp 185.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Madu Hutan -->
+          <article class="product-card reveal reveal-delay-2" id="product-madu-hutan">
+            <a href="#" aria-label="Lihat produk Madu Hutan Timor Murni">
+              <div class="product-card-image">
+                <img src="images/madu-hutan.png"
+                  alt="Toples madu hutan murni dari Timor berwarna emas tua dengan sendok madu kayu" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Madu Hutan Timor Murni</h3>
+                <p class="product-card-price">Rp 145.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Kopi Flores -->
+          <article class="product-card reveal reveal-delay-3" id="product-kopi-flores">
+            <a href="#" aria-label="Lihat produk Kopi Arabika Flores Bajawa">
+              <div class="product-card-image">
+                <img src="images/kopi-flores.png"
+                  alt="Kemasan kopi arabika Flores Bajawa dengan biji kopi roasting gelap" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Kopi Arabika Flores Bajawa</h3>
+                <p class="product-card-price">Rp 95.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Garam Gunung -->
+          <article class="product-card reveal reveal-delay-4" id="product-garam-gunung">
+            <a href="#" aria-label="Lihat produk Garam Gunung Organik Khas NTT">
+              <div class="product-card-image">
+                <img src="images/garam-gunung.png"
+                  alt="Garam gunung organik NTT berwarna merah muda keabu-abuan dalam mangkuk keramik" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Garam Gunung Organik Khas NTT</h3>
+                <p class="product-card-price">Rp 65.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Jagung Titi -->
+          <article class="product-card reveal reveal-delay-1" id="product-jagung-titi">
+            <a href="#" aria-label="Lihat produk Jagung Titi Khas NTT">
+              <div class="product-card-image">
+                <img src="images/jagung-titi.png" alt="Jagung Titi Khas NTT" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Jagung Titi Khas NTT</h3>
+                <p class="product-card-price">Rp 35.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Sambal Luat -->
+          <article class="product-card reveal reveal-delay-2" id="product-sambal-luat">
+            <a href="#" aria-label="Lihat produk Sambal Luat Kupang">
+              <div class="product-card-image">
+                <img src="images/sambal-luat.png" alt="Sambal Luat Kupang" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Sambal Luat Kupang</h3>
+                <p class="product-card-price">Rp 45.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Kacang Sembunyi -->
+          <article class="product-card reveal reveal-delay-3" id="product-kacang-sembunyi">
+            <a href="#" aria-label="Lihat produk Kacang Sembunyi NTT">
+              <div class="product-card-image">
+                <img src="images/kacang-sembunyi.png" alt="Kacang Sembunyi NTT" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Kacang Sembunyi NTT</h3>
+                <p class="product-card-price">Rp 30.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Gula Air Sabu -->
+          <article class="product-card reveal reveal-delay-4" id="product-gula-air">
+            <a href="#" aria-label="Lihat produk Gula Air Sabu">
+              <div class="product-card-image">
+                <img src="images/gula-air.png" alt="Gula Air Sabu" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Gula Air Sabu</h3>
+                <p class="product-card-price">Rp 55.000</p>
+              </div>
+            </a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ===== DIVIDER: ACCESSORIES PORTRAIT ===== -->
+    <section class="section-divider reveal" aria-label="Traditional accessories banner">
+      <div class="section-divider__image">
+        <img src="images/divider-accessories.png"
+          alt="Perempuan NTT mengenakan aksesoris tradisional Ti'i Langga, perhiasan manik-manik, dan ornamen tenunan"
+          loading="lazy">
+      </div>
+      <div class="section-divider__overlay" aria-hidden="true"></div>
+      <div class="section-divider__content">
+        <span class="section-divider__label">Warisan yang Dipakai</span>
+        <h2 class="section-divider__heading">Keindahan dalam Setiap Detail</h2>
+        <p class="section-divider__subtitle">Aksesoris buatan tangan yang membawa cerita tradisi dan keagungan budaya
+          NTT.</p>
+      </div>
+    </section>
+
+
+    <!-- ===== KOLEKSI AKSESORIS SECTION ===== -->
+    <section class="section-products" id="accessories" aria-label="Accessories collection">
+      <div class="container">
+
+        <div class="section-header reveal">
+          <div class="section-header-text">
+            <h2 class="section-title">Koleksi Aksesoris</h2>
+            <p class="section-description">Sentuhan warisan budaya NTT dalam rupa perhiasan dan pernak-pernik buatan
+              tangan perajin lokal.</p>
+          </div>
+          <a href="#" class="section-link">Lihat Semua</a>
+        </div>
+
+        <div class="product-grid">
+
+          <!-- Product: Headband -->
+          <article class="product-card reveal reveal-delay-1" id="product-headband">
+            <a href="#" aria-label="Lihat produk Headband Kain Tenun Sumba">
+              <div class="product-card-image">
+                <img src="images/headband-tenun.png"
+                  alt="Headband kain tenun ikat Sumba berwarna indigo biru dengan motif geometris krem" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Headband Kain Tenun Sumba</h3>
+                <p class="product-card-price">Rp 275.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Gelang & Kalung -->
+          <article class="product-card reveal reveal-delay-2" id="product-gelang-kalung">
+            <a href="#" aria-label="Lihat produk Gelang & Kalung Serbuk Gading Maumere">
+              <div class="product-card-image">
+                <img src="images/gelang-kalung.png"
+                  alt="Set gelang dan kalung artisan dari Maumere dengan manik-manik serbuk gading dan kuningan"
+                  loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Gelang & Kalung Serbuk Gading Maumere</h3>
+                <p class="product-card-price">Rp 450.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Mahkota Ti'i Langga -->
+          <article class="product-card reveal reveal-delay-3" id="product-mahkota">
+            <a href="#" aria-label="Lihat produk Mahkota Ti'i Langga Rote">
+              <div class="product-card-image">
+                <img src="images/mahkota-tiilangga.png"
+                  alt="Mahkota Ti'i Langga tradisional dari Rote yang terbuat dari anyaman daun lontar" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Mahkota Ti'i Langga Rote</h3>
+                <p class="product-card-price">Rp 850.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Cincin Penyu -->
+          <article class="product-card reveal reveal-delay-4" id="product-cincin-penyu">
+            <a href="#" aria-label="Lihat produk Cincin & Aksesoris Ornamen Penyu Tradisional">
+              <div class="product-card-image">
+                <img src="images/cincin-penyu.png"
+                  alt="Koleksi cincin dan aksesoris ornamen penyu tradisional NTT dari bahan alami" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Cincin & Aksesoris Ornamen Penyu Tradisional</h3>
+                <p class="product-card-price">Rp 320.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Kalung Timor -->
+          <article class="product-card reveal reveal-delay-1" id="product-kalung-timor">
+            <a href="#" aria-label="Lihat produk Kalung Khas Timor">
+              <div class="product-card-image">
+                <img src="images/kalung-timor.png" alt="Kalung Khas Timor" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Kalung Khas Timor</h3>
+                <p class="product-card-price">Rp 150.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Sisir Sumba -->
+          <article class="product-card reveal reveal-delay-2" id="product-sisir-sumba">
+            <a href="#" aria-label="Lihat produk Sisir Adat Sumba">
+              <div class="product-card-image">
+                <img src="images/sisir-sumba.png" alt="Sisir Adat Sumba" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Sisir Adat Sumba</h3>
+                <p class="product-card-price">Rp 225.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Gelang Rote -->
+          <article class="product-card reveal reveal-delay-3" id="product-gelang-kerbau">
+            <a href="#" aria-label="Lihat produk Gelang Kulit Kerbau Rote">
+              <div class="product-card-image">
+                <img src="images/gelang-kerbau.png" alt="Gelang Kulit Kerbau Rote" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Gelang Kulit Kerbau Rote</h3>
+                <p class="product-card-price">Rp 85.000</p>
+              </div>
+            </a>
+          </article>
+
+          <!-- Product: Anting Flores -->
+          <article class="product-card reveal reveal-delay-4" id="product-anting-penyu">
+            <a href="#" aria-label="Lihat produk Anting Motif Penyu Flores">
+              <div class="product-card-image">
+                <img src="images/anting-penyu.png" alt="Anting Motif Penyu Flores" loading="lazy">
+              </div>
+              <div class="product-card-info">
+                <h3 class="product-card-name">Anting Motif Penyu Flores</h3>
+                <p class="product-card-price">Rp 120.000</p>
+              </div>
+            </a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ===== STORY / ABOUT SECTION ===== -->
+    <section class="section-story" id="story" aria-label="Our story">
+      <div class="container">
+        <div class="story-inner reveal">
+          <span class="story-label">Cerita Kami</span>
+          <h2 class="story-heading">Melestarikan Warisan,<br>Satu Helai Benang pada Satu Waktu</h2>
+          <p class="story-text">Setiap kain yang kami tawarkan ditenun dengan tangan oleh pengrajin perempuan di Nusa
+            Tenggara Timur. Proses pembuatan yang memakan waktu berminggu-minggu ini menjaga tradisi turun-temurun yang
+            telah hidup selama berabad-abad. Kami percaya bahwa keindahan sejati datang dari kesabaran dan penghormatan
+            terhadap warisan budaya.</p>
+          <a href="#" class="btn-primary btn-primary--dark" id="story-cta">Pelajari Lebih Lanjut</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <div class="footer-grid">
+
+        <div class="footer-brand">
+          <p class="footer-brand-name">OpenPeo</p>
+          <p class="footer-brand-desc">Platform pre-order premium untuk produk artisan Nusa Tenggara Timur.
+            Menghubungkan pengrajin lokal dengan pecinta warisan budaya.</p>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Belanja</p>
+          <div class="footer-links">
+            <a href="#">Koleksi Baru</a>
+            <a href="#">Tenun Sumba</a>
+            <a href="#">Tenun Flores</a>
+            <a href="#">Aksesoris</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Tentang</p>
+          <div class="footer-links">
+            <a href="#">Cerita Kami</a>
+            <a href="#">Pengrajin</a>
+            <a href="#">Keberlanjutan</a>
+            <a href="#">Kontak</a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <p class="footer-col-title">Bantuan</p>
+          <div class="footer-links">
+            <a href="#">FAQ</a>
+            <a href="#">Pengiriman</a>
+            <a href="#">Pengembalian</a>
+            <a href="#">Ukuran</a>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-copy">&copy; 2026 OpenPeo. Semua hak dilindungi.</p>
+        <div class="footer-social">
+          <a href="#" aria-label="Instagram">
+            <svg viewBox="0 0 24 24">
+              <rect x="2" y="2" width="20" height="20" rx="5" />
+              <circle cx="12" cy="12" r="5" />
+              <circle cx="17.5" cy="6.5" r="1.5" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Facebook">
+            <svg viewBox="0 0 24 24">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+            </svg>
+          </a>
+          <a href="#" aria-label="Twitter">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- ========== FLOATING ACTION BUTTONS ========== -->
+  <div class="floating-buttons">
+    <button class="fab fab--wishlist" aria-label="Wishlist">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <path
+          d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+      </svg>
+      <span>Wishlist</span>
+    </button>
+
+    <button class="fab fab--chat" aria-label="Live Chat">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+      </svg>
+      <span>Live Chat</span>
+    </button>
+  </div>
+
+  <!-- ========== PRODUCT DETAIL MODAL ========== -->
+  <div id="pdp-modal" class="pdp-modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="pdp-overlay" id="pdp-overlay"></div>
+    <div class="pdp-container">
+      <button class="pdp-close" id="pdp-close" aria-label="Close modal">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div class="pdp-content">
+        <!-- Left: Image Gallery -->
+        <div class="pdp-gallery">
+          <div class="pdp-thumbnails" id="pdp-thumbnails"></div>
+          <div class="pdp-main-image">
+            <img src="" alt="" id="pdp-main-img">
+          </div>
+        </div>
+        <!-- Right: Info -->
+        <div class="pdp-info">
+          <p class="pdp-category" id="pdp-category"></p>
+          <h2 class="pdp-title" id="pdp-title"></h2>
+          <p class="pdp-price" id="pdp-price"></p>
+
+          <div class="pdp-preorder">
+            <span class="pdp-preorder-badge">Pre-order</span>
+            <span id="pdp-preorder-text"></span>
+          </div>
+
+          <div class="pdp-quantity">
+            <button id="pdp-qty-minus" aria-label="Decrease quantity">-</button>
+            <span id="pdp-qty-value">1</span>
+            <button id="pdp-qty-plus" aria-label="Increase quantity">+</button>
+          </div>
+
+          <div class="pdp-buttons">
+            <button class="btn-primary btn-primary--dark" id="pdp-btn-cart">Add to Cart</button>
+            <button class="btn-primary btn-primary--solid-dark" id="pdp-btn-buy">Buy It Now</button>
+          </div>
+
+          <div class="pdp-description">
+            <p id="pdp-desc-text"></p>
+            <p id="pdp-desc-note" class="pdp-note"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== SCRIPTS ========== -->
+  <script src="products.js"></script>
+  <script src="script.js"></script>
+
+</body>
+
+</html>
