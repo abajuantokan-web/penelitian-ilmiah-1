@@ -212,7 +212,6 @@ func seedDemoData() {
 				Email:     "tenun@openpeo.com",
 				Password:  "$2a$10$.4gRKHk/3kFjryRKYb9rq.li1V1pE08g0KtplV2/yzjpd7kAB3bte",
 				Role:      "seller",
-				StoreName: "Toko Tenun NTT",
 				Phone:     "081234567894",
 				Address:   "Sumba, NTT",
 			},
@@ -221,7 +220,6 @@ func seedDemoData() {
 				Email:     "kuliner@openpeo.com",
 				Password:  "$2a$10$.4gRKHk/3kFjryRKYb9rq.li1V1pE08g0KtplV2/yzjpd7kAB3bte",
 				Role:      "seller",
-				StoreName: "Toko Kuliner Lokal",
 				Phone:     "081234567895",
 				Address:   "Kupang, NTT",
 			},
@@ -230,7 +228,6 @@ func seedDemoData() {
 				Email:     "aksesoris@openpeo.com",
 				Password:  "$2a$10$.4gRKHk/3kFjryRKYb9rq.li1V1pE08g0KtplV2/yzjpd7kAB3bte",
 				Role:      "seller",
-				StoreName: "Toko Aksesoris Flores",
 				Phone:     "081234567896",
 				Address:   "Flores, NTT",
 			},
@@ -279,7 +276,7 @@ func seedDemoData() {
 			{SellerID: sellerAksesoris.ID, Name: "Gelang & Kalung Serbuk Gading Maumere", Price: 450000, Category: "Koleksi Aksesoris", ImageURL: "images/gelang-kalung.png", Region: "Maumere", Description: "Set gelang dan kalung artisan dari Maumere dengan manik-manik serbuk gading dan kuningan. Statement piece untuk berbagai gaya.", PreOrderDuration: 14, IsActive: true},
 			{SellerID: sellerAksesoris.ID, Name: "Mahkota Ti'i Langga Rote", Price: 850000, Category: "Koleksi Aksesoris", ImageURL: "images/mahkota-tiilangga.png", Region: "Rote", Description: "Mahkota Ti'i Langga tradisional dari Rote yang terbuat dari anyaman daun lontar. Sebuah karya seni ikonis yang bersejarah.", PreOrderDuration: 21, IsActive: true},
 			{SellerID: sellerAksesoris.ID, Name: "Cincin & Aksesoris Ornamen Penyu Tradisional", Price: 320000, Category: "Koleksi Aksesoris", ImageURL: "images/cincin-penyu.png", Region: "NTT", Description: "Koleksi cincin dan aksesoris ornamen penyu tradisional NTT dari bahan alami yang lestari.", PreOrderDuration: 7, IsActive: true},
-			{SellerID: sellerAksesoris.ID, Name: "Kalung Khas Timor", Price: 150000, Category: "Koleksi Aksesoris", ImageURL: "images/kalung-timor.png", Region: "Timor", Description: "Macro shot of artisan shell and beadwork necklace on a dark velvet display. Detail karya tangan perajin lokal yang teliti.", PreOrderDuration: 7, IsActive: true},
+			{SellerID: sellerAksesoris.ID, Name: "Kalung Khas Timor", Price: 150000, Category: "Koleksi Aksesoris", ImageURL: "images/kalung-timor.jpg", Region: "Timor", Description: "Kalung manik-manik khas Timor dengan untaian manik oranye cerah dan ornamen hitam-putih bermotif etnik. Karya tangan perajin lokal yang teliti.", PreOrderDuration: 7, IsActive: true},
 			{SellerID: sellerAksesoris.ID, Name: "Sisir Adat Sumba", Price: 225000, Category: "Koleksi Aksesoris", ImageURL: "images/sisir-sumba.png", Region: "Sumba", Description: "Intricate, hand-carved traditional wooden hair comb with traditional motifs. Aksesori rambut eksotis khas pulau Sumba.", PreOrderDuration: 10, IsActive: true},
 			{SellerID: sellerAksesoris.ID, Name: "Gelang Kulit Kerbau Rote", Price: 85000, Category: "Koleksi Aksesoris", ImageURL: "images/gelang-kerbau.png", Region: "Rote", Description: "Detailed shot of handcrafted leather and bead bracelet. Tahan lama dan bertekstur klasik.", PreOrderDuration: 5, IsActive: true},
 			{SellerID: sellerAksesoris.ID, Name: "Anting Motif Penyu Flores", Price: 120000, Category: "Koleksi Aksesoris", ImageURL: "images/anting-penyu.png", Region: "Flores", Description: "Elegant metalwork earrings with traditional sea-turtle-inspired motifs. Menambah kesan ayu pada penampilan elegan Anda.", PreOrderDuration: 7, IsActive: true},
@@ -302,7 +299,10 @@ func seedDemoData() {
 			demoOrders := []models.Order{
 				{
 					CustomerID:  customer.ID,
-					ProductID:   1,
+					SellerID:    1,
+					OrderItems: []models.OrderItem{
+						{ProductID: 1, Quantity: 1, Price: 2850000},
+					},
 					Quantity:    1,
 					TotalPrice:  2850000,
 					Status:      "Diproses Perajin",
@@ -311,7 +311,10 @@ func seedDemoData() {
 				},
 				{
 					CustomerID: customer.ID,
-					ProductID:  11,
+					SellerID:   1,
+					OrderItems: []models.OrderItem{
+						{ProductID: 11, Quantity: 3, Price: 95000},
+					},
 					Quantity:   3,
 					TotalPrice: 285000,
 					Status:     "Dikirim",
@@ -319,7 +322,10 @@ func seedDemoData() {
 				},
 				{
 					CustomerID: customer.ID,
-					ProductID:  19,
+					SellerID:   1,
+					OrderItems: []models.OrderItem{
+						{ProductID: 19, Quantity: 1, Price: 850000},
+					},
 					Quantity:   1,
 					TotalPrice: 850000,
 					Status:     "Selesai",
@@ -327,7 +333,10 @@ func seedDemoData() {
 				},
 				{
 					CustomerID:  customer.ID,
-					ProductID:   4,
+					SellerID:    1,
+					OrderItems: []models.OrderItem{
+						{ProductID: 4, Quantity: 1, Price: 3150000},
+					},
 					Quantity:    1,
 					TotalPrice:  3150000,
 					Status:      "Menunggu Pembayaran",

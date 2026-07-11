@@ -1,6 +1,6 @@
 <template>
   <div class="login-page">
-    <!-- Left: Decorative Panel -->
+    
     <div class="login-visual">
       <div class="login-visual__overlay"></div>
       <div class="login-visual__content">
@@ -16,7 +16,7 @@
       </div>
     </div>
 
-    <!-- Right: Form Panel -->
+    
     <div class="login-form-panel">
       <div class="login-container">
         <div class="login-header">
@@ -25,7 +25,7 @@
           <p class="login-subtitle">{{ isRegisterMode ? 'Bergabunglah dengan komunitas pecinta warisan NTT' : 'Masuk ke akun OpenPeo Anda' }}</p>
         </div>
 
-        <!-- Login Form -->
+        
         <form v-if="!isRegisterMode" @submit.prevent="handleLogin" class="login-form" id="login-form">
           <div v-if="errorMsg" class="error-msg">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
@@ -69,7 +69,7 @@
           </button>
         </form>
 
-        <!-- Register Form -->
+        
         <form v-else @submit.prevent="handleRegister" class="login-form" id="register-form">
           <div v-if="errorMsg" class="error-msg">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>

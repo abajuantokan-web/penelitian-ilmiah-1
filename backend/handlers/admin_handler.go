@@ -122,7 +122,7 @@ func ForceDeleteProduct(c *gin.Context) {
 func GetAdminOrders(c *gin.Context) {
 	var orders []models.Order
 	// Preload Customer, Product, and Product.Seller for comprehensive table view
-	if err := config.DB.Where("status != ?", "Menunggu Pembayaran").Preload("Customer").Preload("Product").Preload("Product.Seller").Order("created_at DESC").Find(&orders).Error; err != nil {
+	if err := config.DB.Where("status != ?", "Menunggu Pembayaran").Preload("Customer").Preload("OrderItems").Preload("OrderItems.Product").Order("created_at DESC").Find(&orders).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Failed to fetch orders", "error": err.Error()})
 		return
 	}

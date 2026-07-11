@@ -138,7 +138,11 @@ const form = ref({
 })
 
 onMounted(async () => {
-  if (authStore.user?.store_name) {
+  // Seed from seller_profile object first (authoritative source)
+  const sp = authStore.user?.seller_profile
+  if (sp?.store_name) {
+    form.value.store_name = sp.store_name
+  } else if (authStore.user?.store_name) {
     form.value.store_name = authStore.user.store_name
   }
   await fetchProfile()

@@ -1,5 +1,5 @@
 <template>
-  <div id="app-root">
+  <div id="app-root" >
     <!-- Header -->
     <header :class="headerClass">
       <div class="container header-inner">
@@ -64,9 +64,9 @@
               <div v-if="isStoreDropdownOpen" class="store-dropdown">
                 <div v-if="authStore.user?.role === 'seller'">
                   <p class="store-dropdown-title">Kelola Toko Anda</p>
-                  <div class="store-dropdown-profile" v-if="authStore.user?.store_name">
-                    <img v-if="authStore.user?.store_logo" :src="$getImageUrl(authStore.user.store_logo)" alt="Logo" class="store-dropdown-logo" />
-                    <span class="store-dropdown-name">{{ authStore.user.store_name }}</span>
+                  <div class="store-dropdown-profile" v-if="authStore.user?.seller_profile?.store_name || authStore.user?.store_name">
+                    <img v-if="authStore.user?.seller_profile?.store_logo || authStore.user?.store_logo" :src="$getImageUrl(authStore.user.seller_profile?.store_logo || authStore.user.store_logo)" alt="Logo" class="store-dropdown-logo" />
+                    <span class="store-dropdown-name">{{ authStore.user.seller_profile?.store_name || authStore.user.store_name }}</span>
                   </div>
                   <router-link to="/seller/dashboard" class="btn-primary store-btn">Dashboard Seller</router-link>
                 </div>

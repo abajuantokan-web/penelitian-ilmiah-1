@@ -52,8 +52,14 @@ func GetProfile(c *gin.Context) {
 			"address":  user.Address,
 			"role":     user.Role,
 			"avatar":   user.Avatar,
-			"store_name": func() string { if user.SellerProfile != nil && user.SellerProfile.StoreName != "" { return user.SellerProfile.StoreName }; return user.StoreName }(),
-			"store_logo": func() string { if user.SellerProfile != nil { return user.SellerProfile.StoreLogo }; return "" }(),
+		"store_name": func() string {
+				if user.Role == "seller" && user.SellerProfile != nil { return user.SellerProfile.StoreName }
+				return ""
+			}(),
+			"store_logo": func() string {
+				if user.Role == "seller" && user.SellerProfile != nil { return user.SellerProfile.StoreLogo }
+				return ""
+			}(),
 		},
 	})
 }
@@ -196,7 +202,6 @@ func GetMyOrders(c *gin.Context) {
 	var orders []models.Order
 	if err := config.DB.
 		Where("customer_id = ? AND status != ?", userID, "Menunggu Pembayaran").
-		Preload("Product").
 		Preload("OrderItems").
 		Preload("OrderItems.Product").
 		Order("created_at DESC").

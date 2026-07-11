@@ -4,7 +4,7 @@
     <aside class="seller-sidebar">
       <div class="sidebar-header">
         <h2 class="relative inline-block">
-          {{ authStore.user?.store_name || 'Toko Saya' }}
+          {{ authStore.user?.seller_profile?.store_name || authStore.user?.store_name || 'Toko Saya' }}
         </h2>
         <p>Seller Dashboard</p>
       </div>
@@ -57,7 +57,12 @@
             <tbody>
               <tr v-for="product in sellerStore.products" :key="product.id">
                 <td class="td-product">
-                  <img :src="$getImageUrl(product.image_url)" :alt="product.name" class="table-img" />
+                  <img
+                    :src="$getImageUrl(product.image_url)"
+                    :alt="product.name"
+                    class="table-img"
+                    @error="$event.target.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%23f3f0eb'/%3E%3Ctext x='24' y='28' text-anchor='middle' font-size='8' fill='%23a8956e' font-family='sans-serif'%3ENo img%3C/text%3E%3C/svg%3E`"
+                  />
                   <span class="table-product-name">{{ product.name }}</span>
                 </td>
                 <td>Rp {{ product.price.toLocaleString('id-ID') }}</td>
@@ -99,13 +104,6 @@
                         <span class="table-product-name" style="display:block; font-size: 0.85rem;">{{ item.product?.name }}</span>
                         <span style="font-size: 0.75rem; color: #6b7280;">x{{ item.quantity }}</span>
                       </div>
-                    </div>
-                  </div>
-                  <div v-else class="flex items-center gap-3">
-                    <img :src="$getImageUrl(order.product?.image_url)" :alt="order.product?.name" class="table-img" />
-                    <div>
-                      <span class="table-product-name" style="display:block">{{ order.product?.name }}</span>
-                      <span style="font-size: 0.75rem; color: #6b7280;">x{{ order.quantity }}</span>
                     </div>
                   </div>
                 </td>

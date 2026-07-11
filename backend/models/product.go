@@ -11,7 +11,7 @@ import (
 type Product struct {
 	ID          int32          `gorm:"primaryKey;autoIncrement" json:"id"`
 	SellerID    int32          `gorm:"not null;index" json:"seller_id"`
-	Seller      User           `gorm:"foreignKey:SellerID" json:"seller,omitempty"`
+	SellerProfile SellerProfile  `gorm:"foreignKey:SellerID" json:"seller_profile,omitempty"`
 	Name        string         `gorm:"size:200;not null" json:"name"`
 	Description string         `gorm:"type:text" json:"description"`
 	Price       float64        `gorm:"type:decimal(12,2);not null" json:"price"`

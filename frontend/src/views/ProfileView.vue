@@ -138,7 +138,6 @@
                 </div>
               </div>
               
-              <!-- Multi-item support if OrderItems is populated -->
               <div v-if="order.order_items && order.order_items.length > 0" class="order-items-list">
                  <div v-for="item in order.order_items" :key="item.id" class="order-product border-b-subtle">
                    <div class="product-thumb">
@@ -152,24 +151,6 @@
                  <div v-if="order.custom_notes || order.note" class="custom-note mt-3">
                     <strong>Catatan:</strong> {{ order.custom_notes || order.note }}
                  </div>
-              </div>
-              
-              <!-- Legacy support if single product relation is used instead of OrderItems -->
-              <div v-else-if="order.product" class="order-product">
-                <div class="product-thumb">
-                  <img :src="$getImageUrl(order.product.image_url)" :alt="order.product.name" loading="lazy" />
-                </div>
-                <div class="product-details">
-                  <h3 class="product-name">{{ order.product.name }}</h3>
-                  <p class="product-meta">Qty: {{ order.quantity }} &times; {{ formatPrice(order.product.price) }}</p>
-                  
-                  <div v-if="order.custom_notes" class="custom-note">
-                    <strong>Catatan Custom:</strong> {{ order.custom_notes }}
-                  </div>
-                  <div v-else-if="order.note" class="custom-note">
-                    <strong>Catatan:</strong> {{ order.note }}
-                  </div>
-                </div>
               </div>
               
               <!-- Order Footer -->

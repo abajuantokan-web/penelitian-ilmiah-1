@@ -63,9 +63,13 @@ export const useAuthStore = defineStore('auth', {
     },
 
     updateSellerProfileLocally(profile) {
-      if (this.user) {
-        this.user.store_name = profile.store_name || this.user.store_name
-        this.user.store_logo = profile.store_logo || this.user.store_logo
+      if (this.user && this.user.role === 'seller') {
+        if (!this.user.seller_profile) this.user.seller_profile = {}
+        this.user.seller_profile.store_name = profile.store_name || this.user.seller_profile?.store_name
+        this.user.seller_profile.store_logo = profile.store_logo || this.user.seller_profile?.store_logo
+        // Keep top-level store_name in sync for backward-compat with v-if checks
+        this.user.store_name = this.user.seller_profile.store_name
+        this.user.store_logo = this.user.seller_profile.store_logo
         localStorage.setItem('openpeo_user', JSON.stringify(this.user))
       }
     },

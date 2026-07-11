@@ -163,7 +163,7 @@ const handleChat = () => {
   }
   
   if (props.product.seller_id) {
-    const sellerName = props.product.seller?.seller_profile?.store_name || props.product.seller?.store_name || 'Penjual'
+    const sellerName = props.product.seller_profile?.store_name || 'Penjual'
     chatStore.openChat(props.product.seller_id, sellerName)
     close() // Close modal so user can focus on chat widget
   } else {

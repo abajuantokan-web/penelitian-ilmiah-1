@@ -95,7 +95,7 @@ func CreateProduct(c *gin.Context) {
 	}
 
 	// Reload with seller data
-	config.DB.Preload("Seller").Preload("Seller.SellerProfile").First(&product, product.ID)
+	config.DB.Preload("SellerProfile").First(&product, product.ID)
 
 	c.JSON(http.StatusCreated, gin.H{
 		"success": true,
@@ -151,8 +151,7 @@ func GetProducts(c *gin.Context) {
 
 	// Fetch paginated results with seller info
 	result := query.
-		Preload("Seller").
-		Preload("Seller.SellerProfile").
+		Preload("SellerProfile").
 		Order("created_at DESC").
 		Offset(offset).
 		Limit(limit).
@@ -194,7 +193,7 @@ func GetProductByID(c *gin.Context) {
 	}
 
 	var product models.Product
-	if err := config.DB.Preload("Seller").Preload("Seller.SellerProfile").First(&product, id).Error; err != nil {
+	if err := config.DB.Preload("SellerProfile").First(&product, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
 			"success": false,
 			"message": "Product not found",

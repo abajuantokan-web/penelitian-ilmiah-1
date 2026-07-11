@@ -209,7 +209,7 @@ const productsData = [
     name: "Kalung Khas Timor",
     price: 150000,
     category: "Koleksi Aksesoris",
-    images: ["images/kalung-timor.png", "images/kalung-timor.png", "images/kalung-timor.png"],
+    images: ["images/kalung-timor.jpg", "images/kalung-timor.jpg", "images/kalung-timor.jpg"],
     description: "Macro shot of artisan shell and beadwork necklace on a dark velvet display. Detail karya tangan perajin lokal yang teliti.",
     preOrderDays: 7,
     stockStatus: "Pre-order"

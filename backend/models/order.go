@@ -12,8 +12,7 @@ type Order struct {
 	ID          int32          `gorm:"primaryKey;autoIncrement" json:"id"`
 	CustomerID  int32          `gorm:"not null;index" json:"customer_id"`
 	Customer    User           `gorm:"foreignKey:CustomerID" json:"customer,omitempty"`
-	ProductID   int32          `gorm:"not null;index" json:"product_id"`
-	Product     Product        `gorm:"foreignKey:ProductID" json:"product,omitempty"`
+
 	SellerID    int32          `gorm:"index" json:"seller_id"`
 	Seller      User           `gorm:"foreignKey:SellerID" json:"seller,omitempty"`
 	Quantity    int            `gorm:"not null" json:"quantity"`

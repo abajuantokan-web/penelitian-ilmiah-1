@@ -79,7 +79,6 @@ func CreateOrder(c *gin.Context) {
 
 			order := models.Order{
 				CustomerID:       customerID,
-				ProductID:        items[0].ProductID, // Legacy field support
 				SellerID:         sellerID,
 				Quantity:         len(items),
 				TotalPrice:       orderTotal,
@@ -210,7 +209,6 @@ func GetOrders(c *gin.Context) {
 
 	result := query.
 		Preload("Customer").
-		Preload("Product").
 		Preload("OrderItems").
 		Preload("OrderItems.Product").
 		Order("created_at DESC").
@@ -331,7 +329,6 @@ func CreateDirectOrder(c *gin.Context) {
 
 	order := models.Order{
 		CustomerID: customerID,
-		ProductID:  req.ProductID,
 		SellerID:   product.SellerID,
 		Quantity:   req.Quantity,
 		TotalPrice: req.Price * float64(req.Quantity),
@@ -341,6 +338,17 @@ func CreateDirectOrder(c *gin.Context) {
 
 	if err := config.DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(&order).Error; err != nil {
+			return err
+		}
+
+		// Create corresponding OrderItem
+		orderItem := models.OrderItem{
+			OrderID:   order.ID,
+			ProductID: req.ProductID,
+			Quantity:  req.Quantity,
+			Price:     req.Price,
+		}
+		if err := tx.Create(&orderItem).Error; err != nil {
 			return err
 		}
 
@@ -356,7 +364,7 @@ func CreateDirectOrder(c *gin.Context) {
 		return
 	}
 
-	fmt.Printf("Order created. ProductID: %d | Assigned to SellerID: %d\n", order.ProductID, order.SellerID)
+	fmt.Printf("Order created. Assigned to SellerID: %d\n", order.SellerID)
 
 	// Generate Snap Token
 	midtrans.Environment = midtrans.Sandbox
@@ -408,7 +416,6 @@ func GetSellerOrders(c *gin.Context) {
 	
 	err := config.DB.
 		Where("seller_id = ? AND status != ?", sellerID, "Menunggu Pembayaran").
-		Preload("Product").
 		Preload("Customer").
 		Preload("OrderItems").
 		Preload("OrderItems.Product").

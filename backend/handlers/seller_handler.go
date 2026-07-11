@@ -39,7 +39,11 @@ func GetSellerProducts(c *gin.Context) {
 	}
 
 	var products []models.Product
-	if err := config.DB.Where("seller_id = ?", sellerID).Order("created_at desc").Find(&products).Error; err != nil {
+	if err := config.DB.
+		Where("seller_id = ?", sellerID).
+		Preload("SellerProfile").
+		Order("created_at desc").
+		Find(&products).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Gagal mengambil produk", "error": err.Error()})
 		return
 	}

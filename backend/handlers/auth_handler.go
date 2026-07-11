@@ -98,8 +98,14 @@ func Login(c *gin.Context) {
 			"role":     user.Role,
 			"email":    user.Email,
 			"avatar":   user.Avatar,
-			"store_name": func() string { if user.SellerProfile != nil && user.SellerProfile.StoreName != "" { return user.SellerProfile.StoreName }; return user.StoreName }(),
-			"store_logo": func() string { if user.SellerProfile != nil { return user.SellerProfile.StoreLogo }; return "" }(),
+			"store_name": func() string {
+				if user.Role == "seller" && user.SellerProfile != nil { return user.SellerProfile.StoreName }
+				return ""
+			}(),
+			"store_logo": func() string {
+				if user.Role == "seller" && user.SellerProfile != nil { return user.SellerProfile.StoreLogo }
+				return ""
+			}(),
 		},
 	})
 }
@@ -213,15 +219,22 @@ func RegisterSeller(c *gin.Context) {
 	}
 
 	newUser := models.User{
-		Name:      req.Name,
-		Email:     req.Email,
-		Password:  string(hashedPassword),
-		Role:      "seller",
-		StoreName: req.StoreName,
+		Name:     req.Name,
+		Email:    req.Email,
+		Password: string(hashedPassword),
+		Role:     "seller",
 	}
 
 	err = config.DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(&newUser).Error; err != nil {
+			return err
+		}
+		// Always create SellerProfile on seller registration — store_name lives here only
+		sellerProfile := models.SellerProfile{
+			UserID:    newUser.ID,
+			StoreName: req.StoreName,
+		}
+		if err := tx.Create(&sellerProfile).Error; err != nil {
 			return err
 		}
 		logEntry := models.ActivityLog{
@@ -260,14 +273,23 @@ func GetCurrentUser(c *gin.Context) {
 		return
 	}
 
+	storeName := ""
+	storeLogo := ""
+	if user.Role == "seller" && user.SellerProfile != nil {
+		storeName = user.SellerProfile.StoreName
+		storeLogo = user.SellerProfile.StoreLogo
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"data": gin.H{
-			"id":       user.ID,
-			"name":     user.Name,
-			"role":     user.Role,
-			"email":    user.Email,
-			"avatar":   user.Avatar,
+			"id":          user.ID,
+			"name":        user.Name,
+			"role":        user.Role,
+			"email":       user.Email,
+			"avatar":      user.Avatar,
+			"store_name":  storeName,
+			"store_logo":  storeLogo,
 		},
 	})
 }
