@@ -170,10 +170,6 @@ onUnmounted(() => {
   position: relative;
 }
 
-.icon-btn--active {
-  /* subtle visual for logged-in state */
-}
-
 .profile-dot {
   position: absolute;
   top: 6px;
