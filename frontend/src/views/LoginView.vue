@@ -131,11 +131,11 @@ const isLoading = ref(false)
 const errorMsg = ref('')
 const successMsg = ref('')
 
-// Login fields
+
 const email = ref('')
 const password = ref('')
 
-// Register fields
+
 const regName = ref('')
 const regEmail = ref('')
 const regPassword = ref('')
@@ -149,7 +149,6 @@ const toggleMode = () => {
 const handleLogin = async () => {
   isLoading.value = true
   errorMsg.value = ''
-  
   const result = await authStore.login(email.value, password.value)
   
   isLoading.value = false
@@ -158,9 +157,8 @@ const handleLogin = async () => {
     // Sync cart from backend after login
     await cartStore.fetchCart()
     
-    // Redirect based on role or default to home where localStorage takes over
-    const redirectPath = authStore.user?.role === 'seller' ? '/seller/dashboard' : '/';
-    router.push(redirectPath);
+    // Redirect to the seller dashboard (which is now the root route)
+    router.push('/');
   } else {
     errorMsg.value = result.message || 'Login gagal. Periksa kembali email dan password Anda.'
   }

@@ -28,7 +28,18 @@ func requireSeller(c *gin.Context) (int32, bool) {
 		})
 		return 0, false
 	}
-	return int32(userIDFloat.(float64)), true
+	userID := int32(userIDFloat.(float64))
+
+	var profile models.SellerProfile
+	if err := config.DB.Where("user_id = ?", userID).First(&profile).Error; err != nil {
+		c.JSON(http.StatusForbidden, gin.H{
+			"success": false,
+			"message": "Profil toko tidak ditemukan",
+		})
+		return 0, false
+	}
+
+	return profile.ID, true
 }
 
 // GetSellerProducts handles GET /api/seller/products

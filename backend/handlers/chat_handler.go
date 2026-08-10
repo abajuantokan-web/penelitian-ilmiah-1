@@ -114,37 +114,20 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		return true // Allow all origins in development
+		return true 
 	},
 }
 
-// -----------------------------------------------------------------------
-// WebSocket Handler
-// -----------------------------------------------------------------------
 
-// HandleWebSocket handles GET /ws/chat
-// It upgrades the HTTP connection to a full-duplex WebSocket and manages
-// real-time bidirectional chat between users.
-//
-// Query Parameters:
-//   - sender_id:   The ID of the user initiating the connection (required)
-//   - receiver_id: The ID of the intended chat partner (required)
-//
-// Message Flow:
-//  1. Client connects with sender_id and receiver_id
-//  2. Connection is registered in the Hub under sender_id
-//  3. Incoming messages are persisted to MySQL immediately
-//  4. Messages are routed to receiver's connection if online
-//  5. On disconnect, the connection is cleaned up from the Hub
 func HandleWebSocket(c *gin.Context) {
-	// Parse auth token from query parameters
+	
 	tokenString := c.Query("token")
 	if tokenString == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "token is required"})
 		return
 	}
 
-	// Validate token
+	
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte("my_super_secret_key_for_openpeo_platform"), nil
 	})
@@ -181,24 +164,24 @@ func HandleWebSocket(c *gin.Context) {
 		receiverID = int32(id)
 	}
 
-	// Upgrade HTTP connection to WebSocket
+	
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		log.Printf("❌ WebSocket upgrade failed: %v", err)
 		return
 	}
 
-	// Register this connection in the hub
+	
 	client := ChatHub.Register(senderID, conn)
 
-	// Ensure cleanup on disconnect
+	
 	defer func() {
 		ChatHub.Unregister(senderID, client)
 	}()
 
 	fmt.Printf("💬 Chat channel opened: User %d (receiver: %d)\n", senderID, receiverID)
 
-	// Configure Ping/Pong Idle Timeouts
+	
 	const pongWait = 60 * time.Second
 	const pingPeriod = 54 * time.Second
 
@@ -241,6 +224,18 @@ func HandleWebSocket(c *gin.Context) {
 		payload.SenderID = senderID
 		if payload.ReceiverID == 0 {
 			payload.ReceiverID = receiverID
+		}
+
+		// Resolve receiver_id (if a customer incorrectly sent a seller_profile.id)
+		var senderUser models.User
+		if config.DB.Where("id = ?", payload.SenderID).First(&senderUser).Error == nil && senderUser.Role == "customer" {
+			var targetUser models.User
+			if err := config.DB.Where("id = ?", payload.ReceiverID).First(&targetUser).Error; err != nil || (targetUser.Role != "seller" && targetUser.Role != "admin" && targetUser.Role != "vendor") {
+				var sp models.SellerProfile
+				if err := config.DB.Where("id = ?", payload.ReceiverID).First(&sp).Error; err == nil {
+					payload.ReceiverID = sp.UserID
+				}
+			}
 		}
 
 		// Persist message to MySQL immediately
@@ -295,6 +290,20 @@ func GetChatHistory(c *gin.Context) {
 			"message": "sender_id and receiver_id are required",
 		})
 		return
+	}
+
+	// Resolve receiver_id (if a customer incorrectly requested history with a seller_profile.id)
+	var senderUser models.User
+	if config.DB.Where("id = ?", senderID).First(&senderUser).Error == nil && senderUser.Role == "customer" {
+		if id, err := strconv.Atoi(receiverID); err == nil {
+			var targetUser models.User
+			if err := config.DB.Where("id = ?", id).First(&targetUser).Error; err != nil || (targetUser.Role != "seller" && targetUser.Role != "admin" && targetUser.Role != "vendor") {
+				var sp models.SellerProfile
+				if err := config.DB.Where("id = ?", id).First(&sp).Error; err == nil {
+					receiverID = strconv.Itoa(int(sp.UserID))
+				}
+			}
+		}
 	}
 
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "50"))

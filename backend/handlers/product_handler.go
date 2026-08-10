@@ -11,8 +11,7 @@ import (
 	"openpeo-backend/models"
 )
 
-// CreateProduct handles POST /api/products
-// Allows a vendor to upload a new pre-order product with criteria like min_order and po_duration.
+
 func CreateProduct(c *gin.Context) {
 	var product models.Product
 
@@ -25,7 +24,7 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
-	// Validate required fields
+	
 	if product.Name == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
@@ -207,8 +206,7 @@ func GetProductByID(c *gin.Context) {
 	})
 }
 
-// UpdateProduct handles PUT /api/products/:id
-// Allows an authorized user (admin) to modify product details, including stock.
+
 func UpdateProduct(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 32)
@@ -239,8 +237,7 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	// Update fields
-	// Verify pengubah is admin
+	
 	var adminUser models.User
 	userIDToCheck := req.SellerID
 	if userIDToCheck == 0 {

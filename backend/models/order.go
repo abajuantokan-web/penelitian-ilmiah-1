@@ -13,8 +13,8 @@ type Order struct {
 	CustomerID  int32          `gorm:"not null;index" json:"customer_id"`
 	Customer    User           `gorm:"foreignKey:CustomerID" json:"customer,omitempty"`
 
-	SellerID    int32          `gorm:"index" json:"seller_id"`
-	Seller      User           `gorm:"foreignKey:SellerID" json:"seller,omitempty"`
+	SellerID      int32          `gorm:"index" json:"seller_id"`
+	SellerProfile SellerProfile  `gorm:"foreignKey:SellerID" json:"seller_profile,omitempty"`
 	Quantity    int            `gorm:"not null" json:"quantity"`
 	TotalPrice  float64        `gorm:"type:decimal(12,2);not null" json:"total_price"`
 	Status      string         `gorm:"size:50;not null;default:'Menunggu Pembayaran'" json:"status"`

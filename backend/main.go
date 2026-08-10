@@ -244,11 +244,15 @@ func seedDemoData() {
 	if productCount == 0 {
 		fmt.Println("🌱 Seeding demo products...")
 
-		// Find sellers to assign products to
-		var sellerTenun, sellerKuliner, sellerAksesoris models.User
-		config.DB.Where("email = ?", "tenun@openpeo.com").First(&sellerTenun)
-		config.DB.Where("email = ?", "kuliner@openpeo.com").First(&sellerKuliner)
-		config.DB.Where("email = ?", "aksesoris@openpeo.com").First(&sellerAksesoris)
+		var userTenun, userKuliner, userAksesoris models.User
+		config.DB.Where("email = ?", "tenun@openpeo.com").First(&userTenun)
+		config.DB.Where("email = ?", "kuliner@openpeo.com").First(&userKuliner)
+		config.DB.Where("email = ?", "aksesoris@openpeo.com").First(&userAksesoris)
+
+		var sellerTenun, sellerKuliner, sellerAksesoris models.SellerProfile
+		config.DB.Where("user_id = ?", userTenun.ID).First(&sellerTenun)
+		config.DB.Where("user_id = ?", userKuliner.ID).First(&sellerKuliner)
+		config.DB.Where("user_id = ?", userAksesoris.ID).First(&sellerAksesoris)
 
 		products := []models.Product{
 			// SECTION 1: Koleksi Tenun NTT (Seller 1)
@@ -294,12 +298,17 @@ func seedDemoData() {
 	if orderCount == 0 {
 		fmt.Println("🌱 Seeding demo orders...")
 
+		var seller models.SellerProfile
+		config.DB.First(&seller)
+		sellerID := seller.UserID
+		if sellerID == 0 { sellerID = 1 }
+
 		var customer models.User
 		if err := config.DB.Where("role = ?", "customer").First(&customer).Error; err == nil {
 			demoOrders := []models.Order{
 				{
 					CustomerID:  customer.ID,
-					SellerID:    1,
+					SellerID:    sellerID,
 					OrderItems: []models.OrderItem{
 						{ProductID: 1, Quantity: 1, Price: 2850000},
 					},
@@ -311,7 +320,7 @@ func seedDemoData() {
 				},
 				{
 					CustomerID: customer.ID,
-					SellerID:   1,
+					SellerID:   sellerID,
 					OrderItems: []models.OrderItem{
 						{ProductID: 11, Quantity: 3, Price: 95000},
 					},
@@ -322,7 +331,7 @@ func seedDemoData() {
 				},
 				{
 					CustomerID: customer.ID,
-					SellerID:   1,
+					SellerID:   sellerID,
 					OrderItems: []models.OrderItem{
 						{ProductID: 19, Quantity: 1, Price: 850000},
 					},
@@ -333,7 +342,7 @@ func seedDemoData() {
 				},
 				{
 					CustomerID:  customer.ID,
-					SellerID:    1,
+					SellerID:    sellerID,
 					OrderItems: []models.OrderItem{
 						{ProductID: 4, Quantity: 1, Price: 3150000},
 					},

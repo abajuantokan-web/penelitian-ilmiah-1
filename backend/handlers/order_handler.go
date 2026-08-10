@@ -35,18 +35,18 @@ func CreateOrder(c *gin.Context) {
 		} `json:"items"`
 		Note string `json:"note"`
 	}
-	c.ShouldBindJSON(&req) // Note and Items
+	c.ShouldBindJSON(&req) 
 
 	if len(req.Items) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Payload items kosong"})
 		return
 	}
 
-	// Step B: Create a map to group items by SellerID
+	
 	itemsBySeller := make(map[int32][]models.OrderItem)
 	var grandTotal float64
 
-	// Step A: Iterate over req.Items, query the DB for the Product, and extract the SellerID.
+	
 	for _, reqItem := range req.Items {
 		var product models.Product
 		if err := config.DB.First(&product, reqItem.ProductID).Error; err != nil {
@@ -64,7 +64,7 @@ func CreateOrder(c *gin.Context) {
 		})
 	}
 
-	// Step C: Generate a single unique PaymentReference
+	
 	paymentRef := fmt.Sprintf("INV-%d-%d", customerID, time.Now().Unix())
 
 	var createdOrders []models.Order
@@ -201,8 +201,6 @@ func GetOrders(c *gin.Context) {
 	// Filter by status
 	if status := c.Query("status"); status != "" {
 		query = query.Where("status = ?", status)
-	} else {
-		query = query.Where("status != ?", "Menunggu Pembayaran")
 	}
 
 	query.Count(&total)
@@ -405,17 +403,15 @@ func CreateDirectOrder(c *gin.Context) {
 
 // GetSellerOrders handles GET /api/orders/seller
 func GetSellerOrders(c *gin.Context) {
-	userIDFloat, exists := c.Get("userID")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Unauthorized"})
+	sellerID, ok := requireSeller(c)
+	if !ok {
 		return
 	}
-	sellerID := int32(userIDFloat.(float64))
 
 	var orders []models.Order
 	
 	err := config.DB.
-		Where("seller_id = ? AND status != ?", sellerID, "Menunggu Pembayaran").
+		Where("seller_id = ?", sellerID).
 		Preload("Customer").
 		Preload("OrderItems").
 		Preload("OrderItems.Product").
@@ -432,12 +428,10 @@ func GetSellerOrders(c *gin.Context) {
 
 // ProcessSellerOrder handles PUT /api/orders/seller/:id/process
 func ProcessSellerOrder(c *gin.Context) {
-	userIDFloat, exists := c.Get("userID")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Unauthorized"})
+	sellerID, ok := requireSeller(c)
+	if !ok {
 		return
 	}
-	sellerID := int32(userIDFloat.(float64))
 	orderID := c.Param("id")
 
 	var order models.Order
@@ -473,12 +467,10 @@ func ProcessSellerOrder(c *gin.Context) {
 
 // GetSellerDashboardStats handles GET /api/seller/dashboard/stats
 func GetSellerDashboardStats(c *gin.Context) {
-	userIDFloat, exists := c.Get("userID")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Unauthorized"})
+	sellerID, ok := requireSeller(c)
+	if !ok {
 		return
 	}
-	sellerID := int32(userIDFloat.(float64))
 
 	var pendingCount int64
 	var processingCount int64
@@ -516,12 +508,10 @@ func GetSellerDashboardStats(c *gin.Context) {
 
 // GetSellerDashboardChart handles GET /api/seller/dashboard/chart
 func GetSellerDashboardChart(c *gin.Context) {
-	userIDFloat, exists := c.Get("userID")
-	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"success": false, "message": "Unauthorized"})
+	sellerID, ok := requireSeller(c)
+	if !ok {
 		return
 	}
-	sellerID := int32(userIDFloat.(float64))
 	
 	rangeParam := c.Query("range")
 	days := 7

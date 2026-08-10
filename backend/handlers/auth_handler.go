@@ -13,13 +13,13 @@ import (
 	"openpeo-backend/models"
 )
 
-// LoginRequest is the expected JSON payload for the login endpoint.
+
 type LoginRequest struct {
 	Email    string `json:"email" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
-// RegisterRequest represents the JSON payload for registration.
+
 type RegisterRequest struct {
 	Name     string `json:"name" binding:"required"`
 	Email    string `json:"email" binding:"required"`
@@ -28,13 +28,7 @@ type RegisterRequest struct {
 	Address  string `json:"address"`
 }
 
-// Login handles POST /api/login
-// Authenticates a user by matching username and password against the users table.
-// Returns the user's id, username, name, and role on success.
-//
-// In a production system this should use bcrypt password hashing and JWT tokens.
-// For this academic/demo project, passwords are compared as plain text to match
-// the dummy data in db.sql.
+
 func Login(c *gin.Context) {
 	var req LoginRequest
 
@@ -47,7 +41,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Look up user by email
+	
 	var user models.User
 	result := config.DB.Preload("SellerProfile").Where("email = ?", req.Email).First(&user)
 
@@ -59,7 +53,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Validate password using bcrypt
+	
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"success": false,
@@ -68,7 +62,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Generate JWT
+	
 	token, err := middleware.GenerateJWT(user.ID, user.Role)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -110,8 +104,7 @@ func Login(c *gin.Context) {
 	})
 }
 
-// RegisterUser handles POST /api/register
-// Registers a new customer into the system.
+
 func RegisterUser(c *gin.Context) {
 	var req RegisterRequest
 
@@ -124,7 +117,7 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	// Verify if email is already taken
+	
 	var existing models.User
 	if err := config.DB.Where("email = ?", req.Email).First(&existing).Error; err == nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -134,7 +127,7 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	// Hash password
+	
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -144,7 +137,7 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	// Create user record (role is hardcoded as 'customer' for safety)
+	
 	newUser := models.User{
 		Name:     req.Name,
 		Email:    req.Email,

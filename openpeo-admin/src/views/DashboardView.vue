@@ -101,20 +101,20 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Tanggal</th>
-                  <th>Produk</th>
+                  <th style="width: 1%; white-space: nowrap;">Tanggal</th>
+                  <th style="width: 40%;">Produk</th>
                   <th>Pembeli</th>
                   <th>Penjual</th>
-                  <th>Total</th>
+                  <th style="width: 1%; white-space: nowrap;">Total</th>
                   <th>Status</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="order in recentOrders" :key="order.id">
                   <td>{{ formatDate(order.created_at) }}</td>
-                  <td>{{ order.product?.name || '-' }}</td>
+                  <td>{{ order.order_items && order.order_items.length > 0 ? order.order_items[0].product?.name + (order.order_items.length > 1 ? ` (+${order.order_items.length - 1} item)` : '') : '-' }}</td>
                   <td>{{ order.customer?.name || '-' }}</td>
-                  <td>{{ order.product?.seller?.seller_profile?.store_name || order.product?.seller?.store_name || order.product?.User?.SellerProfile?.StoreName || 'Nama Toko Belum Diatur' }}</td>
+                  <td>{{ order.seller_profile?.store_name || 'Nama Toko Belum Diatur' }}</td>
                   <td>{{ formatPrice(order.total_price) }}</td>
                   <td>
                     <span :class="['status-badge', getOrderStatusClass(order.status)]">{{ order.status }}</span>
@@ -180,14 +180,14 @@
                 <td>#{{ product.id }}</td>
                 <td>
                   <div class="product-cell">
-                    <img :src="getImageUrl(product.image_url)" alt="" class="product-img" />
+                    <img :src="getImageUrl(product)" @error="onImageError" alt="" class="product-img" />
                     <div>
                       <strong>{{ product.name }}</strong>
                       <div class="product-category">{{ product.category }}</div>
                     </div>
                   </div>
                 </td>
-                <td>{{ product?.seller?.seller_profile?.store_name || product?.Seller?.SellerProfile?.StoreName || product?.seller?.store_name || 'Nama Toko Belum Diatur' }}</td>
+                <td>{{ product?.seller_profile?.store_name || 'Nama Toko Belum Diatur' }}</td>
                 <td>{{ formatPrice(product.price) }}</td>
                 <td>
                   <span :class="['status-badge', product.is_active ? 'active' : 'inactive']">
@@ -212,14 +212,14 @@
           <table class="data-table">
             <thead>
               <tr>
-                <th>ID</th>
-                <th>Tanggal</th>
+                <th style="width: 1%; white-space: nowrap;">ID</th>
+                <th style="width: 1%; white-space: nowrap;">Tanggal</th>
                 <th>Pembeli</th>
                 <th>Toko / Penjual</th>
-                <th>Produk & Catatan</th>
-                <th>Total</th>
+                <th style="width: 35%;">Produk & Catatan</th>
+                <th style="width: 1%; white-space: nowrap;">Total</th>
                 <th>Status</th>
-                <th>Aksi</th>
+                <th style="width: 1%; white-space: nowrap;">Aksi</th>
               </tr>
             </thead>
             <tbody>
@@ -230,9 +230,9 @@
                   <strong>{{ order.customer?.name || '-' }}</strong>
                   <div class="seller-store">{{ order.customer?.email }}</div>
                 </td>
-                <td>{{ order.product?.seller?.seller_profile?.store_name || order.product?.Seller?.SellerProfile?.StoreName || order.product?.seller?.store_name || 'Nama Toko Belum Diatur' }}</td>
+                <td>{{ order.seller_profile?.store_name || 'Nama Toko Belum Diatur' }}</td>
                 <td>
-                  <strong>{{ order.product?.name || '-' }} (x{{ order.quantity }})</strong>
+                  <strong>{{ order.order_items && order.order_items.length > 0 ? order.order_items.map(item => item.product?.name + ' (x' + item.quantity + ')').join(', ') : '-' }}</strong>
                   <div class="product-category" v-if="order.custom_notes">Catatan: {{ order.custom_notes }}</div>
                 </td>
                 <td>{{ formatPrice(order.total_price) }}</td>
@@ -277,11 +277,34 @@ const users = ref([])
 const products = ref([])
 const logs = ref([])
 
-const getImageUrl = (path) => {
-  if (!path) return ''
-  if (path.startsWith('http://') || path.startsWith('https://')) return path
-  if (path.startsWith('/')) path = path.slice(1)
-  return `http://localhost:8081/${path}`
+const CATEGORY_FALLBACKS = {
+  'Koleksi Tenun NTT': 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=800&auto=format&fit=crop',
+  'Cita Rasa Lokal':   'https://images.unsplash.com/photo-1447933601403-0c6688de566e?q=80&w=800&auto=format&fit=crop',
+  'Koleksi Aksesoris': 'https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?q=80&w=800&auto=format&fit=crop',
+}
+
+const SVG_PLACEHOLDER = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect width='400' height='400' fill='%23f3f0eb'/%3E%3Ctext x='200' y='210' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%23a8956e'%3EOpenPeo%3C/text%3E%3C/svg%3E"
+
+const getImageUrl = (product) => {
+  const raw = product?.image_url
+  if (raw && (raw.startsWith('http://') || raw.startsWith('https://'))) {
+    return raw
+  }
+  
+  if (raw && (raw.startsWith('/images/') || raw.startsWith('images/'))) {
+    return `http://localhost:5173${raw.startsWith('/') ? raw : '/' + raw}`
+  }
+
+  const categoryFallback = CATEGORY_FALLBACKS[product?.category]
+  if (categoryFallback) return categoryFallback
+
+  return SVG_PLACEHOLDER
+}
+
+const onImageError = (event) => {
+  if (event.target.src !== SVG_PLACEHOLDER) {
+    event.target.src = SVG_PLACEHOLDER
+  }
 }
 
 const tabTitle = computed(() => {
@@ -608,11 +631,10 @@ onUnmounted(() => {
 }
 
 .data-table th, .data-table td {
-  padding: 16px 24px;
+  padding: 12px 12px;
   text-align: left;
   border-bottom: 1px solid #e5e7eb;
-  white-space: nowrap;
-  min-width: 120px;
+  line-height: 1.4;
 }
 
 .data-table th {
@@ -627,7 +649,7 @@ onUnmounted(() => {
 .data-table td {
   font-size: 0.9rem;
   color: #374151;
-  vertical-align: middle;
+  vertical-align: top;
 }
 
 .data-table tr:last-child td {

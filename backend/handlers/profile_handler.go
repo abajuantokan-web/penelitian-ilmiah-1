@@ -201,7 +201,8 @@ func GetMyOrders(c *gin.Context) {
 
 	var orders []models.Order
 	if err := config.DB.
-		Where("customer_id = ? AND status != ?", userID, "Menunggu Pembayaran").
+		Where("customer_id = ?", userID).
+		Preload("SellerProfile").
 		Preload("OrderItems").
 		Preload("OrderItems.Product").
 		Order("created_at DESC").

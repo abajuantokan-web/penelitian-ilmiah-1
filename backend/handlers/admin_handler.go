@@ -49,61 +49,17 @@ func GetAdminUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": users})
 }
 
-type AdminSellerProfileResponse struct {
-	StoreName string `json:"store_name"`
-}
 
-type AdminSellerResponse struct {
-	StoreName     string                     `json:"store_name"`
-	SellerProfile AdminSellerProfileResponse `json:"seller_profile"`
-}
-
-type AdminProductResponse struct {
-	ID        int32               `json:"id"`
-	Name      string              `json:"name"`
-	ImageURL  string              `json:"image_url"`
-	Price     float64             `json:"price"`
-	Category  string              `json:"category"`
-	IsActive  bool                `json:"is_active"`
-	Seller    AdminSellerResponse `json:"seller"`
-}
 
 // GetAdminProducts handles GET /api/admin/products
 func GetAdminProducts(c *gin.Context) {
 	var products []models.Product
-	if err := config.DB.Order("created_at DESC").Find(&products).Error; err != nil {
+	if err := config.DB.Preload("SellerProfile").Order("created_at DESC").Find(&products).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Failed to fetch products", "error": err.Error()})
 		return
 	}
 
-	var response []AdminProductResponse
-	for _, p := range products {
-		var profile models.SellerProfile
-		// Manually fetch the seller profile using the product's SellerID
-		config.DB.Where("user_id = ?", p.SellerID).First(&profile)
-
-		storeName := profile.StoreName
-		if storeName == "" {
-			storeName = "Nama Toko Belum Diatur"
-		}
-
-		response = append(response, AdminProductResponse{
-			ID:       p.ID,
-			Name:     p.Name,
-			ImageURL: p.ImageURL,
-			Price:    p.Price,
-			Category: p.Category,
-			IsActive: p.IsActive,
-			Seller: AdminSellerResponse{
-				StoreName: storeName,
-				SellerProfile: AdminSellerProfileResponse{
-					StoreName: storeName,
-				},
-			},
-		})
-	}
-
-	c.JSON(http.StatusOK, gin.H{"success": true, "data": response})
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": products})
 }
 
 // ForceDeleteProduct handles DELETE /api/admin/products/:id
@@ -122,7 +78,7 @@ func ForceDeleteProduct(c *gin.Context) {
 func GetAdminOrders(c *gin.Context) {
 	var orders []models.Order
 	// Preload Customer, Product, and Product.Seller for comprehensive table view
-	if err := config.DB.Where("status != ?", "Menunggu Pembayaran").Preload("Customer").Preload("OrderItems").Preload("OrderItems.Product").Order("created_at DESC").Find(&orders).Error; err != nil {
+	if err := config.DB.Preload("Customer").Preload("SellerProfile").Preload("OrderItems").Preload("OrderItems.Product").Order("created_at DESC").Find(&orders).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Failed to fetch orders", "error": err.Error()})
 		return
 	}

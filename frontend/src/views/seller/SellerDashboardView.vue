@@ -48,25 +48,25 @@
           <table class="products-table">
             <thead>
               <tr>
-                <th>Produk</th>
-                <th>Harga</th>
-                <th>Stok</th>
-                <th class="text-right">Aksi</th>
+                <th class="w-2/5">Produk</th>
+                <th class="w-min whitespace-nowrap">Harga</th>
+                <th class="w-min whitespace-nowrap">Stok</th>
+                <th class="text-right w-min whitespace-nowrap">Aksi</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="product in sellerStore.products" :key="product.id">
-                <td class="td-product">
+                <td class="td-product break-words whitespace-normal">
                   <img
                     :src="$getImageUrl(product.image_url)"
                     :alt="product.name"
-                    class="table-img"
+                    class="table-img flex-shrink-0"
                     @error="$event.target.src = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' fill='%23f3f0eb'/%3E%3Ctext x='24' y='28' text-anchor='middle' font-size='8' fill='%23a8956e' font-family='sans-serif'%3ENo img%3C/text%3E%3C/svg%3E`"
                   />
-                  <span class="table-product-name">{{ product.name }}</span>
+                  <span class="table-product-name line-clamp-2 min-w-0 flex-1" :title="product.name">{{ product.name }}</span>
                 </td>
-                <td>Rp {{ product.price.toLocaleString('id-ID') }}</td>
-                <td>{{ product.stock }}</td>
+                <td class="whitespace-nowrap">Rp {{ product.price.toLocaleString('id-ID') }}</td>
+                <td class="whitespace-nowrap">{{ product.stock }}</td>
                 <td class="td-actions">
                   <button class="btn-outline btn-sm" @click="openEditModal(product)">Edit</button>
                   <button class="btn-danger btn-sm" @click="handleDelete(product.id)">Hapus</button>
@@ -87,32 +87,32 @@
           <table class="products-table">
             <thead>
               <tr>
-                <th>Produk</th>
-                <th>Pembeli</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th class="text-right">Aksi</th>
+                <th class="w-2/5">Produk</th>
+                <th class="w-1/3">Pembeli</th>
+                <th class="w-min whitespace-nowrap">Total</th>
+                <th class="w-min whitespace-nowrap">Status</th>
+                <th class="text-right w-min whitespace-nowrap">Aksi</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="order in sellerOrders" :key="order.id">
-                <td class="td-product">
-                  <div v-if="order.order_items && order.order_items.length > 0">
-                    <div v-for="item in order.order_items" :key="item.id" class="flex items-center gap-3 mb-2 last:mb-0">
-                      <img :src="$getImageUrl(item.product?.image_url)" :alt="item.product?.name" class="table-img" style="width: 32px; height: 32px; border-radius: 4px;" />
-                      <div>
-                        <span class="table-product-name" style="display:block; font-size: 0.85rem;">{{ item.product?.name }}</span>
+                <td class="td-product break-words whitespace-normal">
+                  <div v-if="order.order_items && order.order_items.length > 0" class="w-full min-w-0">
+                    <div v-for="item in order.order_items" :key="item.id" class="flex items-center gap-3 mb-2 last:mb-0 w-full">
+                      <img :src="$getImageUrl(item.product?.image_url)" :alt="item.product?.name" class="table-img flex-shrink-0" style="width: 32px; height: 32px; border-radius: 4px;" />
+                      <div class="min-w-0 flex-1">
+                        <span class="table-product-name block line-clamp-2" style="font-size: 0.85rem;" :title="item.product?.name">{{ item.product?.name }}</span>
                         <span style="font-size: 0.75rem; color: #6b7280;">x{{ item.quantity }}</span>
                       </div>
                     </div>
                   </div>
                 </td>
-                <td>
+                <td class="break-words whitespace-normal">
                   <div style="font-weight: 500;">{{ order.customer?.name || 'Anonim' }}</div>
-                  <div style="font-size: 0.75rem; color: #6b7280;">{{ order.note }}</div>
+                  <div v-if="order.note" class="text-xs text-gray-500 mt-1 line-clamp-2" :title="order.note">{{ order.note }}</div>
                 </td>
-                <td>Rp {{ order.total_price.toLocaleString('id-ID') }}</td>
-                <td>
+                <td class="whitespace-nowrap">Rp {{ order.total_price.toLocaleString('id-ID') }}</td>
+                <td class="whitespace-nowrap">
                   <span :class="['status-badge', getOrderStatusClass(order.status)]">{{ order.status }}</span>
                 </td>
                 <td class="td-actions">
@@ -223,22 +223,25 @@
               <table class="products-table">
                 <thead>
                   <tr>
-                    <th>ID Pesanan</th>
-                    <th>Pembeli</th>
-                    <th>Total Harga</th>
-                    <th>Status</th>
-                    <th>Tanggal</th>
+                    <th class="w-min whitespace-nowrap">ID Pesanan</th>
+                    <th class="w-1/2">Pembeli</th>
+                    <th class="w-min whitespace-nowrap">Total Harga</th>
+                    <th class="w-min whitespace-nowrap">Status</th>
+                    <th class="w-min whitespace-nowrap">Tanggal</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="order in recentOrders" :key="order.id">
-                    <td>#{{ order.id }}</td>
-                    <td>{{ order.customer?.name || 'Anonim' }}</td>
-                    <td>Rp {{ order.total_price.toLocaleString('id-ID') }}</td>
-                    <td>
+                    <td class="whitespace-nowrap">#{{ order.id }}</td>
+                    <td class="break-words whitespace-normal">
+                      <div class="font-medium">{{ order.customer?.name || 'Anonim' }}</div>
+                      <div v-if="order.note" class="text-xs text-gray-500 mt-1 line-clamp-2" :title="order.note">{{ order.note }}</div>
+                    </td>
+                    <td class="whitespace-nowrap">Rp {{ order.total_price.toLocaleString('id-ID') }}</td>
+                    <td class="whitespace-nowrap">
                       <span :class="['status-badge', getOrderStatusClass(order.status)]">{{ order.status }}</span>
                     </td>
-                    <td>{{ new Date(order.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) }}</td>
+                    <td class="whitespace-nowrap">{{ new Date(order.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) }}</td>
                   </tr>
                   <tr v-if="recentOrders.length === 0">
                     <td colspan="5" class="text-center py-8 text-gray-500">Belum ada pesanan terbaru.</td>
@@ -853,18 +856,23 @@ const handleDelete = async (id) => {
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  overflow: hidden;
+  overflow-x: auto;
+  width: 100%;
+  max-width: 100%;
 }
 
 .products-table {
   width: 100%;
+  max-width: 100%;
   border-collapse: collapse;
   text-align: left;
+  table-layout: auto;
 }
 
 .products-table th, .products-table td {
-  padding: 16px 20px;
+  padding: 10px 12px;
   border-bottom: 1px solid #e5e7eb;
+  vertical-align: middle;
 }
 
 .products-table th {
