@@ -96,7 +96,6 @@ const dashboardStore = useDashboardStore()
 const websocketStore = useWebsocketStore() // Initializes singleton WS
 
 const isScrolled = ref(false)
-const isScrolled = ref(false)
 
 const headerClass = computed(() => {
   return ['site-header', { 'scrolled': isScrolled.value || route.path !== '/' }]
