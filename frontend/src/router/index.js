@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 
 const router = createRouter({
@@ -7,9 +8,18 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'seller-dashboard',
-      component: () => import('../views/seller/SellerDashboardView.vue'),
-      meta: { requiresAuth: true, requiresSeller: true }
+      name: 'home',
+      component: HomeView
+    },
+    {
+      path: '/koleksi',
+      name: 'koleksi',
+      component: () => import('../views/KoleksiView.vue')
+    },
+    {
+      path: '/tentang',
+      name: 'tentang',
+      component: () => import('../views/TentangView.vue')
     },
     {
       path: '/login',
@@ -20,6 +30,23 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: () => import('../views/ProfileView.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/register-seller',
+      name: 'register-seller',
+      component: () => import('../views/RegisterSellerView.vue')
+    },
+    {
+      path: '/seller/dashboard',
+      name: 'seller-dashboard',
+      component: () => import('../views/seller/SellerDashboardView.vue'),
+      meta: { requiresAuth: true, requiresSeller: true }
+    },
+    {
+      path: '/checkout',
+      name: 'checkout',
+      component: () => import('../views/CheckoutView.vue'),
       meta: { requiresAuth: true }
     }
   ],
@@ -37,7 +64,7 @@ router.beforeEach((to) => {
     return { name: 'login', query: { redirect: to.fullPath } }
   }
   if (to.meta.requiresSeller && auth.user?.role !== 'seller') {
-    return { name: 'login' }
+    return { name: 'home' }
   }
 })
 

@@ -157,14 +157,14 @@ const handleChat = () => {
   }
   
   // Prevent chatting with yourself
-  if (authStore.user?.id === props.product.seller_profile?.user_id) {
+  if (authStore.user?.id === props.product.seller_id) {
     alert('Ini adalah produk toko Anda sendiri.')
     return
   }
   
-  if (props.product.seller_profile?.user_id) {
+  if (props.product.seller_id) {
     const sellerName = props.product.seller_profile?.store_name || 'Penjual'
-    chatStore.openChat(props.product.seller_profile.user_id, sellerName)
+    chatStore.openChat(props.product.seller_id, sellerName)
     close() // Close modal so user can focus on chat widget
   } else {
     alert('Informasi penjual tidak tersedia.')

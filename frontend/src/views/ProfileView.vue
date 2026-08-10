@@ -131,9 +131,6 @@
               <div class="order-header">
                 <div class="order-id">
                   <span>Order #{{ order.id }}</span>
-                  <span v-if="order.seller_profile?.store_name" class="store-name-badge">
-                    <i class="fas fa-store" style="margin-right: 4px;"></i> {{ order.seller_profile.store_name }}
-                  </span>
                   <span class="order-date">{{ formatDate(order.created_at) }}</span>
                 </div>
                 <div :class="['order-badge', getStatusClass(order.status)]">
@@ -631,24 +628,12 @@ onMounted(async () => {
 .form-group input,
 .form-group textarea {
   width: 100%;
-  padding: 12px 16px;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
-  background-color: #f8fafc;
-}
-
-.store-name-badge {
-  background-color: #f1f5f9;
-  color: #475569;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-  margin-left: 8px;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
 }
 
 .form-group input:focus,
