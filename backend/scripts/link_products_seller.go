@@ -35,15 +35,13 @@ func main() {
 	fmt.Printf("✅ Found primary seller profile (ID: %d, StoreName: %s)\n", primarySeller.ID, primarySeller.StoreName)
 	fmt.Println("🔄 Updating all products to link to this seller profile...")
 
-	// Disable FK checks temporarily for the update if needed, though simple update should work if we just run raw SQL.
 	db.Exec("SET FOREIGN_KEY_CHECKS=0;")
-	
-	// Update all existing products to point to the new seller_profile ID
+
 	result := db.Exec("UPDATE products SET seller_id = ?", primarySeller.ID)
 	if result.Error != nil {
 		log.Fatalf("❌ Failed to update products: %v\n", result.Error)
 	}
-	
+
 	db.Exec("SET FOREIGN_KEY_CHECKS=1;")
 	fmt.Printf("✅ Successfully updated %d products to seller_id = %d\n", result.RowsAffected, primarySeller.ID)
 
@@ -55,3 +53,4 @@ func main() {
 	fmt.Printf("✅ Successfully updated %d products to seller_id = %d\n", result.RowsAffected, primarySeller.ID)
 	fmt.Println("🎉 Database normalization complete.")
 }
+

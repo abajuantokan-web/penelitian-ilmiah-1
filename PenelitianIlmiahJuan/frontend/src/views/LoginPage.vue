@@ -1,6 +1,6 @@
 <template>
   <div class="login-page">
-    <!-- Background effects -->
+    
     <div class="login-bg">
       <div class="login-orb login-orb-1"></div>
       <div class="login-orb login-orb-2"></div>
@@ -8,15 +8,15 @@
     </div>
 
     <div class="login-container" ref="containerRef">
-      <!-- Back to home -->
+      
       <router-link to="/" class="back-link">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
         Kembali ke Beranda
       </router-link>
 
-      <!-- Login/Register Card -->
+      
       <div class="login-card glass-strong" ref="cardRef">
-        <!-- Brand -->
+        
         <div class="login-brand">
           <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="brand-svg">
             <circle cx="20" cy="20" r="18" stroke="url(#lgGrad)" stroke-width="2.5" fill="none"/>
@@ -30,20 +30,20 @@
           <p class="login-subtitle">{{ isRegister ? 'Daftar Akun Pembeli Baru' : 'Masuk ke akun Anda' }}</p>
         </div>
 
-        <!-- Success message -->
+        
         <div v-if="successMsg" class="success-message">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 4px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
           {{ successMsg }}
         </div>
 
-        <!-- Error message -->
+        
         <div v-if="errorMsg" class="error-message">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 4px;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
           {{ errorMsg }}
         </div>
 
         <template v-if="!isRegister">
-          <!-- Role selector pills -->
+          
           <div class="role-selector">
             <button
               v-for="r in roles"
@@ -57,7 +57,7 @@
             </button>
           </div>
 
-          <!-- Login Form -->
+          
           <form @submit.prevent="handleLogin" class="login-form">
             <div class="form-group">
               <label class="form-label" for="login-username">Username</label>
@@ -104,7 +104,7 @@
               </div>
             </div>
 
-            <!-- Submit -->
+            
             <button type="submit" class="btn btn-primary btn-login" :disabled="loading">
               <span v-if="loading" class="spinner"></span>
               {{ loading ? 'Memproses...' : 'Masuk' }}
@@ -115,7 +115,7 @@
             Belum punya akun? <a href="#" @click.prevent="toggleAuthMode(true)">Daftar sekarang</a>
           </div>
 
-          <!-- Demo credentials hint -->
+          
           <div class="demo-hint">
             <p class="hint-title">🔑 Demo Credentials</p>
             <div class="hint-grid">
@@ -133,7 +133,7 @@
         </template>
 
         <template v-else>
-          <!-- Register Form -->
+          
           <form @submit.prevent="handleRegister" class="login-form">
             <div class="form-group">
               <label class="form-label" for="reg-name">Nama Lengkap *</label>
@@ -230,7 +230,7 @@
               </div>
             </div>
 
-            <!-- Submit -->
+            
             <button type="submit" class="btn btn-primary btn-login" :disabled="loading">
               <span v-if="loading" class="spinner"></span>
               {{ loading ? 'Mendaftar...' : 'Daftar' }}
@@ -261,7 +261,7 @@ const roles = [
   { value: 'customer', label: 'Customer', icon: '🛒', placeholder: 'pembeli_flores' },
 ]
 
-// Auth states
+
 const isRegister = ref(false)
 const selectedRole = ref('customer')
 const username = ref('')
@@ -273,7 +273,7 @@ const successMsg = ref('')
 const containerRef = ref(null)
 const cardRef = ref(null)
 
-// Registration states
+
 const regName = ref('')
 const regUsername = ref('')
 const regEmail = ref('')
@@ -322,10 +322,10 @@ async function handleLogin() {
     const data = await response.json()
 
     if (data.success) {
-      // Save session to localStorage
+      
       localStorage.setItem('openpeo_user', JSON.stringify(data.data))
 
-      // Redirect based on role
+      
       const redirect = route.query.redirect
       if (redirect) {
         router.push(redirect)
@@ -379,12 +379,12 @@ async function handleRegister() {
 
     if (data.success) {
       successMsg.value = 'Pendaftaran berhasil! Silakan masuk dengan akun baru Anda.'
-      // Prefill login form
+      
       username.value = regUsername.value.trim()
       password.value = regPassword.value.trim()
       selectedRole.value = 'customer'
       
-      // Clear fields
+      
       regName.value = ''
       regUsername.value = ''
       regEmail.value = ''
@@ -392,7 +392,7 @@ async function handleRegister() {
       regAddress.value = ''
       regPassword.value = ''
       
-      // Go to login mode
+      
       isRegister.value = false
     } else {
       errorMsg.value = data.message || 'Pendaftaran gagal'

@@ -21,11 +21,11 @@ func main() {
 	}
 
 	fmt.Println("✅ Connected to db_openpeo")
-	
-	// Delete all order items
+
 	db.Exec("DELETE FROM order_items")
-	// Delete all orders
+
 	db.Exec("DELETE FROM orders")
-	
+
 	fmt.Println("🎉 All legacy orders and order items deleted. The seeder will recreate them on the next backend start.")
 }
+

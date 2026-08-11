@@ -1,6 +1,6 @@
 <template>
   <div class="product-list">
-    <!-- Section Header -->
+    
     <div class="list-header">
       <div class="header-text">
         <span class="badge badge-amber">Katalog Produk</span>
@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <!-- Region Filter Tabs -->
+    
     <div class="filter-bar">
       <div class="filter-tabs">
         <button
@@ -43,7 +43,7 @@
       </div>
     </div>
 
-    <!-- Loading State -->
+    
     <div v-if="loading" class="loading-state">
       <div class="loading-grid">
         <div v-for="n in 6" :key="n" class="skeleton-card">
@@ -57,7 +57,7 @@
       </div>
     </div>
 
-    <!-- Product Grid -->
+    
     <div v-else-if="products.length > 0" class="product-grid" ref="gridRef">
       <ProductCard
         v-for="(product, index) in products"
@@ -68,14 +68,14 @@
       />
     </div>
 
-    <!-- Empty State -->
+    
     <div v-else class="empty-state">
       <div class="empty-icon">🏝️</div>
       <h3>Belum ada produk</h3>
       <p>Produk dari daerah ini belum tersedia. Coba jelajahi daerah lain!</p>
     </div>
 
-    <!-- Pagination -->
+    
     <div v-if="totalPages > 1" class="pagination">
       <button
         class="btn btn-secondary btn-page"
@@ -106,7 +106,7 @@ const emit = defineEmits(['order'])
 
 const API_BASE = 'http://localhost:8080/api'
 
-// Region filter tabs with NTT regions
+
 const regionTabs = [
   { value: '',           label: 'Semua',      icon: '🌏' },
   { value: 'Sumba',      label: 'Sumba',      icon: '🏝️' },
@@ -158,7 +158,7 @@ async function fetchProducts() {
   }
 }
 
-// Fallback demo data when backend is not running
+
 function loadDemoProducts() {
   const demo = [
     {
@@ -280,7 +280,7 @@ onMounted(() => {
   width: 100%;
 }
 
-/* Header */
+
 .list-header {
   text-align: center;
   margin-bottom: var(--space-2xl);
@@ -299,7 +299,7 @@ onMounted(() => {
   margin: 0 auto;
 }
 
-/* Filter Bar */
+
 .filter-bar {
   display: flex;
   align-items: center;
@@ -364,14 +364,14 @@ onMounted(() => {
   font-size: 0.85rem;
 }
 
-/* Product Grid */
+
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: var(--space-lg);
 }
 
-/* Skeleton Loading */
+
 .loading-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -409,7 +409,7 @@ onMounted(() => {
   animation: shimmer 1.5s infinite;
 }
 
-/* Empty State */
+
 .empty-state {
   text-align: center;
   padding: var(--space-3xl) var(--space-xl);
@@ -430,7 +430,7 @@ onMounted(() => {
   font-size: 0.95rem;
 }
 
-/* Pagination */
+
 .pagination {
   display: flex;
   align-items: center;
@@ -454,7 +454,7 @@ onMounted(() => {
   color: var(--color-text-muted);
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .filter-bar {
     flex-direction: column;

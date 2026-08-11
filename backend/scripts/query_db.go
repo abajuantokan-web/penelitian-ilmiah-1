@@ -11,10 +11,10 @@ import (
 )
 
 type User struct {
-	ID       int32
-	Email    string
-	Password string
-	Role     string
+	ID		int32
+	Email		string
+	Password	string
+	Role		string
 }
 
 func main() {
@@ -33,3 +33,4 @@ func main() {
 	fmt.Printf("User ID: %d, Email: %s, Role: %s\n", user.ID, user.Email, user.Role)
 	fmt.Printf("Hash in DB: %s\n", user.Password)
 }
+

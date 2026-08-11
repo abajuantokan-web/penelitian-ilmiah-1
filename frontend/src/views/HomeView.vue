@@ -36,11 +36,11 @@
       @product-click="openProductModal"
     />
 
-    <!-- Cerita Kami Section -->
+    
     <section id="cerita-kami" class="story-section py-24">
       <div class="container story-container">
         <div class="story-image">
-          <!-- Using placeholder image or existing divider image -->
+          
           <img src="/images/divider1.png" alt="Pengrajin Tenun NTT" />
         </div>
         <div class="story-content">
@@ -51,10 +51,10 @@
       </div>
     </section>
 
-    <!-- Floating Buttons -->
+    
     <FloatingButtons />
 
-    <!-- Product Detail Modal -->
+    
     <ProductDetailModal 
       :is-open="isModalOpen" 
       :product="selectedProduct"

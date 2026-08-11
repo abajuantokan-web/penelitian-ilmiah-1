@@ -9,13 +9,12 @@ import (
 	"openpeo-backend/models"
 )
 
-// requireSeller validates that the current user has the 'seller' role
 func requireSeller(c *gin.Context) (int32, bool) {
 	role, exists := c.Get("role")
 	if !exists || role != "seller" {
 		c.JSON(http.StatusForbidden, gin.H{
-			"success": false,
-			"message": "Akses ditolak. Anda bukan penjual.",
+			"success":	false,
+			"message":	"Akses ditolak. Anda bukan penjual.",
 		})
 		return 0, false
 	}
@@ -23,8 +22,8 @@ func requireSeller(c *gin.Context) (int32, bool) {
 	userIDFloat, exists := c.Get("userID")
 	if !exists {
 		c.JSON(http.StatusUnauthorized, gin.H{
-			"success": false,
-			"message": "Sesi tidak valid",
+			"success":	false,
+			"message":	"Sesi tidak valid",
 		})
 		return 0, false
 	}
@@ -33,8 +32,8 @@ func requireSeller(c *gin.Context) (int32, bool) {
 	var profile models.SellerProfile
 	if err := config.DB.Where("user_id = ?", userID).First(&profile).Error; err != nil {
 		c.JSON(http.StatusForbidden, gin.H{
-			"success": false,
-			"message": "Profil toko tidak ditemukan",
+			"success":	false,
+			"message":	"Profil toko tidak ditemukan",
 		})
 		return 0, false
 	}
@@ -42,7 +41,6 @@ func requireSeller(c *gin.Context) (int32, bool) {
 	return profile.ID, true
 }
 
-// GetSellerProducts handles GET /api/seller/products
 func GetSellerProducts(c *gin.Context) {
 	sellerID, ok := requireSeller(c)
 	if !ok {
@@ -62,7 +60,6 @@ func GetSellerProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": products})
 }
 
-// CreateSellerProduct handles POST /api/seller/products
 func CreateSellerProduct(c *gin.Context) {
 	sellerID, ok := requireSeller(c)
 	if !ok {
@@ -86,7 +83,6 @@ func CreateSellerProduct(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"success": true, "message": "Produk berhasil ditambahkan", "data": product})
 }
 
-// UpdateSellerProduct handles PUT /api/seller/products/:id
 func UpdateSellerProduct(c *gin.Context) {
 	sellerID, ok := requireSeller(c)
 	if !ok {
@@ -101,7 +97,6 @@ func UpdateSellerProduct(c *gin.Context) {
 		return
 	}
 
-	// Security check: ensure the product belongs to this seller
 	if existing.SellerID != sellerID {
 		c.JSON(http.StatusForbidden, gin.H{"success": false, "message": "Anda tidak memiliki akses untuk mengubah produk ini"})
 		return
@@ -113,7 +108,6 @@ func UpdateSellerProduct(c *gin.Context) {
 		return
 	}
 
-	// Update specific fields
 	existing.Name = updateData.Name
 	existing.Description = updateData.Description
 	existing.Price = updateData.Price
@@ -132,7 +126,6 @@ func UpdateSellerProduct(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Produk berhasil diubah", "data": existing})
 }
 
-// DeleteSellerProduct handles DELETE /api/seller/products/:id
 func DeleteSellerProduct(c *gin.Context) {
 	sellerID, ok := requireSeller(c)
 	if !ok {

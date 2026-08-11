@@ -38,7 +38,7 @@ const router = createRouter({
   }
 })
 
-// Navigation guard — redirect to login if not authenticated for protected routes
+
 router.beforeEach((to, _from, next) => {
   const user = JSON.parse(localStorage.getItem('openpeo_user') || 'null')
 
@@ -48,7 +48,7 @@ router.beforeEach((to, _from, next) => {
   }
 
   if (to.meta.role && user && user.role !== to.meta.role) {
-    // Wrong role — redirect to appropriate page
+    
     if (user.role === 'admin') {
       next({ name: 'AdminDashboard' })
     } else {
@@ -57,7 +57,7 @@ router.beforeEach((to, _from, next) => {
     return
   }
 
-  // If already logged in and trying to access login page, redirect
+  
   if (to.name === 'Login' && user) {
     if (user.role === 'admin') {
       next({ name: 'AdminDashboard' })

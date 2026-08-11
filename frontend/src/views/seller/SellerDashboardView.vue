@@ -38,7 +38,7 @@
         </button>
       </div>
 
-      <!-- PRODUCTS TAB -->
+      
       <div v-if="currentTab === 'products'">
         <div v-if="sellerStore.isLoading" class="loading-state">Memuat produk...</div>
         <div v-else-if="sellerStore.products.length === 0" class="empty-state">
@@ -77,7 +77,7 @@
         </div>
       </div>
 
-      <!-- ORDERS TAB -->
+      
       <div v-else-if="currentTab === 'orders'">
         <div v-if="isLoadingOrders" class="loading-state">Memuat pesanan...</div>
         <div v-else-if="sellerOrders.length === 0" class="empty-state">
@@ -130,20 +130,20 @@
         </div>
       </div>
 
-      <!-- PENGATURAN TOKO TAB -->
+      
       <div v-else-if="currentTab === 'settings'">
         <PengaturanToko />
       </div>
 
-      <!-- KEUANGAN TAB -->
+      
       <div v-else-if="currentTab === 'keuangan'">
         <KeuanganView />
       </div>
-      <!-- DASHBOARD OVERVIEW TAB -->
+      
       <div v-else-if="currentTab === 'dashboard'">
         <div v-if="dashboardStore.isLoading" class="loading-state">Memuat data analitik...</div>
         <div v-else class="dashboard-overview">
-          <!-- Stats Cards -->
+          
           <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <div class="bg-white shadow-sm border border-gray-100 rounded-2xl p-6 flex items-center gap-5 transition-transform hover:-translate-y-1">
               <div class="w-14 h-14 rounded-xl flex items-center justify-center bg-zinc-50 border border-zinc-200 text-zinc-800">
@@ -201,7 +201,7 @@
             </div>
           </div>
 
-          <!-- Sales Chart Section -->
+          
           <div class="bg-white shadow-sm border border-gray-100 rounded-2xl p-6 mb-8">
             <div class="flex justify-between items-center mb-6">
               <h2 class="section-title !mb-0" style="margin-bottom: 0;">Grafik Pendapatan</h2>
@@ -216,7 +216,7 @@
             </div>
           </div>
 
-          <!-- Recent Orders -->
+          
           <div class="w-full mb-8">
             <h2 class="section-title">Pesanan Terbaru</h2>
             <div class="table-container">
@@ -254,13 +254,13 @@
         <p>Fitur <strong>{{ currentTab }}</strong> sedang dalam pengembangan.</p>
       </div>
 
-      <!-- CHAT TAB (Always mounted with v-show to keep WS alive) -->
+      
       <div v-show="currentTab === 'chat'">
         <SellerChat @new-message-received="handleNewMessage" @update-unread="updateUnreadCount" />
       </div>
     </main>
 
-    <!-- PRODUCT MODAL -->
+    
     <div v-if="isModalOpen" class="modal-overlay" @click.self="closeModal">
       <div class="modal-content">
         <div class="modal-header">
@@ -270,14 +270,14 @@
         
         <form @submit.prevent="handleSubmitProduct" class="modal-form">
           <div class="custom-modal-flex">
-            <!-- Left Column: Image Preview -->
+            
             <div class="custom-modal-flex-left">
               <div class="image-preview" style="aspect-ratio: 4/5; border-radius: 8px; border: 1px solid #e5e7eb; overflow: hidden; height: 100%;">
                 <img :src="$getImageUrl(form.image_url)" alt="Preview" style="width: 100%; height: 100%; object-fit: cover;" />
               </div>
             </div>
             
-            <!-- Right Column: Form Fields -->
+            
             <div class="custom-modal-flex-right">
               <div class="inner-form-grid">
                 <div class="form-group">
@@ -361,7 +361,7 @@
         </form>
       </div>
     </div>
-    <!-- Chat Toast Notification -->
+    
     <div class="chat-toast-container" :class="{ 'toast-visible': showChatToast }">
       <div class="chat-toast-content">
         <div class="chat-toast-icon">
@@ -417,7 +417,7 @@ const notificationStore = useNotificationStore()
 const chatStore = useChatStore()
 const dashboardStore = useDashboardStore()
 
-// Bound computed properties for Dashboard Overview
+
 const pendingCount = computed(() => dashboardStore.pendingCount)
 const processingCount = computed(() => dashboardStore.processingCount)
 const completedCount = computed(() => dashboardStore.completedCount)
@@ -516,7 +516,7 @@ const form = ref({
   pre_order_duration: 7
 })
 
-// Orders State
+
 const sellerOrders = ref([])
 const isLoadingOrders = ref(false)
 const isProcessingOrder = ref(null)
@@ -666,7 +666,7 @@ const handleSubmitProduct = async () => {
     await sellerStore.createProduct(payload)
   }
   
-  // Trigger global data synchronization so Homepage and Koleksi reflect changes instantly
+  
   await productStore.fetchProducts()
   
   isSubmitting.value = false
@@ -704,7 +704,7 @@ const uploadImage = async (event) => {
     alert('Terjadi kesalahan saat mengupload gambar')
   } finally {
     isUploading.value = false
-    // reset input so same file can be uploaded again if needed
+    
     event.target.value = ''
   }
 }
@@ -729,7 +729,7 @@ const handleDelete = async (id) => {
   align-items: flex-start;
   min-height: calc(100vh - 80px);
   width: 100%;
-  max-width: 80rem; /* max-w-7xl */
+  max-width: 80rem; 
 }
 
 .seller-sidebar {
@@ -836,7 +836,7 @@ const handleDelete = async (id) => {
   background-color: #1f2937;
 }
 
-/* Dashboard Stats styled via Tailwind CSS directly in template */
+
 
 .section-title {
   font-family: 'Playfair Display', serif;
@@ -951,7 +951,7 @@ const handleDelete = async (id) => {
   color: #6b7280;
 }
 
-/* Modal Styles */
+
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
@@ -966,7 +966,7 @@ const handleDelete = async (id) => {
 .modal-content {
   background: #fff;
   width: 100%;
-  max-width: 900px; /* Widened modal as requested */
+  max-width: 900px; 
   border-radius: 8px;
   padding: 32px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.1);
@@ -974,7 +974,7 @@ const handleDelete = async (id) => {
   overflow-y: auto;
 }
 
-/* Modal Flexbox Styles */
+
 .custom-modal-flex {
   display: flex;
   flex-direction: column;
@@ -992,7 +992,7 @@ const handleDelete = async (id) => {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  min-width: 0; /* CRITICAL for preventing flex blowout */
+  min-width: 0; 
 }
 
 .inner-form-grid {
@@ -1130,7 +1130,7 @@ const handleDelete = async (id) => {
   background-color: #f3f4f6;
 }
 
-/* Chat Toast Notification */
+
 .chat-toast-container {
   position: fixed;
   bottom: -100px;

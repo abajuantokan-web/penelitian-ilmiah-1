@@ -6,8 +6,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// Product represents a pre-order based product listing in the NTT marketplace.
-// Each product belongs to a vendor and is tagged with a specific NTT region.
+
+
 type Product struct {
 	ID          int32          `gorm:"primaryKey;autoIncrement" json:"id"`
 	VendorID    int32          `gorm:"not null;index" json:"vendor_id"`
@@ -27,7 +27,7 @@ type Product struct {
 	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
-// TableName overrides the default table name.
+
 func (Product) TableName() string {
 	return "products"
 }

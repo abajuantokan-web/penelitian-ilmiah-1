@@ -1,3 +1,5 @@
+//go:build ignore
+
 package main
 
 import (
@@ -23,10 +25,10 @@ func main() {
 
 	fmt.Println("✅ Connected to db_openpeo")
 
-	// Disable FK checks and delete
 	db.Exec("SET FOREIGN_KEY_CHECKS=0;")
 	db.Exec("DELETE FROM products;")
 	db.Exec("SET FOREIGN_KEY_CHECKS=1;")
 
 	fmt.Println("🎉 All products deleted. The seeder will recreate them.")
 }
+

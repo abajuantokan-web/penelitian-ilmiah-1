@@ -1,15 +1,15 @@
-/* ============================================================
-   OpenPeo — NTT Heritage Design System
-   A premium, modern design system inspired by the earthy elegance
-   of East Nusa Tenggara's traditional textile & craft culture.
-   ============================================================ */
 
-/* ── Google Font ── */
+
+
+
+
+
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@600;700;800&display=swap');
 
-/* ── CSS Custom Properties ── */
+
 :root {
-  /* NTT Heritage Palette */
+  
   --color-bg:             #0b0a12;
   --color-bg-elevated:    #111020;
   --color-surface:        #1a1832;
@@ -38,18 +38,18 @@
   --color-error:          #e74c3c;
   --color-warning:        var(--color-amber);
 
-  /* Gradients */
+  
   --gradient-hero:        linear-gradient(135deg, #0b0a12 0%, #1a1a40 40%, #2d2b55 100%);
   --gradient-amber:       linear-gradient(135deg, #d35400 0%, #f5a623 50%, #ffd166 100%);
   --gradient-card:        linear-gradient(145deg, #1a1832 0%, #111020 100%);
   --gradient-glass:       linear-gradient(135deg, rgba(45, 43, 85, 0.4) 0%, rgba(26, 24, 50, 0.2) 100%);
   --gradient-accent:      linear-gradient(135deg, var(--color-indigo-glow) 0%, var(--color-amber) 100%);
 
-  /* Typography */
+  
   --font-primary:         'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-display:         'Playfair Display', Georgia, serif;
 
-  /* Spacing */
+  
   --space-xs:   0.25rem;
   --space-sm:   0.5rem;
   --space-md:   1rem;
@@ -58,7 +58,7 @@
   --space-2xl:  3rem;
   --space-3xl:  4rem;
 
-  /* Borders */
+  
   --radius-sm:  0.5rem;
   --radius-md:  0.75rem;
   --radius-lg:  1rem;
@@ -66,21 +66,21 @@
   --radius-2xl: 1.5rem;
   --radius-full: 9999px;
 
-  /* Shadows */
+  
   --shadow-sm:   0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md:   0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg:   0 8px 32px rgba(0, 0, 0, 0.5);
   --shadow-glow: 0 0 40px rgba(108, 99, 255, 0.15);
   --shadow-amber: 0 0 30px rgba(245, 166, 35, 0.2);
 
-  /* Transitions */
+  
   --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
   --transition-spring: 500ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-/* ── Reset & Base ── */
+
 *,
 *::before,
 *::after {
@@ -133,9 +133,9 @@ input, textarea, select {
   outline: none;
 }
 
-/* ── Utility Classes ── */
 
-/* Glassmorphism */
+
+
 .glass {
   background: var(--color-surface-glass);
   backdrop-filter: blur(16px);
@@ -150,7 +150,7 @@ input, textarea, select {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Text */
+
 .text-gradient {
   background: var(--gradient-amber);
   -webkit-background-clip: text;
@@ -163,7 +163,7 @@ input, textarea, select {
   font-weight: 700;
 }
 
-/* Buttons */
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -212,7 +212,7 @@ input, textarea, select {
   border-radius: var(--radius-full);
 }
 
-/* Input */
+
 .input {
   width: 100%;
   padding: 0.75rem 1rem;
@@ -233,7 +233,7 @@ input, textarea, select {
   color: var(--color-text-muted);
 }
 
-/* Badge */
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -255,7 +255,7 @@ input, textarea, select {
   color: var(--color-indigo-glow);
 }
 
-/* ── Animations ── */
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
@@ -299,7 +299,7 @@ input, textarea, select {
   to { transform: rotate(360deg); }
 }
 
-/* Scrollbar */
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -317,7 +317,7 @@ input, textarea, select {
   background: var(--color-indigo-light);
 }
 
-/* Selection */
+
 ::selection {
   background: rgba(245, 166, 35, 0.3);
   color: var(--color-text-primary);

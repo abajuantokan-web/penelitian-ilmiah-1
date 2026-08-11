@@ -1,6 +1,6 @@
 <template>
   <div class="admin-dashboard">
-    <!-- Navbar -->
+    
     <nav class="navbar glass-strong">
       <div class="navbar-container">
         <div class="navbar-brand">
@@ -39,9 +39,9 @@
       </div>
     </nav>
 
-    <!-- Main Content Container -->
+    
     <div class="dashboard-container">
-      <!-- Loading & Error States -->
+      
       <div v-if="loading && salesDataLoading" class="loading-state">
         <div class="spinner"></div>
         <p>Memuat data panel admin...</p>
@@ -55,14 +55,14 @@
       </div>
 
       <div v-else class="dashboard-content">
-        <!-- Dashboard Header & Tab Navigation -->
+        
         <header class="dashboard-header">
           <div>
             <h1 class="dashboard-title">Panel <span class="text-gradient">Kendali Admin</span></h1>
             <p class="dashboard-subtitle">Kelola produk marketplace dan pantau ringkasan log transaksi secara real-time.</p>
           </div>
           <div class="header-actions">
-            <!-- Tabs -->
+            
             <div class="tab-navigation glass">
               <button 
                 class="tab-btn" 
@@ -88,11 +88,11 @@
           </div>
         </header>
 
-        <!-- ==================== TAB 1: SUMMARY ==================== -->
+        
         <div v-if="activeTab === 'summary'" class="tab-pane animate-fade-in">
-          <!-- KPI Metrics Row -->
+          
           <div class="metrics-grid">
-            <!-- Total Revenue Card -->
+            
             <div class="metric-card glass card-glow-amber">
               <div class="metric-header">
                 <span class="metric-icon">💰</span>
@@ -107,7 +107,7 @@
               </div>
             </div>
 
-            <!-- Total Pre-Orders Card -->
+            
             <div class="metric-card glass card-glow-indigo">
               <div class="metric-header">
                 <span class="metric-icon">📦</span>
@@ -122,7 +122,7 @@
               </div>
             </div>
 
-            <!-- Active Products Card -->
+            
             <div class="metric-card glass card-glow-amber">
               <div class="metric-header">
                 <span class="metric-icon">🛍️</span>
@@ -137,7 +137,7 @@
               </div>
             </div>
 
-            <!-- Total Customers Card -->
+            
             <div class="metric-card glass card-glow-indigo">
               <div class="metric-header">
                 <span class="metric-icon">👥</span>
@@ -153,9 +153,9 @@
             </div>
           </div>
 
-          <!-- Charts Section -->
+          
           <div class="charts-grid">
-            <!-- Sales Trend Line Chart -->
+            
             <div class="chart-box glass">
               <h3 class="chart-title">Tren Pendapatan Harian (7 Hari Terakhir)</h3>
               <div class="chart-container">
@@ -202,7 +202,7 @@
               </div>
             </div>
 
-            <!-- Region Revenue Breakdown -->
+            
             <div class="chart-box glass">
               <h3 class="chart-title">Pendapatan Berdasarkan Asal Wilayah</h3>
               <div class="region-breakdown">
@@ -224,7 +224,7 @@
             </div>
           </div>
 
-          <!-- Recent Orders Table -->
+          
           <div class="recent-orders-box glass">
             <div class="box-header">
               <h3 class="box-title">Log Transaksi Pre-Order Terbaru</h3>
@@ -291,7 +291,7 @@
           </div>
         </div>
 
-        <!-- ==================== TAB 2: PRODUCT CRUD ==================== -->
+        
         <div v-if="activeTab === 'products'" class="tab-pane animate-fade-in">
           <div class="product-crud-box glass">
             <div class="crud-header">
@@ -370,7 +370,7 @@
       </div>
     </div>
 
-    <!-- Product CRUD Modal Form (Slide Over/Center Modal) -->
+    
     <div v-if="showModal" class="modal-overlay" @click.self="showModal = false">
       <div class="modal-card glass-strong animate-scale-in">
         <div class="modal-header">
@@ -451,7 +451,7 @@
       </div>
     </div>
 
-    <!-- Live Chat Section -->
+    
     <ChatBox :visible="chatOpen" @close="chatOpen = false" @update-unread="unreadCount = $event" />
     <button v-show="!chatOpen" class="chat-toggle-btn btn btn-primary" @click="chatOpen = true">
       <span class="chat-toggle-badge" v-if="unreadCount > 0">{{ unreadCount }}</span>
@@ -488,7 +488,7 @@ const error = ref('')
 const chatOpen = ref(false)
 const unreadCount = ref(0)
 
-// Product CRUD Form state
+
 const showModal = ref(false)
 const isEditing = ref(false)
 const formSubmitting = ref(false)
@@ -511,7 +511,7 @@ const currentUser = computed(() => {
   return JSON.parse(localStorage.getItem('openpeo_user') || 'null')
 })
 
-// Filter products based on search keyword
+
 const filteredProducts = computed(() => {
   if (!productSearch.value.trim()) return products.value
   const query = productSearch.value.toLowerCase()
@@ -522,7 +522,7 @@ const filteredProducts = computed(() => {
   )
 })
 
-// Fetch all products catalog for management list
+
 async function fetchProducts() {
   try {
     const response = await fetch('http://localhost:8080/api/products?limit=100')
@@ -535,7 +535,7 @@ async function fetchProducts() {
   }
 }
 
-// Fetch sales aggregations
+
 async function fetchSalesData() {
   salesDataLoading.value = true
   try {
@@ -553,7 +553,7 @@ async function fetchSalesData() {
   }
 }
 
-// Global dashboard initializer
+
 async function initializeDashboard() {
   loading.value = true
   error.value = ''
@@ -561,7 +561,7 @@ async function initializeDashboard() {
   loading.value = false
 }
 
-// CRUD actions
+
 function openAddProductModal() {
   isEditing.value = false
   formProduct.value = {
@@ -672,12 +672,12 @@ async function handleDeleteOrder(id) {
   }
 }
 
-// Fallback image helper
+
 function onImageError(e) {
   e.target.src = 'https://images.unsplash.com/photo-1558171813-4c088753af8f?w=400'
 }
 
-// Currency Formatter
+
 function formatCurrency(val) {
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',
@@ -686,7 +686,7 @@ function formatCurrency(val) {
   }).format(val)
 }
 
-// Region Progress calculations
+
 const maxRegionRevenue = computed(() => {
   if (!salesData.value?.revenue_by_region?.length) return 1
   return Math.max(...salesData.value.revenue_by_region.map(r => r.revenue), 1)
@@ -696,7 +696,7 @@ function getRegionPercentage(rev) {
   return (rev / maxRegionRevenue.value) * 100
 }
 
-// Chart calculations
+
 const chartPoints = computed(() => {
   if (!salesData.value?.daily_sales?.length) return []
   const data = salesData.value.daily_sales
@@ -741,7 +741,7 @@ const chartAreaPath = computed(() => {
   return `${linePath} L ${last.x} ${height - paddingY} L ${first.x} ${height - paddingY} Z`
 })
 
-// Dates formatting helpers
+
 function formatShortDate(dateStr) {
   if (!dateStr) return ''
   const date = new Date(dateStr)
@@ -952,7 +952,7 @@ onMounted(() => {
   animation: spin-slow 1s linear infinite;
 }
 
-/* ── Tab Navigation ── */
+
 .tab-navigation {
   display: flex;
   padding: 0.3rem;
@@ -986,7 +986,7 @@ onMounted(() => {
   animation: fadeInUp 0.4s ease-out;
 }
 
-/* ── Metrics Cards Grid ── */
+
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -1072,7 +1072,7 @@ onMounted(() => {
   margin-top: auto;
 }
 
-/* ── Charts Grid ── */
+
 .charts-grid {
   display: grid;
   grid-template-columns: 3fr 2fr;
@@ -1146,7 +1146,7 @@ onMounted(() => {
   font-weight: 500;
 }
 
-/* Region breakdown Progress bars */
+
 .region-breakdown {
   display: flex;
   flex-direction: column;
@@ -1194,7 +1194,7 @@ onMounted(() => {
   border-radius: var(--radius-full);
 }
 
-/* ── Log Table ── */
+
 .recent-orders-box, .product-crud-box {
   padding: var(--space-xl);
   border-radius: var(--radius-xl);
@@ -1266,7 +1266,7 @@ onMounted(() => {
   color: var(--color-text-muted);
 }
 
-/* Cells */
+
 .user-cell, .product-cell {
   display: flex;
   align-items: center;
@@ -1330,7 +1330,7 @@ onMounted(() => {
   color: var(--color-text-secondary);
 }
 
-/* Status Badges */
+
 .status-badge {
   font-size: 0.68rem;
   padding: 0.2rem 0.5rem;
@@ -1364,7 +1364,7 @@ onMounted(() => {
   border: 1px solid rgba(231, 76, 60, 0.2);
 }
 
-/* CRUD view extra styles */
+
 .crud-header {
   display: flex;
   justify-content: space-between;
@@ -1423,7 +1423,7 @@ onMounted(() => {
   font-weight: 700;
 }
 
-/* Modal Form Styles */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -1544,7 +1544,7 @@ onMounted(() => {
   border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-/* Chat Toggle */
+
 .chat-toggle-btn {
   position: fixed;
   bottom: var(--space-xl);

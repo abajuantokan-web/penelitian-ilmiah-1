@@ -61,7 +61,7 @@ export const useWebsocketStore = defineStore('websocket', () => {
       try {
         const data = JSON.parse(event.data)
         
-        // Handle Real-Time Dashboard Events First
+        
         if (data.type) {
           if (data.type === 'NEW_ORDER_CREATED') {
             dashboardStore.handleNewOrder(data.data)
@@ -69,17 +69,17 @@ export const useWebsocketStore = defineStore('websocket', () => {
           } else if (data.type === 'ORDER_STATUS_UPDATED') {
             dashboardStore.handleOrderStatusUpdated(data.data)
           }
-          return // Skip chat logic for system events
+          return 
         }
         
-        // Fix Echo Effect: If we are the sender, Optimistic UI already rendered it
+        
         if (data.sender_id === authStore.user?.id) {
-          // Alternatively, we could replace the temp ID with the real DB ID, 
-          // but for simplicity, we just ignore the echo since it's already pushed.
+          
+          
           return
         }
         
-        // Append to local messages if it belongs to current active chat
+        
         if (chatStore.currentReceiverId && (data.sender_id === chatStore.currentReceiverId || data.receiver_id === chatStore.currentReceiverId)) {
           const exists = messages.value.some(m => m.id === data.id)
           if (!exists) {
@@ -87,21 +87,21 @@ export const useWebsocketStore = defineStore('websocket', () => {
           }
         }
         
-        // Handle Notifications
-        // If the message is from someone else, or we are not currently viewing the chat
+        
+        
         const isFromOther = !chatStore.currentReceiverId || (data.sender_id !== chatStore.currentReceiverId && data.receiver_id !== chatStore.currentReceiverId)
         
         const isBuyer = authStore.user?.role !== 'seller'
         const isSeller = authStore.user?.role === 'seller'
 
         if (isBuyer) {
-          // For Buyer: We suppress notification ONLY if the chat widget is open AND we are chatting with the sender
+          
           if (!chatStore.isOpen || isFromOther) {
             notificationStore.incrementBuyerUnreadChats()
             playNotificationSound()
           }
         } else if (isSeller) {
-          // For Seller: We suppress notification ONLY if they are actively on the chat tab AND chatting with the sender
+          
           if (!chatStore.isSellerChatOpen || isFromOther) {
             notificationStore.incrementSellerUnreadChats()
             playNotificationSound()
@@ -148,9 +148,9 @@ export const useWebsocketStore = defineStore('websocket', () => {
     if (ws.value && isConnected.value) {
       ws.value.send(JSON.stringify(payload))
       
-      // Optimistic UI Update
+      
       const tempMessage = {
-        id: Date.now(), // temporary ID
+        id: Date.now(), 
         sender_id: payload.sender_id,
         receiver_id: payload.receiver_id,
         content: payload.content,
@@ -165,7 +165,7 @@ export const useWebsocketStore = defineStore('websocket', () => {
     messages.value = newMessages
   }
 
-  // Auto connect/disconnect based on auth state
+  
   watch(() => authStore.isAuthenticated, (isAuth) => {
     if (isAuth) {
       connectWebSocket()

@@ -16,9 +16,6 @@ import (
 	"github.com/midtrans/midtrans-go/snap"
 )
 
-// CreateOrder handles POST /api/orders
-// Processes checkout for the authenticated user's cart items.
-// Uses a database transaction to ensure atomicity.
 func CreateOrder(c *gin.Context) {
 	userIDFloat, exists := c.Get("userID")
 	if !exists {
@@ -28,49 +25,46 @@ func CreateOrder(c *gin.Context) {
 	customerID := int32(userIDFloat.(float64))
 
 	var req struct {
-		Items []struct {
-			ProductID int32   `json:"product_id"`
-			Quantity  int     `json:"quantity"`
-			Price     float64 `json:"price"`
-		} `json:"items"`
-		Note string `json:"note"`
+		Items	[]struct {
+			ProductID	int32	`json:"product_id"`
+			Quantity	int	`json:"quantity"`
+			Price		float64	`json:"price"`
+		}	`json:"items"`
+		Note	string	`json:"note"`
 	}
-	c.ShouldBindJSON(&req) 
+	c.ShouldBindJSON(&req)
 
 	if len(req.Items) == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Payload items kosong"})
 		return
 	}
 
-	
 	itemsBySeller := make(map[int32][]models.OrderItem)
 	var grandTotal float64
 
-	
 	for _, reqItem := range req.Items {
 		var product models.Product
 		if err := config.DB.First(&product, reqItem.ProductID).Error; err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": fmt.Sprintf("Produk ID %d tidak ditemukan", reqItem.ProductID)})
 			return
 		}
-		
+
 		itemTotal := reqItem.Price * float64(reqItem.Quantity)
 		grandTotal += itemTotal
 
 		itemsBySeller[product.SellerID] = append(itemsBySeller[product.SellerID], models.OrderItem{
-			ProductID: reqItem.ProductID,
-			Quantity:  reqItem.Quantity,
-			Price:     reqItem.Price,
+			ProductID:	reqItem.ProductID,
+			Quantity:	reqItem.Quantity,
+			Price:		reqItem.Price,
 		})
 	}
 
-	
 	paymentRef := fmt.Sprintf("INV-%d-%d", customerID, time.Now().Unix())
 
 	var createdOrders []models.Order
 
 	err := config.DB.Transaction(func(tx *gorm.DB) error {
-		// Step D: Loop through itemsBySeller
+
 		for sellerID, items := range itemsBySeller {
 			var orderTotal float64
 			for _, item := range items {
@@ -78,13 +72,13 @@ func CreateOrder(c *gin.Context) {
 			}
 
 			order := models.Order{
-				CustomerID:       customerID,
-				SellerID:         sellerID,
-				Quantity:         len(items),
-				TotalPrice:       orderTotal,
-				Status:           "Menunggu Pembayaran",
-				Note:             req.Note,
-				PaymentReference: paymentRef,
+				CustomerID:		customerID,
+				SellerID:		sellerID,
+				Quantity:		len(items),
+				TotalPrice:		orderTotal,
+				Status:			"Menunggu Pembayaran",
+				Note:			req.Note,
+				PaymentReference:	paymentRef,
 			}
 
 			if err := tx.Create(&order).Error; err != nil {
@@ -98,19 +92,17 @@ func CreateOrder(c *gin.Context) {
 				}
 			}
 
-			// Activity Log
 			logEntry := models.ActivityLog{
-				UserID:      customerID,
-				UserRole:    "customer",
-				ActionType:  "CHECKOUT",
-				Description: fmt.Sprintf("New Order Created: #%d (Seller %d)", order.ID, sellerID),
-				CreatedAt:   time.Now(),
+				UserID:		customerID,
+				UserRole:	"customer",
+				ActionType:	"CHECKOUT",
+				Description:	fmt.Sprintf("New Order Created: #%d (Seller %d)", order.ID, sellerID),
+				CreatedAt:	time.Now(),
 			}
 			if err := tx.Create(&logEntry).Error; err != nil {
 				return err
 			}
 
-			// Escrow Flow
 			var sellerProfile models.SellerProfile
 			if err := tx.Where("user_id = ?", sellerID).First(&sellerProfile).Error; err == nil {
 				sellerProfile.PendingBalance += order.TotalPrice
@@ -122,7 +114,6 @@ func CreateOrder(c *gin.Context) {
 			createdOrders = append(createdOrders, order)
 		}
 
-		// Clear Cart
 		if err := tx.Where("user_id = ?", customerID).Delete(&models.CartItem{}).Error; err != nil {
 			return err
 		}
@@ -135,15 +126,13 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	// Broadcast WebSocket Event
 	for _, order := range createdOrders {
 		ChatHub.SendToUser(order.SellerID, gin.H{
-			"type": "NEW_ORDER_CREATED",
-			"data": order,
+			"type":	"NEW_ORDER_CREATED",
+			"data":	order,
 		})
 	}
 
-	// Step F: Generate Snap Token with PaymentReference
 	midtrans.Environment = midtrans.Sandbox
 	midtrans.ServerKey = "Mid-server-ZM2VH9KSHXRCMBsC_cdP_Xk7"
 
@@ -152,15 +141,15 @@ func CreateOrder(c *gin.Context) {
 
 	reqSnap := &snap.Request{
 		TransactionDetails: midtrans.TransactionDetails{
-			OrderID:  paymentRef,
-			GrossAmt: int64(grandTotal),
+			OrderID:	paymentRef,
+			GrossAmt:	int64(grandTotal),
 		},
 		CustomerDetail: &midtrans.CustomerDetails{
-			FName: user.Name,
-			Email: user.Email,
-			Phone: user.Phone,
+			FName:	user.Name,
+			Email:	user.Email,
+			Phone:	user.Phone,
 		},
-		CustomField1: req.Note,
+		CustomField1:	req.Note,
 	}
 
 	var snapToken string
@@ -172,33 +161,28 @@ func CreateOrder(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"success":           true,
-		"message":           "Pesanan multi-vendor berhasil dibuat",
-		"data":              createdOrders[0], // fallback for frontend
-		"payment_reference": paymentRef,
-		"snap_token":        snapToken,
+		"success":		true,
+		"message":		"Pesanan multi-vendor berhasil dibuat",
+		"data":			createdOrders[0],
+		"payment_reference":	paymentRef,
+		"snap_token":		snapToken,
 	})
 }
 
-// GetOrders handles GET /api/orders
-// Supports filtering by customer_id, product_id, status, and pagination.
 func GetOrders(c *gin.Context) {
 	var orders []models.Order
 	var total int64
 
 	query := config.DB.Model(&models.Order{})
 
-	// Filter by customer
 	if customerID := c.Query("customer_id"); customerID != "" {
 		query = query.Where("customer_id = ?", customerID)
 	}
 
-	// Filter by product
 	if productID := c.Query("product_id"); productID != "" {
 		query = query.Where("product_id = ?", productID)
 	}
 
-	// Filter by status
 	if status := c.Query("status"); status != "" {
 		query = query.Where("status = ?", status)
 	}
@@ -214,62 +198,59 @@ func GetOrders(c *gin.Context) {
 
 	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"success": false,
-			"message": "Failed to fetch orders",
-			"error":   result.Error.Error(),
+			"success":	false,
+			"message":	"Failed to fetch orders",
+			"error":	result.Error.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    orders,
-		"total":   total,
+		"success":	true,
+		"data":		orders,
+		"total":	total,
 	})
 }
 
-// DeleteOrder handles DELETE /api/orders/:id
-// Restricted to admin — deletes the transaction log.
 func DeleteOrder(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "Invalid order ID",
+			"success":	false,
+			"message":	"Invalid order ID",
 		})
 		return
 	}
 
-	// Verify pengapus is admin
 	userIDStr := c.Query("user_id")
 	if userIDStr == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "Parameter user_id (Admin ID) diperlukan untuk menghapus log transaksi",
+			"success":	false,
+			"message":	"Parameter user_id (Admin ID) diperlukan untuk menghapus log transaksi",
 		})
 		return
 	}
 	userID, err := strconv.ParseInt(userIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "User ID tidak valid",
+			"success":	false,
+			"message":	"User ID tidak valid",
 		})
 		return
 	}
 	var user models.User
 	if err := config.DB.First(&user, userID).Error; err != nil {
 		c.JSON(http.StatusForbidden, gin.H{
-			"success": false,
-			"message": "User pengakses tidak ditemukan",
+			"success":	false,
+			"message":	"User pengakses tidak ditemukan",
 		})
 		return
 	}
 	if user.Role != "admin" {
 		c.JSON(http.StatusForbidden, gin.H{
-			"success": false,
-			"message": "Hanya Admin yang memiliki hak akses untuk menghapus log transaksi",
+			"success":	false,
+			"message":	"Hanya Admin yang memiliki hak akses untuk menghapus log transaksi",
 		})
 		return
 	}
@@ -277,29 +258,27 @@ func DeleteOrder(c *gin.Context) {
 	var order models.Order
 	if err := config.DB.First(&order, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"success": false,
-			"message": "Order tidak ditemukan",
+			"success":	false,
+			"message":	"Order tidak ditemukan",
 		})
 		return
 	}
 
-	// Hard delete to clean up dashboard lists immediately
 	if err := config.DB.Unscoped().Delete(&order).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"success": false,
-			"message": "Gagal menghapus order",
-			"error":   err.Error(),
+			"success":	false,
+			"message":	"Gagal menghapus order",
+			"error":	err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "Transaksi berhasil dihapus",
+		"success":	true,
+		"message":	"Transaksi berhasil dihapus",
 	})
 }
 
-// CreateDirectOrder handles POST /api/orders/direct for "Buy It Now" flow
 func CreateDirectOrder(c *gin.Context) {
 	userIDFloat, exists := c.Get("userID")
 	if !exists {
@@ -309,10 +288,10 @@ func CreateDirectOrder(c *gin.Context) {
 	customerID := int32(userIDFloat.(float64))
 
 	var req struct {
-		ProductID int32   `json:"product_id" binding:"required"`
-		Quantity  int     `json:"quantity" binding:"required,min=1"`
-		Price     float64 `json:"price" binding:"required"`
-		Note      string  `json:"note"`
+		ProductID	int32	`json:"product_id" binding:"required"`
+		Quantity	int	`json:"quantity" binding:"required,min=1"`
+		Price		float64	`json:"price" binding:"required"`
+		Note		string	`json:"note"`
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
@@ -326,12 +305,12 @@ func CreateDirectOrder(c *gin.Context) {
 	}
 
 	order := models.Order{
-		CustomerID: customerID,
-		SellerID:   product.SellerID,
-		Quantity:   req.Quantity,
-		TotalPrice: req.Price * float64(req.Quantity),
-		Status:     "Menunggu Konfirmasi",
-		Note:       req.Note,
+		CustomerID:	customerID,
+		SellerID:	product.SellerID,
+		Quantity:	req.Quantity,
+		TotalPrice:	req.Price * float64(req.Quantity),
+		Status:		"Menunggu Konfirmasi",
+		Note:		req.Note,
 	}
 
 	if err := config.DB.Transaction(func(tx *gorm.DB) error {
@@ -339,18 +318,16 @@ func CreateDirectOrder(c *gin.Context) {
 			return err
 		}
 
-		// Create corresponding OrderItem
 		orderItem := models.OrderItem{
-			OrderID:   order.ID,
-			ProductID: req.ProductID,
-			Quantity:  req.Quantity,
-			Price:     req.Price,
+			OrderID:	order.ID,
+			ProductID:	req.ProductID,
+			Quantity:	req.Quantity,
+			Price:		req.Price,
 		}
 		if err := tx.Create(&orderItem).Error; err != nil {
 			return err
 		}
 
-		// Escrow Flow: Add to Pending Balance
 		var sellerProfile models.SellerProfile
 		if err := tx.Where("user_id = ?", order.SellerID).First(&sellerProfile).Error; err != nil {
 			return err
@@ -364,7 +341,6 @@ func CreateDirectOrder(c *gin.Context) {
 
 	fmt.Printf("Order created. Assigned to SellerID: %d\n", order.SellerID)
 
-	// Generate Snap Token
 	midtrans.Environment = midtrans.Sandbox
 	midtrans.ServerKey = "Mid-server-ZM2VH9KSHXRCMBsC_cdP_Xk7"
 	orderIDStr := fmt.Sprintf("ORDER-%d-%d", order.ID, time.Now().Unix())
@@ -374,15 +350,15 @@ func CreateDirectOrder(c *gin.Context) {
 
 	reqSnap := &snap.Request{
 		TransactionDetails: midtrans.TransactionDetails{
-			OrderID:  orderIDStr,
-			GrossAmt: int64(order.TotalPrice),
+			OrderID:	orderIDStr,
+			GrossAmt:	int64(order.TotalPrice),
 		},
 		CustomerDetail: &midtrans.CustomerDetails{
-			FName: user.Name,
-			Email: user.Email,
-			Phone: user.Phone,
+			FName:	user.Name,
+			Email:	user.Email,
+			Phone:	user.Phone,
 		},
-		CustomField1: req.Note,
+		CustomField1:	req.Note,
 	}
 
 	var snapToken string
@@ -394,14 +370,13 @@ func CreateDirectOrder(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
-		"success":    true,
-		"message":    "Pesanan langsung berhasil dibuat",
-		"data":       order,
-		"snap_token": snapToken,
+		"success":	true,
+		"message":	"Pesanan langsung berhasil dibuat",
+		"data":		order,
+		"snap_token":	snapToken,
 	})
 }
 
-// GetSellerOrders handles GET /api/orders/seller
 func GetSellerOrders(c *gin.Context) {
 	sellerID, ok := requireSeller(c)
 	if !ok {
@@ -409,7 +384,7 @@ func GetSellerOrders(c *gin.Context) {
 	}
 
 	var orders []models.Order
-	
+
 	err := config.DB.
 		Where("seller_id = ?", sellerID).
 		Preload("Customer").
@@ -426,7 +401,6 @@ func GetSellerOrders(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": orders})
 }
 
-// ProcessSellerOrder handles PUT /api/orders/seller/:id/process
 func ProcessSellerOrder(c *gin.Context) {
 	sellerID, ok := requireSeller(c)
 	if !ok {
@@ -435,7 +409,7 @@ func ProcessSellerOrder(c *gin.Context) {
 	orderID := c.Param("id")
 
 	var order models.Order
-	// Ensure the order belongs to the seller
+
 	err := config.DB.
 		Where("id = ? AND seller_id = ?", orderID, sellerID).
 		First(&order).Error
@@ -456,16 +430,14 @@ func ProcessSellerOrder(c *gin.Context) {
 		return
 	}
 
-	// Broadcast WebSocket Event
 	ChatHub.SendToUser(sellerID, gin.H{
-		"type": "ORDER_STATUS_UPDATED",
-		"data": order,
+		"type":	"ORDER_STATUS_UPDATED",
+		"data":	order,
 	})
 
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Status berhasil diubah ke Pesanan Sedang Diproses", "data": order})
 }
 
-// GetSellerDashboardStats handles GET /api/seller/dashboard/stats
 func GetSellerDashboardStats(c *gin.Context) {
 	sellerID, ok := requireSeller(c)
 	if !ok {
@@ -478,41 +450,34 @@ func GetSellerDashboardStats(c *gin.Context) {
 	var totalRevenue float64
 	var recentOrders []models.Order
 
-	// 1. Pending orders count
 	config.DB.Model(&models.Order{}).Where("seller_id = ? AND status = ?", sellerID, "Menunggu Konfirmasi").Count(&pendingCount)
 
-	// 2. Processing orders count
 	config.DB.Model(&models.Order{}).Where("seller_id = ? AND status = ?", sellerID, "Pesanan Sedang Diproses").Count(&processingCount)
 
-	// 3. Completed orders count
 	config.DB.Model(&models.Order{}).Where("seller_id = ? AND (status = ? OR status = ?)", sellerID, "Pesanan Selesai", "Selesai").Count(&completedCount)
 
-	// 4. Total revenue
-	// Assuming "Selesai" or "Pesanan Selesai" - let's check for "Selesai" or any completed status
 	config.DB.Model(&models.Order{}).Where("seller_id = ? AND (status = ? OR status = ?)", sellerID, "Pesanan Selesai", "Selesai").Select("COALESCE(SUM(total_price), 0)").Scan(&totalRevenue)
 
-	// 5. Recent orders
 	config.DB.Preload("Customer").Where("seller_id = ?", sellerID).Order("created_at desc").Limit(5).Find(&recentOrders)
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": true,
+		"success":	true,
 		"data": gin.H{
-			"total_orders_pending":    pendingCount,
-			"total_orders_processing": processingCount,
-			"total_completed_orders":  completedCount,
-			"total_revenue":           totalRevenue,
-			"recent_orders":           recentOrders,
+			"total_orders_pending":		pendingCount,
+			"total_orders_processing":	processingCount,
+			"total_completed_orders":	completedCount,
+			"total_revenue":		totalRevenue,
+			"recent_orders":		recentOrders,
 		},
 	})
 }
 
-// GetSellerDashboardChart handles GET /api/seller/dashboard/chart
 func GetSellerDashboardChart(c *gin.Context) {
 	sellerID, ok := requireSeller(c)
 	if !ok {
 		return
 	}
-	
+
 	rangeParam := c.Query("range")
 	days := 7
 	switch rangeParam {
@@ -523,8 +488,8 @@ func GetSellerDashboardChart(c *gin.Context) {
 	}
 
 	type ChartData struct {
-		Date  string  `json:"date"`
-		Total float64 `json:"total"`
+		Date	string	`json:"date"`
+		Total	float64	`json:"total"`
 	}
 
 	var results []ChartData
@@ -537,25 +502,23 @@ func GetSellerDashboardChart(c *gin.Context) {
 		GROUP BY DATE(created_at)
 		ORDER BY DATE(created_at) ASC
 	`
-	
+
 	if err := config.DB.Raw(query, sellerID, days).Scan(&results).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Gagal mengambil data chart"})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    results,
+		"success":	true,
+		"data":		results,
 	})
 }
 
-// ConfirmPayment handles PUT /api/orders/:id/confirm-payment
-// Now it treats `:id` as either Order ID or PaymentReference
 func ConfirmPayment(c *gin.Context) {
 	ref := c.Param("id")
 
 	var orders []models.Order
-	// Find all orders sharing this payment reference OR by exact ID if backward compatibility is needed
+
 	if err := config.DB.Where("payment_reference = ? OR id = ?", ref, ref).Find(&orders).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"success": false, "message": "Pesanan tidak ditemukan"})
 		return
@@ -573,21 +536,19 @@ func ConfirmPayment(c *gin.Context) {
 				continue
 			}
 
-			// Broadcast WebSocket Event to Seller
 			ChatHub.SendToUser(order.SellerID, gin.H{
-				"type": "NEW_ORDER_CREATED",
-				"data": order,
+				"type":	"NEW_ORDER_CREATED",
+				"data":	order,
 			})
 		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "Pembayaran berhasil dikonfirmasi",
+		"success":	true,
+		"message":	"Pembayaran berhasil dikonfirmasi",
 	})
 }
 
-// CompleteOrder handles PUT /api/orders/:id/complete
 func CompleteOrder(c *gin.Context) {
 	userIDFloat, exists := c.Get("userID")
 	if !exists {
@@ -609,13 +570,12 @@ func CompleteOrder(c *gin.Context) {
 	}
 
 	err := config.DB.Transaction(func(tx *gorm.DB) error {
-		// Update Order Status
+
 		order.Status = "Selesai"
 		if err := tx.Save(&order).Error; err != nil {
 			return err
 		}
 
-		// Escrow Flow: Deduct Pending, Add to Active
 		var sellerProfile models.SellerProfile
 		if err := tx.Where("user_id = ?", order.SellerID).First(&sellerProfile).Error; err != nil {
 			return err
@@ -623,19 +583,18 @@ func CompleteOrder(c *gin.Context) {
 
 		sellerProfile.PendingBalance -= order.TotalPrice
 		if sellerProfile.PendingBalance < 0 {
-			sellerProfile.PendingBalance = 0 // Safety check
+			sellerProfile.PendingBalance = 0
 		}
 		sellerProfile.ActiveBalance += order.TotalPrice
 		if err := tx.Save(&sellerProfile).Error; err != nil {
 			return err
 		}
 
-		// Log Wallet Transaction
 		walletTx := models.WalletTransaction{
-			SellerID: sellerProfile.ID,
-			Type:     "income",
-			Amount:   order.TotalPrice,
-			Status:   "completed",
+			SellerID:	sellerProfile.ID,
+			Type:		"income",
+			Amount:		order.TotalPrice,
+			Status:		"completed",
 		}
 		if err := tx.Create(&walletTx).Error; err != nil {
 			return err

@@ -1,20 +1,5 @@
 //go:build ignore
 
-// sync_images.go — Local Image Sync v1
-// Maps every product in the `products` table to its corresponding physical
-// file in frontend/public/images/ using keyword matching on the product name.
-//
-// Image path format stored in DB: /images/{filename}
-// (served statically by the Vue dev server from the /public directory)
-//
-// Matching strategy:
-//  1. A prioritised keyword map is checked against the lowercased product name.
-//  2. The FIRST matching rule wins (longest/most-specific keywords are listed first).
-//  3. If no keyword matches, the product is skipped and reported — no overwrite.
-//
-// Usage (run from the /backend directory):
-//
-//	go run scripts/sync_images.go
 package main
 
 import (
@@ -27,42 +12,31 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-// ---------------------------------------------------------------------------
-// Minimal Product model
-// ---------------------------------------------------------------------------
-
 type Product struct {
-	ID       int32  `gorm:"primaryKey"`
-	Name     string `gorm:"size:200"`
-	Category string `gorm:"size:100"`
-	ImageURL string `gorm:"column:image_url;size:512"`
+	ID		int32	`gorm:"primaryKey"`
+	Name		string	`gorm:"size:200"`
+	Category	string	`gorm:"size:100"`
+	ImageURL	string	`gorm:"column:image_url;size:512"`
 }
 
-func (Product) TableName() string { return "products" }
-
-// ---------------------------------------------------------------------------
-// Keyword → local image filename mapping
-// Rules are evaluated top-to-bottom; the first match wins.
-// Specific / multi-word patterns are listed before generic single-word ones.
-// ---------------------------------------------------------------------------
+func (Product) TableName() string	{ return "products" }
 
 type rule struct {
-	keyword  string // checked with strings.Contains on lowercased product name
-	filename string // relative filename only; script prepends "/images/"
+	keyword		string
+	filename	string
 }
 
 var rules = []rule{
-	// ── Accessories ──────────────────────────────────────────────────────────
+
 	{keyword: "anting", filename: "anting-penyu.png"},
 	{keyword: "cincin", filename: "cincin-penyu.png"},
-	{keyword: "gelang & kalung", filename: "gelang-kalung.png"}, // before plain "gelang"
+	{keyword: "gelang & kalung", filename: "gelang-kalung.png"},
 	{keyword: "gelang", filename: "gelang-kerbau.png"},
 	{keyword: "kalung", filename: "kalung-timor.jpg"},
 	{keyword: "headband", filename: "headband-tenun.png"},
 	{keyword: "mahkota", filename: "mahkota-tiilangga.png"},
 	{keyword: "sisir", filename: "sisir-sumba.png"},
 
-	// ── Food & Beverage ──────────────────────────────────────────────────────
 	{keyword: "kopi", filename: "kopi-flores.png"},
 	{keyword: "madu", filename: "madu-hutan.png"},
 	{keyword: "sei", filename: "sei-babi.png"},
@@ -72,21 +46,18 @@ var rules = []rule{
 	{keyword: "sambal", filename: "sambal-luat.png"},
 	{keyword: "gula", filename: "gula-air.png"},
 
-	// ── Fashion / Tenun ──────────────────────────────────────────────────────
 	{keyword: "kemeja", filename: "tenun-kemeja.png"},
 	{keyword: "dress", filename: "tenun-dress.png"},
 	{keyword: "blouse", filename: "tenun-blouse.png"},
 	{keyword: "outer", filename: "tenun-outer.png"},
-	// tunik, selendang, kaftan, syal, kameja → fallback to numbered product images
+
 	{keyword: "tunik", filename: "product-1.png"},
 	{keyword: "selendang", filename: "product-2.png"},
 	{keyword: "kaftan", filename: "product-3.png"},
 	{keyword: "syal", filename: "product-4.png"},
-	{keyword: "kameja", filename: "tenun-kemeja.png"}, // typo variant of "kemeja"
+	{keyword: "kameja", filename: "tenun-kemeja.png"},
 }
 
-// resolve returns the /images/... path for the given product name,
-// and ok=false if no rule matched.
 func resolve(name string) (path string, ok bool) {
 	n := strings.ToLower(name)
 	for _, r := range rules {
@@ -96,10 +67,6 @@ func resolve(name string) (path string, ok bool) {
 	}
 	return "", false
 }
-
-// ---------------------------------------------------------------------------
-// Entry point
-// ---------------------------------------------------------------------------
 
 func main() {
 	dsn := "root:@tcp(127.0.0.1:3306)/db_openpeo?charset=utf8mb4&parseTime=True&loc=Local"
@@ -151,10 +118,10 @@ func main() {
 		updated, skipped, failed, len(products))
 }
 
-// truncate shortens s to at most n chars, appending "…" if needed.
 func truncate(s string, n int) string {
 	if len(s) <= n {
 		return s
 	}
 	return s[:n-1] + "…"
 }
+

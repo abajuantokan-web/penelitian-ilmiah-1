@@ -2,7 +2,7 @@
   <div class="profile-page">
     <div class="container profile-container">
       
-      <!-- Sidebar -->
+      
       <aside class="profile-sidebar">
         
         <router-link to="/" class="back-home-btn">
@@ -40,7 +40,7 @@
         </nav>
 
         <div class="profile-logout-wrapper">
-          <!-- Store Link -->
+          
           <router-link 
             v-if="authStore.user?.role === 'seller'" 
             to="/seller/dashboard" 
@@ -76,10 +76,10 @@
         </div>
       </aside>
 
-      <!-- Main Content -->
+      
       <main class="profile-content">
         
-        <!-- Tab 1: Account Info -->
+        
         <div v-if="currentTab === 'account'" class="profile-tab fade-in">
           <h1 class="profile-title">Informasi Akun</h1>
           <p class="profile-subtitle">Perbarui detail profil dan informasi kontak Anda.</p>
@@ -109,7 +109,7 @@
           </form>
         </div>
 
-        <!-- Tab 2: Order History -->
+        
         <div v-if="currentTab === 'orders'" class="profile-tab fade-in">
           <h1 class="profile-title">Riwayat Pesanan</h1>
           <p class="profile-subtitle">Lacak status pesanan pre-order dan pembelian Anda.</p>
@@ -127,7 +127,7 @@
           <div v-else class="order-list">
             <div v-for="order in orderStore.orders" :key="order.id" class="order-card">
               
-              <!-- Order Header -->
+              
               <div class="order-header">
                 <div class="order-id">
                   <span>Order #{{ order.id }}</span>
@@ -153,7 +153,7 @@
                  </div>
               </div>
               
-              <!-- Order Footer -->
+              
               <div>
                 <div class="order-footer">
                   <div class="order-total-label">Total Pembayaran</div>
@@ -170,7 +170,7 @@
           </div>
         </div>
 
-        <!-- Tab 3: Settings -->
+        
         <div v-if="currentTab === 'settings'" class="profile-tab fade-in">
           <h1 class="profile-title">Pengaturan Akun</h1>
           <p class="profile-subtitle">Ubah password dan kelola keamanan akun Anda.</p>
@@ -269,7 +269,7 @@ const triggerToast = (msg) => {
 watch(
   () => route.query.tab,
   (newTab) => {
-    if (!newTab) return; // ignore if no query
+    if (!newTab) return; 
     if (newTab === 'orders') {
       currentTab.value = 'orders'
     } else if (newTab === 'account') {
@@ -281,7 +281,7 @@ watch(
   { immediate: true, deep: true }
 )
 
-// Account Info Form
+
 const profileForm = ref({
   name: '',
   phone: '',
@@ -291,7 +291,7 @@ const isUpdatingProfile = ref(false)
 const profileMsg = ref('')
 const profileStatus = ref('')
 
-// Password Form
+
 const passwordForm = ref({
   current: '',
   new: '',
@@ -301,7 +301,7 @@ const isChangingPassword = ref(false)
 const passMsg = ref('')
 const passStatus = ref('')
 
-// Formatters
+
 const formatPrice = (price) => {
   if (!price) return 'Rp0'
   return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(price)
@@ -330,7 +330,7 @@ const getStatusClass = (status) => {
   }
 }
 
-// Actions
+
 const handleLogout = () => {
   authStore.logout()
   cartStore.clearLocalCart()
@@ -400,7 +400,7 @@ const confirmCompleteOrder = async () => {
       showCompleteModal.value = false;
       orderToComplete.value = null;
       triggerToast('Terima kasih! Pesanan telah selesai.');
-      orderStore.fetchOrders() // Refresh orders to instantly update UI
+      orderStore.fetchOrders() 
     }
   } catch (error) {
     console.error("Gagal menyelesaikan pesanan:", error)
@@ -411,7 +411,7 @@ const confirmCompleteOrder = async () => {
 };
 
 onMounted(async () => {
-  // Sync latest user info
+  
   await authStore.fetchProfile()
   if (authStore.user) {
     profileForm.value.name = authStore.user.name || ''
@@ -419,7 +419,7 @@ onMounted(async () => {
     profileForm.value.address = authStore.user.address || ''
   }
   
-  // Fetch orders
+  
   orderStore.fetchOrders()
 })
 </script>
@@ -437,7 +437,7 @@ onMounted(async () => {
   align-items: flex-start;
 }
 
-/* Sidebar */
+
 .profile-sidebar {
   width: 280px;
   flex-shrink: 0;
@@ -584,7 +584,7 @@ onMounted(async () => {
   border-color: #fca5a5;
 }
 
-/* Main Content */
+
 .profile-content {
   flex: 1;
   min-width: 0;
@@ -608,7 +608,7 @@ onMounted(async () => {
   margin: 0 0 32px;
 }
 
-/* Forms */
+
 .profile-form {
   max-width: 500px;
 }
@@ -697,7 +697,7 @@ onMounted(async () => {
 .msg-success { color: #16a34a; }
 .msg-error { color: #dc2626; }
 
-/* Orders */
+
 .order-list {
   display: flex;
   flex-direction: column;
@@ -855,7 +855,7 @@ onMounted(async () => {
 }
 .loading-state p { margin-top: 12px; font-size: 0.9rem; }
 
-/* Utilities */
+
 .fade-in {
   animation: fadeIn 0.3s ease-in-out;
 }

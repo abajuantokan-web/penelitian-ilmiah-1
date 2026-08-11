@@ -1,5 +1,4 @@
 //go:build ignore
-// +build ignore
 
 package main
 
@@ -15,7 +14,7 @@ func main() {
 
 	var orders []models.Order
 	config.DB.
-		Where("id = ?", 31). // Based on the screenshot Order #31
+		Where("id = ?", 31).
 		Preload("Product").
 		Preload("OrderItems").
 		Preload("OrderItems.Product").
@@ -24,3 +23,4 @@ func main() {
 	b, _ := json.MarshalIndent(orders, "", "  ")
 	fmt.Println(string(b))
 }
+

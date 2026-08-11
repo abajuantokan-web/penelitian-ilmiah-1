@@ -20,10 +20,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("❌ Failed to connect to database: %v\n", err)
 	}
-	
+
 	fmt.Println("✅ Connected to db_openpeo")
 	fmt.Println("🔄 Dropping product_id column from orders table...")
-	
+
 	err = db.Exec("ALTER TABLE orders DROP FOREIGN KEY fk_orders_product;").Error
 	if err != nil {
 		fmt.Printf("⚠️ Warning dropping foreign key (may not exist): %v\n", err)
@@ -33,6 +33,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("❌ Failed to drop column product_id: %v\n", err)
 	}
-	
+
 	fmt.Println("🎉 Migration complete: product_id removed from orders table.")
 }
+

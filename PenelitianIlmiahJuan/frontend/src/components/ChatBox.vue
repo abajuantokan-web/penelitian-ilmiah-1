@@ -1,9 +1,9 @@
 <template>
   <Teleport to="body">
     <div class="chatbox-wrapper" ref="wrapperRef" v-show="visible">
-      <!-- Chat Panel -->
+      
       <div class="chatbox glass-strong" :class="{ minimized: isMinimized }">
-        <!-- Chat Header -->
+        
         <div class="chat-header" @click="toggleMinimize">
           <div class="chat-header-info">
             <div class="chat-avatar">
@@ -43,7 +43,7 @@
           </div>
         </div>
 
-        <!-- Chat User Selector -->
+        
         <div v-if="!isMinimized" class="chat-user-bar">
           <label class="user-label">Chat dengan:</label>
           <select v-model="receiverId" class="input user-select" @change="onReceiverChange">
@@ -53,16 +53,16 @@
           </select>
         </div>
 
-        <!-- Messages Area -->
+        
         <div v-if="!isMinimized" class="chat-messages" ref="messagesRef">
-          <!-- Welcome message -->
+          
           <div v-if="messages.length === 0" class="chat-welcome">
             <div class="welcome-icon">💬</div>
             <p>Mulai percakapan dengan vendor!</p>
             <span>Tanyakan detail produk, harga, atau pengiriman.</span>
           </div>
 
-          <!-- Message bubbles -->
+          
           <div
             v-for="msg in messages"
             :key="msg.id || msg._tempId"
@@ -76,7 +76,7 @@
           </div>
         </div>
 
-        <!-- Input Area -->
+        
         <div v-if="!isMinimized" class="chat-input-area">
           <input
             v-model="newMessage"
@@ -118,9 +118,9 @@ const emit = defineEmits(['close', 'update-unread'])
 const API_BASE = 'http://localhost:8080/api'
 const WS_BASE = 'ws://localhost:8080/ws/chat'
 
-// Chat state
-const senderId = ref(4) // Default fallback
-const receiverId = ref(1) // Default to Admin Flores (ID 1)
+
+const senderId = ref(4) 
+const receiverId = ref(1) 
 const contacts = ref([])
 const messages = ref([])
 const newMessage = ref('')
@@ -142,7 +142,7 @@ let ws = null
 let tempIdCounter = 0
 let reconnectTimer = null
 
-// Load contact list based on user's role
+
 async function loadContacts() {
   try {
     const user = JSON.parse(localStorage.getItem('openpeo_user') || 'null')
@@ -156,13 +156,13 @@ async function loadContacts() {
     if (data.success && data.data) {
       contacts.value = data.data
       
-      // Populate unread counts from response
+      
       contacts.value.forEach(c => {
         unreadCounts.value[c.id] = c.unread_count || 0
       })
 
       if (contacts.value.length > 0) {
-        // If receiverId is not in contacts list, default to first contact
+        
         const hasReceiver = contacts.value.some(c => c.id === receiverId.value)
         if (!hasReceiver) {
           receiverId.value = contacts.value[0].id
@@ -174,9 +174,9 @@ async function loadContacts() {
   }
 }
 
-// ── WebSocket Connection ──
+
 function connectWebSocket() {
-  // Close existing connection if any
+  
   if (ws) {
     ws.close()
     ws = null
@@ -200,14 +200,14 @@ function connectWebSocket() {
       try {
         const data = JSON.parse(event.data)
 
-        // Only append if it belongs to the active conversation
+        
         const isFromPartner = data.sender_id === receiverId.value && data.receiver_id === senderId.value
         const isFromMe = data.sender_id === senderId.value && data.receiver_id === receiverId.value
 
         if (!isFromPartner && !isFromMe) {
           const otherUserId = data.sender_id
           
-          // Verify if contact exists in list, if not reload contacts dynamically
+          
           const contactExists = contacts.value.some(c => c.id === otherUserId)
           if (!contactExists) {
             await loadContacts()
@@ -218,16 +218,16 @@ function connectWebSocket() {
           return
         }
 
-        // Find if this corresponds to one of our optimistic temp messages
+        
         const tempIndex = messages.value.findIndex(m =>
           m._tempId && m.sender_id === data.sender_id && m.content === data.content
         )
 
         if (tempIndex !== -1) {
-          // Replace the optimistic temp message with the actual database message
+          
           messages.value[tempIndex] = { ...data }
         } else {
-          // Check if this message ID already exists (to prevent duplicate additions)
+          
           const exists = messages.value.some(m =>
             m.id === data.id && m.id !== undefined
           )
@@ -245,7 +245,7 @@ function connectWebSocket() {
       console.log('🔌 WebSocket disconnected:', event.code)
       isConnected.value = false
 
-      // Auto-reconnect after 3 seconds (unless intentional close)
+      
       if (event.code !== 1000) {
         reconnectTimer = setTimeout(() => {
           console.log('🔄 Reconnecting WebSocket...')
@@ -264,7 +264,7 @@ function connectWebSocket() {
   }
 }
 
-// ── Send Message ──
+
 function sendMessage() {
   if (!newMessage.value.trim() || !ws || ws.readyState !== WebSocket.OPEN) return
 
@@ -274,7 +274,7 @@ function sendMessage() {
     content: newMessage.value.trim()
   }
 
-  // Optimistic UI: show message immediately
+  
   const tempMsg = {
     _tempId: ++tempIdCounter,
     ...payload,
@@ -282,14 +282,14 @@ function sendMessage() {
   }
   messages.value.push(tempMsg)
 
-  // Send via WebSocket
+  
   ws.send(JSON.stringify(payload))
 
   newMessage.value = ''
   scrollToBottom()
 }
 
-// ── Load Chat History ──
+
 async function loadChatHistory() {
   try {
     const params = new URLSearchParams({
@@ -310,14 +310,14 @@ async function loadChatHistory() {
   }
 }
 
-// ── Receiver Change ──
+
 function onReceiverChange() {
   messages.value = []
   unreadCounts.value[receiverId.value] = 0
   loadChatHistory()
 }
 
-// ── UI Helpers ──
+
 function toggleMinimize() {
   isMinimized.value = !isMinimized.value
 }
@@ -335,15 +335,15 @@ function formatTime(dateStr) {
   return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
 }
 
-// ── Lifecycle ──
+
 onMounted(async () => {
-  // Set current user from session
+  
   const user = JSON.parse(localStorage.getItem('openpeo_user') || 'null')
   if (user) {
     senderId.value = user.id
   }
 
-  // Entrance animation
+  
   if (wrapperRef.value) {
     animate(wrapperRef.value, {
       opacity: [0, 1],
@@ -361,7 +361,7 @@ onMounted(async () => {
 
 onUnmounted(() => {
   if (ws) {
-    ws.close(1000) // Normal closure
+    ws.close(1000) 
     ws = null
   }
   if (reconnectTimer) {
@@ -396,7 +396,7 @@ onUnmounted(() => {
   width: 320px;
 }
 
-/* ── Header ── */
+
 .chat-header {
   display: flex;
   align-items: center;
@@ -488,7 +488,7 @@ onUnmounted(() => {
   color: var(--color-error);
 }
 
-/* ── User Selector ── */
+
 .chat-user-bar {
   padding: var(--space-sm) var(--space-md);
   display: flex;
@@ -510,7 +510,7 @@ onUnmounted(() => {
   flex: 1;
 }
 
-/* ── Messages ── */
+
 .chat-messages {
   flex: 1;
   min-height: 150px;
@@ -545,7 +545,7 @@ onUnmounted(() => {
   font-size: 0.8rem;
 }
 
-/* Message Rows */
+
 .message-row {
   display: flex;
   animation: fadeInUp 0.25s ease-out;
@@ -555,7 +555,7 @@ onUnmounted(() => {
   justify-content: flex-end;
 }
 
-/* Bubbles */
+
 .message-bubble {
   max-width: 80%;
   padding: 0.6rem 0.9rem;
@@ -590,7 +590,7 @@ onUnmounted(() => {
   text-align: right;
 }
 
-/* ── Input ── */
+
 .chat-input-area {
   display: flex;
   align-items: center;
@@ -619,7 +619,7 @@ onUnmounted(() => {
   cursor: not-allowed;
 }
 
-/* ── Responsive ── */
+
 @media (max-width: 480px) {
   .chatbox-wrapper {
     bottom: 0;

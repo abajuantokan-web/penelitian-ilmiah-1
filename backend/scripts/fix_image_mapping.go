@@ -1,38 +1,5 @@
 //go:build ignore
 
-// fix_image_mapping.go — Exact Image Mapping Fix v2
-// Resets image_url for ALL products using ORDERED keyword rules so that
-// longer/more-specific keywords are always checked before shorter ones —
-// avoiding the random-iteration problem of plain Go maps.
-//
-// Mapping (keyword → /images/ filename):
-//
-//	anting       → anting-penyu.png
-//	cincin       → cincin-penyu.png
-//	garam        → garam-gunung.png
-//	gelang & kal → gelang-kalung.png  (checked before plain "gelang")
-//	gelang       → gelang-kerbau.png
-//	gula         → gula-air.png
-//	headband     → headband-tenun.png
-//	jagung       → jagung-titi.png
-//	kacang       → kacang-sembunyi.png
-//	kalung       → kalung-timor.jpg
-//	kopi         → kopi-flores.png
-//	madu         → madu-hutan.png
-//	mahkota      → mahkota-tiilangga.png
-//	sambal       → sambal-luat.png
-//	sei          → sei-babi.png
-//	sisir        → sisir-sumba.png
-//	kemeja/kamej → tenun-kemeja.png
-//	dress        → tenun-dress.png
-//	blouse       → tenun-blouse.png
-//	outer        → tenun-outer.png
-//	tunik/kafta/ → product-1.png … (remaining tenun variants)
-//	(fallback)   → product-1.png
-//
-// Usage (run from the /backend directory):
-//
-//	go run scripts/fix_image_mapping.go
 package main
 
 import (
@@ -45,42 +12,31 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-// ---------------------------------------------------------------------------
-// Minimal Product model
-// ---------------------------------------------------------------------------
-
 type Product struct {
-	ID       int32  `gorm:"primaryKey"`
-	Name     string `gorm:"size:200"`
-	Category string `gorm:"size:100"`
-	ImageURL string `gorm:"column:image_url;size:512"`
+	ID		int32	`gorm:"primaryKey"`
+	Name		string	`gorm:"size:200"`
+	Category	string	`gorm:"size:100"`
+	ImageURL	string	`gorm:"column:image_url;size:512"`
 }
 
-func (Product) TableName() string { return "products" }
-
-// ---------------------------------------------------------------------------
-// Ordered rules — evaluated top-to-bottom; first match wins.
-// IMPORTANT: more-specific / multi-word patterns must come before their
-//            shorter sub-strings (e.g. "gelang & kalung" before "gelang").
-// ---------------------------------------------------------------------------
+func (Product) TableName() string	{ return "products" }
 
 type rule struct {
-	keyword  string
-	filename string
+	keyword		string
+	filename	string
 }
 
 var rules = []rule{
-	// Accessories
+
 	{"anting", "anting-penyu.png"},
 	{"cincin", "cincin-penyu.png"},
-	{"gelang & kalung", "gelang-kalung.png"}, // ← before plain "gelang"
+	{"gelang & kalung", "gelang-kalung.png"},
 	{"gelang", "gelang-kerbau.png"},
 	{"kalung", "kalung-timor.jpg"},
 	{"headband", "headband-tenun.png"},
 	{"mahkota", "mahkota-tiilangga.png"},
 	{"sisir", "sisir-sumba.png"},
 
-	// Food & Beverage
 	{"kopi", "kopi-flores.png"},
 	{"madu", "madu-hutan.png"},
 	{"sei", "sei-babi.png"},
@@ -90,9 +46,8 @@ var rules = []rule{
 	{"sambal", "sambal-luat.png"},
 	{"gula", "gula-air.png"},
 
-	// Fashion / Tenun — specific cuts first
 	{"kemeja", "tenun-kemeja.png"},
-	{"kameja", "tenun-kemeja.png"}, // common typo / variant
+	{"kameja", "tenun-kemeja.png"},
 	{"dress", "tenun-dress.png"},
 	{"blouse", "tenun-blouse.png"},
 	{"outer", "tenun-outer.png"},
@@ -102,7 +57,6 @@ var rules = []rule{
 	{"syal", "product-4.png"},
 }
 
-// resolve returns the /images/… path for the given product name.
 func resolve(name string) (string, bool) {
 	n := strings.ToLower(name)
 	for _, r := range rules {
@@ -110,12 +64,8 @@ func resolve(name string) (string, bool) {
 			return "/images/" + r.filename, true
 		}
 	}
-	return "/images/product-1.png", false // ultimate fallback
+	return "/images/product-1.png", false
 }
-
-// ---------------------------------------------------------------------------
-// Entry point
-// ---------------------------------------------------------------------------
 
 func main() {
 	dsn := "root:@tcp(127.0.0.1:3306)/db_openpeo?charset=utf8mb4&parseTime=True&loc=Local"
@@ -174,3 +124,4 @@ func truncate(s string, n int) string {
 	}
 	return s[:n-1] + "…"
 }
+

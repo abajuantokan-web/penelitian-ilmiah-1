@@ -112,7 +112,7 @@ const notificationStore = useNotificationStore()
 const websocketStore = useWebsocketStore()
 const chatStore = useChatStore()
 
-// State
+
 const contacts = ref([])
 const activeContact = ref(null)
 const newMessage = ref('')
@@ -121,7 +121,7 @@ const messagesContainer = ref(null)
 const isLoadingContacts = ref(true)
 const isLoadingHistory = ref(false)
 
-// Emits & Props
+
 const emit = defineEmits(['new-message-received', 'update-unread'])
 
 watch(contacts, (newContacts) => {
@@ -183,7 +183,7 @@ const fetchChatHistory = async () => {
     })
     if (res.data.success) {
       websocketStore.setMessages(res.data.data || [])
-      // Reset unread count for this contact
+      
       const contact = contacts.value.find(c => c.id === activeContact.value.id)
       if (contact) contact.unread_count = 0
       await scrollToBottom()
@@ -195,7 +195,7 @@ const fetchChatHistory = async () => {
   }
 }
 
-// Send Message
+
 const sendMessage = () => {
   if (!newMessage.value.trim() || !websocketStore.isConnected || !activeContact.value) return
   

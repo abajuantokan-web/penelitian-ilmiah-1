@@ -1,25 +1,25 @@
-/* ============================================================
-   NTT Artisan E-Commerce Landing Page — Design System
-   Inspired by Sejauh Mata Memandang
-   ============================================================ */
 
-/* --- CSS Custom Properties (Design Tokens) --- */
+
+
+
+
+
 :root {
-  /* Colors */
+  
   --color-black-deep: #060606;
   --color-black-pure: #000000;
   --color-white-pure: #FFFFFF;
   --color-white-off: #F1F1F1;
   --color-gray-light: #DEDEDE;
 
-  /* Typography */
+  
   --font-family: 'Montserrat', sans-serif;
   --fw-display: 400;
   --fw-body: 500;
   --ls: 0px;
   --lh-body: 1.6;
 
-  /* Spacing (4px multiples) */
+  
   --space-4: 4px;
   --space-8: 8px;
   --space-12: 12px;
@@ -33,22 +33,22 @@
   --space-64: 64px;
   --space-80: 80px;
 
-  /* Layout */
+  
   --max-width: 1440px;
   --padding-desktop: 80px;
   --padding-mobile: 20px;
 
-  /* Radius */
+  
   --radius-sharp: 0px;
   --radius-pill: 30px;
   --radius-circle: 100%;
 
-  /* Transitions */
+  
   --transition-base: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 
-/* --- Reset & Base --- */
+
 *,
 *::before,
 *::after {
@@ -96,7 +96,7 @@ button {
 }
 
 
-/* --- Utility: Container --- */
+
 .container {
   width: 100%;
   max-width: var(--max-width);
@@ -106,9 +106,9 @@ button {
 }
 
 
-/* ============================================================
-   HEADER / NAVIGATION
-   ============================================================ */
+
+
+
 .site-header {
   position: fixed;
   top: 0;
@@ -131,7 +131,7 @@ button {
   height: 72px;
 }
 
-/* Logo */
+
 .logo {
   flex: 1;
   display: flex;
@@ -151,7 +151,7 @@ button {
   color: var(--color-black-pure);
 }
 
-/* Navigation Links */
+
 .nav-links {
   display: flex;
   align-items: center;
@@ -188,7 +188,7 @@ button {
   color: var(--color-black-pure);
 }
 
-/* Header Icons */
+
 .header-icons {
   flex: 1;
   display: flex;
@@ -228,7 +228,7 @@ button {
   background-color: var(--color-white-off);
 }
 
-/* Cart badge */
+
 .cart-btn {
   position: relative;
 }
@@ -255,7 +255,7 @@ button {
   color: var(--color-white-pure);
 }
 
-/* Mobile Menu Toggle */
+
 .menu-toggle {
   display: none;
   width: 40px;
@@ -292,9 +292,9 @@ button {
 }
 
 
-/* ============================================================
-   HERO SECTION
-   ============================================================ */
+
+
+
 .hero {
   position: relative;
   width: 100%;
@@ -317,7 +317,7 @@ button {
   object-position: center top;
 }
 
-/* Gradient overlay for text readability on left side */
+
 .hero-overlay {
   position: absolute;
   inset: 0;
@@ -331,7 +331,7 @@ button {
   );
 }
 
-/* Bottom gradient for extra depth */
+
 .hero::after {
   content: '';
   position: absolute;
@@ -374,7 +374,7 @@ button {
   margin-bottom: var(--space-40);
 }
 
-/* Primary CTA Button — Outlined Pill */
+
 .btn-primary {
   display: inline-block;
   width: auto;
@@ -399,7 +399,7 @@ button {
   color: var(--color-black-pure);
 }
 
-/* Dark variant for light backgrounds (outline) */
+
 .btn-primary--dark {
   border-color: var(--color-black-pure);
   color: var(--color-black-pure);
@@ -410,7 +410,7 @@ button {
   color: var(--color-white-pure);
 }
 
-/* Solid dark variant for light backgrounds */
+
 .btn-primary--solid-dark {
   background-color: var(--color-black-pure);
   border-color: var(--color-black-pure);
@@ -422,7 +422,7 @@ button {
   border-color: #333333;
 }
 
-/* Decorative motifs on hero */
+
 .hero-motif {
   position: absolute;
   z-index: 3;
@@ -448,9 +448,9 @@ button {
   stroke-width: 1;
 }
 
-/* ============================================================
-   SECTION: FULL-WIDTH IMAGE DIVIDERS
-   ============================================================ */
+
+
+
 .section-divider {
   position: relative;
   width: 100vw;
@@ -529,9 +529,9 @@ button {
 }
 
 
-/* ============================================================
-   SECTION: PRODUCT GRID
-   ============================================================ */
+
+
+
 .section-products {
   padding-top: var(--space-80);
   padding-bottom: var(--space-80);
@@ -578,7 +578,7 @@ button {
   width: 0;
 }
 
-/* Section header text group (title + description) */
+
 .section-header-text {
   flex: 1;
   min-width: 0;
@@ -594,32 +594,32 @@ button {
   max-width: 560px;
 }
 
-/* Alternate section background */
+
 .section-products--alt {
   background-color: var(--color-white-off);
 }
 
-/* Ensure section-header aligns properly with description */
+
 .section-header {
   align-items: flex-start;
 }
 
 
-/* Product Grid Layout */
+
 .product-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
 }
 
-/* Product Card */
+
 .product-card {
   border: 1px solid var(--color-gray-light);
   border-radius: var(--radius-sharp);
   background-color: var(--color-white-pure);
   overflow: hidden;
   transition: box-shadow var(--transition-base);
-  /* Collapse borders between adjacent cards */
+  
   margin-right: -1px;
   margin-bottom: -1px;
 }
@@ -668,9 +668,9 @@ button {
 }
 
 
-/* ============================================================
-   SECTION: STORY / ABOUT BANNER
-   ============================================================ */
+
+
+
 .section-story {
   padding-top: var(--space-80);
   padding-bottom: var(--space-80);
@@ -717,9 +717,9 @@ button {
 }
 
 
-/* ============================================================
-   FOOTER
-   ============================================================ */
+
+
+
 .site-footer {
   background-color: var(--color-black-pure);
   color: var(--color-white-pure);
@@ -818,9 +818,9 @@ button {
 }
 
 
-/* ============================================================
-   PRODUCT DETAIL MODAL (PDP)
-   ============================================================ */
+
+
+
 .pdp-modal {
   position: fixed;
   inset: 0;
@@ -884,7 +884,7 @@ button {
   min-height: 500px;
 }
 
-/* Left: Gallery */
+
 .pdp-gallery {
   flex: 1;
   display: flex;
@@ -928,7 +928,7 @@ button {
   object-fit: contain;
 }
 
-/* Right: Info */
+
 .pdp-info {
   flex: 1;
   padding: var(--space-40);
@@ -1040,9 +1040,9 @@ button {
 }
 
 
-/* ============================================================
-   FLOATING ACTION BUTTONS
-   ============================================================ */
+
+
+
 .floating-buttons {
   position: fixed;
   bottom: var(--space-32);
@@ -1097,9 +1097,9 @@ button {
 }
 
 
-/* ============================================================
-   ANIMATIONS — Fade-in on scroll
-   ============================================================ */
+
+
+
 .reveal {
   opacity: 0;
   transform: translateY(24px);
@@ -1118,9 +1118,9 @@ button {
 .reveal-delay-4 { transition-delay: 0.4s; }
 
 
-/* ============================================================
-   RESPONSIVE — Tablet (≤ 1024px)
-   ============================================================ */
+
+
+
 @media (max-width: 1024px) {
   .container {
     padding-left: var(--space-40);
@@ -1164,9 +1164,9 @@ button {
 }
 
 
-/* ============================================================
-   RESPONSIVE — Mobile (≤ 768px)
-   ============================================================ */
+
+
+
 @media (max-width: 768px) {
   .container {
     padding-left: var(--padding-mobile);
@@ -1294,9 +1294,9 @@ button {
 }
 
 
-/* ============================================================
-   MOBILE NAV OVERLAY
-   ============================================================ */
+
+
+
 .mobile-nav {
   position: fixed;
   inset: 0;
@@ -1330,9 +1330,9 @@ button {
 }
 
 
-/* ============================================================
-   VUE SPA — Modal Backdrop & Content
-   ============================================================ */
+
+
+
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -1390,7 +1390,7 @@ button {
   background-color: rgba(0,0,0,0.05);
 }
 
-/* PDP Grid Layout */
+
 .pdp-grid {
   display: flex;
   flex-direction: row;
@@ -1450,7 +1450,7 @@ button {
   object-fit: contain;
 }
 
-/* PDP Info Panel */
+
 .pdp-info {
   flex: 1;
   padding: 40px;
@@ -1496,7 +1496,7 @@ button {
   align-self: flex-start;
 }
 
-/* Quantity Controls */
+
 .pdp-quantity-selector {
   margin-bottom: 24px;
 }
@@ -1543,6 +1543,7 @@ button {
   font-size: 0.9rem;
   background: transparent;
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 
 .qty-controls input::-webkit-inner-spin-button,
@@ -1551,7 +1552,7 @@ button {
   margin: 0;
 }
 
-/* PDP Action Buttons */
+
 .pdp-actions {
   display: flex;
   gap: 12px;
@@ -1594,7 +1595,7 @@ button {
   background-color: #333;
 }
 
-/* PDP Description */
+
 .pdp-description {
   font-size: 0.85rem;
   line-height: 1.7;
@@ -1611,9 +1612,9 @@ button {
 }
 
 
-/* ============================================================
-   VUE SPA — Fixed Floating Buttons
-   ============================================================ */
+
+
+
 .fixed-btn {
   position: fixed;
   z-index: 9999;
@@ -1664,7 +1665,7 @@ button {
   background-color: #333;
 }
 
-/* Divider title classes used by Vue component */
+
 .section-divider__title {
   font-family: 'Playfair Display', serif;
   font-size: 36px;
@@ -1676,7 +1677,7 @@ button {
   margin-bottom: 8px;
 }
 
-/* Brand link in header */
+
 .brand a {
   font-family: 'Playfair Display', serif;
   font-size: 20px;
@@ -1691,7 +1692,7 @@ button {
   color: #1a1a1a;
 }
 
-/* Footer legal links */
+
 .footer-legal {
   display: flex;
   gap: 20px;
@@ -1707,7 +1708,7 @@ button {
   color: rgba(255,255,255,0.8);
 }
 
-/* Newsletter */
+
 .newsletter {
   display: flex;
   border: 1px solid rgba(255,255,255,0.2);
@@ -1743,7 +1744,7 @@ button {
   background: rgba(255,255,255,0.2);
 }
 
-/* Responsive PDP modal */
+
 @media (max-width: 768px) {
   .pdp-grid {
     flex-direction: column;

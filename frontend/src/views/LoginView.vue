@@ -131,11 +131,11 @@ const isLoading = ref(false)
 const errorMsg = ref('')
 const successMsg = ref('')
 
-// Login fields
+
 const email = ref('')
 const password = ref('')
 
-// Register fields
+
 const regName = ref('')
 const regEmail = ref('')
 const regPassword = ref('')
@@ -155,10 +155,10 @@ const handleLogin = async () => {
   isLoading.value = false
   
   if (result.success) {
-    // Sync cart from backend after login
+    
     await cartStore.fetchCart()
     
-    // Redirect based on role or default to home where localStorage takes over
+    
     const redirectPath = authStore.user?.role === 'seller' ? '/seller/dashboard' : '/';
     router.push(redirectPath);
   } else {
@@ -200,7 +200,7 @@ const handleRegister = async () => {
   background-color: #fafafa;
 }
 
-/* Left Visual Panel */
+
 .login-visual {
   position: relative;
   flex: 0 0 45%;
@@ -256,7 +256,7 @@ const handleRegister = async () => {
   stroke-width: 1;
 }
 
-/* Right Form Panel */
+
 .login-form-panel {
   flex: 1;
   display: flex;
@@ -429,7 +429,7 @@ const handleRegister = async () => {
   opacity: 0.7;
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .login-page {
     flex-direction: column;

@@ -5,5 +5,5 @@
 </template>
 
 <script setup>
-// App.vue is now a minimal shell — all pages are routed views
+
 </script>

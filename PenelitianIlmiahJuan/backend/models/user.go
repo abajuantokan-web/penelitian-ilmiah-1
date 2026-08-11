@@ -6,8 +6,8 @@ import (
 	"gorm.io/gorm"
 )
 
-// User represents users in the OpenPeo marketplace.
-// Supports three roles: admin, vendor, and customer.
+
+
 type User struct {
 	ID        int32          `gorm:"primaryKey;autoIncrement" json:"id"`
 	Name      string         `gorm:"size:100" json:"name"`
@@ -23,7 +23,7 @@ type User struct {
 	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
 }
 
-// TableName overrides the default table name.
+
 func (User) TableName() string {
 	return "users"
 }

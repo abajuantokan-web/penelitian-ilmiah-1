@@ -4,7 +4,7 @@
       <button class="modal-close" @click="close" aria-label="Tutup">&times;</button>
       
       <div v-if="product" class="pdp-grid">
-        <!-- Left: Image Gallery -->
+        
         <div class="pdp-gallery">
           <div class="pdp-thumbnails">
             <div class="pdp-thumb active">
@@ -19,7 +19,7 @@
           </div>
         </div>
 
-        <!-- Right: Product Info -->
+        
         <div class="pdp-info">
           <p class="pdp-brand">{{ product.region }} &bull; {{ product.category }}</p>
           <h2 class="pdp-title">{{ product.name }}</h2>
@@ -92,7 +92,7 @@ const chatStore = useChatStore()
 const quantity = ref(1)
 const isAdding = ref(false)
 
-// Reset quantity when modal opens
+
 watch(() => props.isOpen, (newVal) => {
   if (newVal) quantity.value = 1
 })
@@ -156,7 +156,7 @@ const handleChat = () => {
     return
   }
   
-  // Prevent chatting with yourself
+  
   if (authStore.user?.id === props.product.seller_id) {
     alert('Ini adalah produk toko Anda sendiri.')
     return
@@ -165,7 +165,7 @@ const handleChat = () => {
   if (props.product.seller_id) {
     const sellerName = props.product.seller_profile?.store_name || 'Penjual'
     chatStore.openChat(props.product.seller_id, sellerName)
-    close() // Close modal so user can focus on chat widget
+    close() 
   } else {
     alert('Informasi penjual tidak tersedia.')
   }

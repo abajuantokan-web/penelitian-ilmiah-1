@@ -1,3 +1,7 @@
+//go:build ignore
+
+
+
 package main
 
 import (
@@ -27,25 +31,25 @@ func main() {
 		if !strings.HasSuffix(path, ".go") {
 			return nil
 		}
-		if path == "remove_comments.go" {
+		if filepath.Base(path) == "remove_comments.go" {
 			return nil
 		}
 
-		// Parse the file without comments
+		
 		f, err := parser.ParseFile(fset, path, nil, 0)
 		if err != nil {
-			return nil // skip on error
+			return nil 
 		}
 
 		var buf bytes.Buffer
-		// Print without comments
+		
 		err = printer.Fprint(&buf, fset, f)
 		if err != nil {
 			fmt.Printf("Error printing %s: %v\n", path, err)
 			return nil
 		}
 
-		// Read original content to see if it changed
+		
 		original, err := os.ReadFile(path)
 		if err != nil {
 			return nil
@@ -65,3 +69,4 @@ func main() {
 		fmt.Println("Error:", err)
 	}
 }
+

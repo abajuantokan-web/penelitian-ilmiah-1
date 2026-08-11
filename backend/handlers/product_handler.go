@@ -11,53 +11,50 @@ import (
 	"openpeo-backend/models"
 )
 
-
 func CreateProduct(c *gin.Context) {
 	var product models.Product
 
 	if err := c.ShouldBindJSON(&product); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "Invalid request payload",
-			"error":   err.Error(),
+			"success":	false,
+			"message":	"Invalid request payload",
+			"error":	err.Error(),
 		})
 		return
 	}
 
-	
 	if product.Name == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "Product name is required",
+			"success":	false,
+			"message":	"Product name is required",
 		})
 		return
 	}
 
 	if product.SellerID == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "Seller ID is required",
+			"success":	false,
+			"message":	"Seller ID is required",
 		})
 		return
 	}
 
 	if product.Price <= 0 {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "Price must be greater than zero",
+			"success":	false,
+			"message":	"Price must be greater than zero",
 		})
 		return
 	}
 
 	if product.Region == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "Region is required (e.g., Sumba, Manggarai, Kupang, Flores, Timor)",
+			"success":	false,
+			"message":	"Region is required (e.g., Sumba, Manggarai, Kupang, Flores, Timor)",
 		})
 		return
 	}
 
-	// Set sensible defaults
 	if product.MinOrder < 1 {
 		product.MinOrder = 1
 	}
@@ -66,57 +63,44 @@ func CreateProduct(c *gin.Context) {
 	}
 	product.IsActive = true
 
-	// Verify seller exists and has seller role
 	var seller models.User
 	if err := config.DB.First(&seller, product.SellerID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"success": false,
-			"message": "Seller not found",
+			"success":	false,
+			"message":	"Seller not found",
 		})
 		return
 	}
 	if seller.Role != "admin" && seller.Role != "seller" {
 		c.JSON(http.StatusForbidden, gin.H{
-			"success": false,
-			"message": "Hanya Seller/Admin yang memiliki hak akses untuk mengelola produk",
+			"success":	false,
+			"message":	"Hanya Seller/Admin yang memiliki hak akses untuk mengelola produk",
 		})
 		return
 	}
 
-	// Create the product record
 	if err := config.DB.Create(&product).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"success": false,
-			"message": "Failed to create product",
-			"error":   err.Error(),
+			"success":	false,
+			"message":	"Failed to create product",
+			"error":	err.Error(),
 		})
 		return
 	}
 
-	// Reload with seller data
 	config.DB.Preload("SellerProfile").First(&product, product.ID)
 
 	c.JSON(http.StatusCreated, gin.H{
-		"success": true,
-		"message": "Product created successfully",
-		"data":    product,
+		"success":	true,
+		"message":	"Product created successfully",
+		"data":		product,
 	})
 }
 
-// GetProducts handles GET /api/products
-// Supports filtering by NTT region, category, search keyword, and pagination.
-//
-// Query Parameters:
-//   - region:   Filter by NTT region (e.g., "Sumba", "Manggarai")
-//   - category: Filter by product category
-//   - search:   Search by product name (partial match)
-//   - page:     Page number (default: 1)
-//   - limit:    Items per page (default: 12)
 func GetProducts(c *gin.Context) {
 	var products []models.Product
 	var total int64
 
-	// Pagination defaults
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "12"))
 	if page < 1 {
@@ -127,28 +111,22 @@ func GetProducts(c *gin.Context) {
 	}
 	offset := (page - 1) * limit
 
-	// Build query with filters
 	query := config.DB.Model(&models.Product{}).Where("is_active = ?", true)
 
-	// Filter by NTT region
 	if region := c.Query("region"); region != "" {
 		query = query.Where("region = ?", region)
 	}
 
-	// Filter by category
 	if category := c.Query("category"); category != "" {
 		query = query.Where("category = ?", category)
 	}
 
-	// Search by product name
 	if search := c.Query("search"); search != "" {
 		query = query.Where("name LIKE ?", "%"+search+"%")
 	}
 
-	// Count total matching records for pagination metadata
 	query.Count(&total)
 
-	// Fetch paginated results with seller info
 	result := query.
 		Preload("SellerProfile").
 		Order("created_at DESC").
@@ -158,9 +136,9 @@ func GetProducts(c *gin.Context) {
 
 	if result.Error != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"success": false,
-			"message": "Failed to fetch products",
-			"error":   result.Error.Error(),
+			"success":	false,
+			"message":	"Failed to fetch products",
+			"error":	result.Error.Error(),
 		})
 		return
 	}
@@ -168,25 +146,24 @@ func GetProducts(c *gin.Context) {
 	totalPages := int(math.Ceil(float64(total) / float64(limit)))
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    products,
+		"success":	true,
+		"data":		products,
 		"meta": gin.H{
-			"page":        page,
-			"limit":       limit,
-			"total":       total,
-			"total_pages": totalPages,
+			"page":		page,
+			"limit":	limit,
+			"total":	total,
+			"total_pages":	totalPages,
 		},
 	})
 }
 
-// GetProductByID handles GET /api/products/:id
 func GetProductByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "Invalid product ID",
+			"success":	false,
+			"message":	"Invalid product ID",
 		})
 		return
 	}
@@ -194,26 +171,25 @@ func GetProductByID(c *gin.Context) {
 	var product models.Product
 	if err := config.DB.Preload("SellerProfile").First(&product, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"success": false,
-			"message": "Product not found",
+			"success":	false,
+			"message":	"Product not found",
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"data":    product,
+		"success":	true,
+		"data":		product,
 	})
 }
-
 
 func UpdateProduct(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "Invalid product ID",
+			"success":	false,
+			"message":	"Invalid product ID",
 		})
 		return
 	}
@@ -221,8 +197,8 @@ func UpdateProduct(c *gin.Context) {
 	var product models.Product
 	if err := config.DB.First(&product, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"success": false,
-			"message": "Product not found",
+			"success":	false,
+			"message":	"Product not found",
 		})
 		return
 	}
@@ -230,14 +206,13 @@ func UpdateProduct(c *gin.Context) {
 	var req models.Product
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "Invalid request payload",
-			"error":   err.Error(),
+			"success":	false,
+			"message":	"Invalid request payload",
+			"error":	err.Error(),
 		})
 		return
 	}
 
-	
 	var adminUser models.User
 	userIDToCheck := req.SellerID
 	if userIDToCheck == 0 {
@@ -245,15 +220,15 @@ func UpdateProduct(c *gin.Context) {
 	}
 	if err := config.DB.First(&adminUser, userIDToCheck).Error; err != nil {
 		c.JSON(http.StatusForbidden, gin.H{
-			"success": false,
-			"message": "User pengakses tidak ditemukan",
+			"success":	false,
+			"message":	"User pengakses tidak ditemukan",
 		})
 		return
 	}
 	if adminUser.Role != "admin" && adminUser.Role != "seller" {
 		c.JSON(http.StatusForbidden, gin.H{
-			"success": false,
-			"message": "Hanya Admin/Seller yang memiliki hak akses untuk mengelola produk",
+			"success":	false,
+			"message":	"Hanya Admin/Seller yang memiliki hak akses untuk mengelola produk",
 		})
 		return
 	}
@@ -285,17 +260,17 @@ func UpdateProduct(c *gin.Context) {
 
 	if err := config.DB.Save(&product).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"success": false,
-			"message": "Failed to update product",
-			"error":   err.Error(),
+			"success":	false,
+			"message":	"Failed to update product",
+			"error":	err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "Product updated successfully",
-		"data":    product,
+		"success":	true,
+		"message":	"Product updated successfully",
+		"data":		product,
 	})
 }
 
@@ -304,8 +279,8 @@ func DeleteProduct(c *gin.Context) {
 	id, err := strconv.ParseInt(idStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "Invalid product ID",
+			"success":	false,
+			"message":	"Invalid product ID",
 		})
 		return
 	}
@@ -313,56 +288,55 @@ func DeleteProduct(c *gin.Context) {
 	var product models.Product
 	if err := config.DB.First(&product, id).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
-			"success": false,
-			"message": "Product not found",
+			"success":	false,
+			"message":	"Product not found",
 		})
 		return
 	}
 
-	
 	userIDStr := c.Query("user_id")
 	if userIDStr == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "Parameter user_id (Admin ID) diperlukan untuk menghapus produk",
+			"success":	false,
+			"message":	"Parameter user_id (Admin ID) diperlukan untuk menghapus produk",
 		})
 		return
 	}
 	userID, err := strconv.ParseInt(userIDStr, 10, 32)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"success": false,
-			"message": "User ID tidak valid",
+			"success":	false,
+			"message":	"User ID tidak valid",
 		})
 		return
 	}
 	var user models.User
 	if err := config.DB.First(&user, userID).Error; err != nil {
 		c.JSON(http.StatusForbidden, gin.H{
-			"success": false,
-			"message": "User pengakses tidak ditemukan",
+			"success":	false,
+			"message":	"User pengakses tidak ditemukan",
 		})
 		return
 	}
 	if user.Role != "admin" {
 		c.JSON(http.StatusForbidden, gin.H{
-			"success": false,
-			"message": "Hanya Admin yang memiliki hak akses untuk mengelola produk",
+			"success":	false,
+			"message":	"Hanya Admin yang memiliki hak akses untuk mengelola produk",
 		})
 		return
 	}
 
 	if err := config.DB.Unscoped().Delete(&product).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"success": false,
-			"message": "Failed to delete product",
-			"error":   err.Error(),
+			"success":	false,
+			"message":	"Failed to delete product",
+			"error":	err.Error(),
 		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "Product deleted successfully",
+		"success":	true,
+		"message":	"Product deleted successfully",
 	})
 }

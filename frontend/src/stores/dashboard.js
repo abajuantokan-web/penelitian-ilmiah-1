@@ -53,7 +53,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
       if (response.data.success) {
         const dbData = response.data.data || []
         
-        // Generate continuous dates based on range
+        
         let days = 7;
         if (range === '30_days') days = 30;
         else if (range === '12_months') days = 365;
@@ -74,21 +74,21 @@ export const useDashboardStore = defineStore('dashboard', () => {
           dateMap.set(dateStr, { label: displayLabel, total: 0 });
         }
         
-        // Merge with DB data
+        
         dbData.forEach(item => {
-          // item.date is format 'YYYY-MM-DD' from SQL DATE()
+          
           const dtStr = item.date.split('T')[0];
           if (dateMap.has(dtStr)) {
             dateMap.get(dtStr).total = item.total;
           }
         });
         
-        // If 12 months, we should probably group by month in JS, but for now we'll just plot days or simplify it.
-        // The prompt says "fill in missing dates with 0 so the chart line is continuous".
-        // We'll extract labels and data directly from the continuous map.
         
-        // If 12 months, it's 365 days. We might want to group them by month for display, 
-        // but the DB is returning dates. We'll aggregate by label if multiple dates share the same label (e.g. 12 months)
+        
+        
+        
+        
+        
         const aggregatedMap = new Map();
         Array.from(dateMap.values()).forEach(val => {
            if (!aggregatedMap.has(val.label)) {

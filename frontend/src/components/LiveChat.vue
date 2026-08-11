@@ -1,7 +1,7 @@
 <template>
   <div v-if="authStore.isAuthenticated && authStore.user?.role !== 'seller'" class="live-chat-wrapper">
     
-    <!-- Floating Action Button -->
+    
     <button 
       v-if="!chatStore.isOpen" 
       @click="chatStore.toggleChat()" 
@@ -14,10 +14,10 @@
       <span v-if="notificationStore.hasBuyerNotifications" class="absolute -top-1 -right-1 flex h-3 w-3 rounded-full bg-red-500 ring-2 ring-white" style="position: absolute; top: -4px; right: -4px; background-color: #ef4444; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white;"></span>
     </button>
 
-    <!-- Chat Window -->
+    
     <div v-if="chatStore.isOpen" class="chat-window shadow-xl border border-gray-200">
       
-      <!-- MODE 1: CHAT HISTORY LIST -->
+      
       <template v-if="currentView === 'history'">
         <header class="chat-header">
           <div class="chat-header-info">
@@ -65,7 +65,7 @@
         </div>
       </template>
 
-      <!-- MODE 2: ACTIVE CHAT -->
+      
       <template v-else-if="currentView === 'chat'">
         <header class="chat-header">
           <div class="chat-header-info">
@@ -120,7 +120,7 @@
           </div>
         </div>
 
-        <!-- Input Area -->
+        
         <footer class="chat-footer">
           <form @submit.prevent="sendMessage" class="chat-form">
             <input 
@@ -146,7 +146,7 @@
 
     </div>
 
-    <!-- Toast Notification (for background messages) -->
+    
     <div class="buyer-toast-container" :class="{ 'toast-visible': showBuyerToast }">
       <div class="buyer-toast-content">
         <div class="buyer-toast-icon">
@@ -177,13 +177,13 @@ const chatStore = useChatStore()
 const notificationStore = useNotificationStore()
 const websocketStore = useWebsocketStore()
 
-// State
-const currentView = ref('history') // strict state machine
+
+const currentView = ref('history') 
 const contacts = ref([])
 const newMessage = ref('')
 const messagesContainer = ref(null)
 
-// Toast State
+
 const showBuyerToast = ref(false)
 const toastSenderName = ref('')
 const isLoadingContacts = ref(false)
@@ -219,9 +219,9 @@ watch(() => websocketStore.messages.length, async () => {
   }
 })
 
-// Sound is now handled by websocketStore
 
-// REST: Fetch Contacts
+
+
 const fetchContacts = async () => {
   if (!authStore.user?.id) return
   isLoadingContacts.value = true
@@ -241,7 +241,7 @@ const fetchContacts = async () => {
   }
 }
 
-// REST: Fetch Chat History
+
 const fetchChatHistory = async () => {
   if (!authStore.user?.id || !chatStore.currentReceiverId) return
   
@@ -257,7 +257,7 @@ const fetchChatHistory = async () => {
     
     if (res.data.success) {
       websocketStore.setMessages(res.data.data || [])
-      // Reset unread count for this contact globally
+      
       const contact = contacts.value.find(c => c.id === chatStore.currentReceiverId)
       if (contact) {
         contact.unread_count = 0
@@ -274,7 +274,7 @@ const fetchChatHistory = async () => {
   }
 }
 
-// Send Message
+
 const sendMessage = () => {
   if (!newMessage.value.trim() || !websocketStore.isConnected || !chatStore.currentReceiverId) return
   
@@ -288,7 +288,7 @@ const sendMessage = () => {
   newMessage.value = ''
 }
 
-// UI Actions
+
 const openContactChat = (contact) => {
   chatStore.openChat(contact.id, contact.name)
 }
@@ -296,10 +296,10 @@ const openContactChat = (contact) => {
 const goBackToList = () => {
   chatStore.clearReceiver()
   currentView.value = 'history'
-  fetchContacts() // Refresh list just in case
+  fetchContacts() 
 }
 
-// Watchers
+
 watch(() => chatStore.currentReceiverId, async (newId) => {
   if (newId) {
     currentView.value = 'chat'
@@ -314,9 +314,9 @@ watch(() => chatStore.currentReceiverId, async (newId) => {
 watch(() => chatStore.isOpen, (isOpen) => {
   if (isOpen) {
     if (!chatStore.currentReceiverId) {
-      fetchContacts() // If opening directly into history, fetch it
+      fetchContacts() 
     } else {
-      scrollToBottom() // If opening into active chat, scroll down
+      scrollToBottom() 
     }
   }
 })
@@ -327,9 +327,9 @@ watch(() => authStore.isAuthenticated, (isAuth) => {
   }
 })
 
-// Lifecycle
+
 onMounted(() => {
-  // Fetch contacts globally if authenticated as a buyer
+  
   if (authStore.isAuthenticated && authStore.user?.role !== 'seller') {
     fetchContacts()
     
@@ -411,7 +411,7 @@ onUnmounted(() => {
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* Header */
+
 .chat-header {
   background: #ffffff;
   padding: 16px;
@@ -501,7 +501,7 @@ onUnmounted(() => {
   background-color: #f3f4f6;
 }
 
-/* Contacts Area */
+
 .contacts-area {
   flex: 1;
   overflow-y: auto;
@@ -562,7 +562,7 @@ onUnmounted(() => {
   border-radius: 12px;
 }
 
-/* Content Area */
+
 .chat-empty-state, .chat-loading {
   flex: 1;
   display: flex;
@@ -647,7 +647,7 @@ onUnmounted(() => {
   color: #3b82f6;
 }
 
-/* Footer Input */
+
 .chat-footer {
   padding: 16px;
   background: white;
@@ -715,7 +715,7 @@ onUnmounted(() => {
   to { transform: rotate(360deg); }
 }
 
-/* Buyer Toast Notification */
+
 .buyer-toast-container {
   position: fixed;
   bottom: 100px;

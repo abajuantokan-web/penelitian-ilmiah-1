@@ -1,6 +1,6 @@
 <template>
   <div class="admin-layout">
-    <!-- Sidebar -->
+    
     <aside class="admin-sidebar">
       <div class="sidebar-header">
         <h2>OpenPeo Admin</h2>
@@ -47,14 +47,14 @@
       </div>
     </aside>
 
-    <!-- Main Content -->
+    
     <main class="admin-main">
       <header class="topbar">
         <h1>{{ tabTitle }}</h1>
       </header>
 
       <div class="content-wrapper">
-        <!-- Dashboard Tab -->
+        
         <div v-if="currentTab === 'dashboard'" class="dashboard-stats">
           <div class="stat-card">
             <div class="stat-icon users">
@@ -94,7 +94,7 @@
           </div>
         </div>
 
-        <!-- Recent Activity in Dashboard Tab -->
+        
         <div v-if="currentTab === 'dashboard'" class="dashboard-activity">
           <h2 class="section-title">Transaksi Terbaru</h2>
           <div class="data-table-container overflow-x-auto w-full">
@@ -128,7 +128,7 @@
           </div>
         </div>
 
-        <!-- Users Tab -->
+        
         <div v-if="currentTab === 'users'" class="data-table-container overflow-x-auto w-full">
           <table class="data-table">
             <thead>
@@ -162,7 +162,7 @@
           </table>
         </div>
 
-        <!-- Products Tab -->
+        
         <div v-if="currentTab === 'products'" class="data-table-container overflow-x-auto w-full">
           <table class="data-table">
             <thead>
@@ -207,7 +207,7 @@
           </table>
         </div>
 
-        <!-- Transactions Tab -->
+        
         <div v-if="currentTab === 'transactions'" class="data-table-container overflow-x-auto w-full">
           <table class="data-table">
             <thead>
@@ -352,7 +352,7 @@ const deleteProduct = async (id) => {
     const res = await axios.delete(`http://localhost:8081/api/admin/products/${id}`)
     if (res.data.success) {
       products.value = products.value.filter(p => p.id !== id)
-      // Update stats optimistically
+      
       if (stats.value) stats.value.total_products--
       alert('Produk berhasil dihapus')
     }
@@ -401,10 +401,10 @@ const cancelOrder = async (id) => {
   try {
     const res = await axios.put(`http://localhost:8081/api/admin/orders/${id}/cancel`)
     if (res.data.success) {
-      // Update local state
+      
       const order = orders.value.find(o => o.id === id)
       if (order) order.status = 'Dibatalkan Admin'
-      // Re-fetch stats
+      
       fetchData()
       alert('Pesanan berhasil dibatalkan')
     }
@@ -439,7 +439,7 @@ onUnmounted(() => {
   overflow: hidden;
 }
 
-/* Sidebar */
+
 .admin-sidebar {
   width: 260px;
   background-color: #111827;
@@ -537,7 +537,7 @@ onUnmounted(() => {
   color: white;
 }
 
-/* Main Content */
+
 .admin-main {
   flex: 1;
   width: 100%;
@@ -565,7 +565,7 @@ onUnmounted(() => {
   overflow-y: auto;
 }
 
-/* Dashboard Stats */
+
 .dashboard-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -610,7 +610,7 @@ onUnmounted(() => {
   color: #111827;
 }
 
-/* Tables */
+
 .overflow-x-auto {
   overflow-x: auto;
 }
@@ -656,7 +656,7 @@ onUnmounted(() => {
   border-bottom: none;
 }
 
-/* Specific cell styles */
+
 .seller-store {
   font-size: 0.8rem;
   color: #6b7280;

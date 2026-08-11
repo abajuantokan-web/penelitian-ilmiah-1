@@ -9,10 +9,10 @@
       </div>
 
       <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Main Content -->
+        
         <div class="md:col-span-2 space-y-6">
           
-          <!-- Shipping Address -->
+          
           <div class="bg-white p-6 rounded shadow">
             <div class="flex items-center justify-between mb-4 border-b pb-2">
               <h2 class="text-lg font-semibold flex items-center">
@@ -28,7 +28,7 @@
             </div>
           </div>
 
-          <!-- Product Details -->
+          
           <div class="bg-white p-6 rounded shadow">
             <h2 class="text-lg font-semibold mb-4 border-b pb-2">Pesanan Anda</h2>
             <div v-for="item in checkoutItems" :key="item.product.id" class="flex items-start gap-4 mb-4">
@@ -43,7 +43,7 @@
               </div>
             </div>
 
-            <!-- Optional Note -->
+            
             <div class="mt-6 border-t pt-4">
               <label class="block text-sm font-medium text-gray-700 mb-2">Pesan: (Opsional) Tinggalkan pesan</label>
               <input type="text" v-model="customerNote" placeholder="Contoh: Tolong sesuaikan ukuran lingkar dada 100cm" class="w-full border-gray-300 border rounded-md shadow-sm p-2 focus:ring-black focus:border-black text-sm">
@@ -51,9 +51,9 @@
           </div>
         </div>
 
-        <!-- Sidebar -->
+        
         <div class="space-y-6">
-          <!-- Shipping Option -->
+          
           <div class="bg-white p-6 rounded shadow">
             <h2 class="text-lg font-semibold mb-4 border-b pb-2">Opsi Pengiriman</h2>
             <div class="flex justify-between items-center mb-2">
@@ -64,7 +64,7 @@
             <p v-if="maxPoDuration > 0" class="text-xs text-orange-500 mt-1">*Termasuk masa Pre-Order maksimum {{ maxPoDuration }} hari</p>
           </div>
 
-          <!-- Order Summary -->
+          
           <div class="bg-white p-6 rounded shadow">
             <h2 class="text-lg font-semibold mb-4 border-b pb-2">Ringkasan Belanja</h2>
             
@@ -97,7 +97,7 @@
       </div>
     </div>
     
-    <!-- Edit Address Modal -->
+    
     <div v-if="isEditingAddress" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div class="bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
         <div class="px-6 py-4 border-b flex justify-between items-center">
@@ -146,12 +146,12 @@ const checkoutItems = ref([])
 const customerNote = ref('')
 const isProcessing = ref(false)
 
-// Shipping Address State
+
 const shippingName = ref('Customer')
 const shippingPhone = ref('081234567890')
 const shippingAddress = ref('Jl. Piet A. Tallo, Liliba, Kec. Oebobo, Kota Kupang, Nusa Tenggara Timur 85111')
 
-// Edit Form State
+
 const isEditingAddress = ref(false)
 const editForm = reactive({
   name: '',
@@ -160,7 +160,7 @@ const editForm = reactive({
 })
 
 const openEditModal = () => {
-  // Populate form with current state values
+  
   editForm.name = shippingName.value
   editForm.phone = shippingPhone.value
   editForm.address = shippingAddress.value
@@ -168,7 +168,7 @@ const openEditModal = () => {
 }
 
 const saveEdit = () => {
-  // Update state with new input values
+  
   shippingName.value = editForm.name
   shippingPhone.value = editForm.phone
   shippingAddress.value = editForm.address
@@ -176,7 +176,7 @@ const saveEdit = () => {
 }
 
 const cancelEdit = () => {
-  // Close without saving
+  
   isEditingAddress.value = false
 }
 
@@ -206,7 +206,7 @@ onMounted(async () => {
     }
   }
   
-  // Set fallback defaults from user store if available on mount
+  
   if (authStore.user) {
     shippingName.value = authStore.user.name || 'Customer'
     shippingPhone.value = authStore.user.phone || '081234567890'
@@ -235,7 +235,7 @@ const maxPoDuration = computed(() => {
 const estimatedArrival = computed(() => {
   if (checkoutItems.value.length === 0) return ''
   const poDays = maxPoDuration.value
-  // Tambah 3 hari estimasi pengiriman setelah PO
+  
   const totalDays = parseInt(poDays) + 3 
   const targetDate = new Date()
   targetDate.setDate(targetDate.getDate() + totalDays)
@@ -259,7 +259,7 @@ const handleBuatPesanan = async () => {
   try {
     let checkoutRes;
     
-    // Create the DB record first based on Cart vs Direct Buy
+    
     if (isFromCart.value) {
       const payloadItems = checkoutItems.value.map(item => ({
         product_id: item.product.id,
@@ -273,7 +273,7 @@ const handleBuatPesanan = async () => {
       }, {
         headers: { Authorization: `Bearer ${authStore.token}` }
       });
-      // Clear local cart since it's converted to an order
+      
       if (checkoutRes.data.success) {
         cartStore.clearLocalCart()
       }
@@ -290,8 +290,8 @@ const handleBuatPesanan = async () => {
 
     let snap_token = checkoutRes.data.snap_token;
     
-    // Fallback: if backend hasn't been restarted, it won't return snap_token
-    // so we fetch it manually via /api/checkout
+    
+    
     if (!snap_token && checkoutRes.data.success) {
       const fallbackRes = await axios.post('http://localhost:8081/api/checkout', {
         total_amount: totalAmount.value,
@@ -351,5 +351,5 @@ const handleBuatPesanan = async () => {
 </script>
 
 <style scoped>
-/* Tailwind classes handled via CDN. Any additional overrides can go here. */
+
 </style>

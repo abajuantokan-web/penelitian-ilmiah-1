@@ -1,6 +1,6 @@
 <template>
   <div class="shop-page">
-    <!-- Navbar -->
+    
     <nav class="navbar glass-strong">
       <div class="navbar-container">
         <div class="navbar-brand">
@@ -39,7 +39,7 @@
       </div>
     </nav>
 
-    <!-- Content -->
+    
     <div class="shop-content">
       <header class="shop-header">
         <h1 class="shop-title">Eksplorasi <span class="text-gradient">Produk Autentik</span> NTT</h1>
@@ -48,20 +48,20 @@
         </p>
       </header>
 
-      <!-- Products Grid -->
+      
       <ProductList @order="openOrderModal" />
     </div>
 
-    <!-- Live Chat Floating -->
+    
     <ChatBox :visible="chatOpen" @close="chatOpen = false" />
     
-    <!-- Float chat toggle button if chat is closed -->
+    
     <button v-show="!chatOpen" class="chat-toggle-btn btn btn-primary" @click="chatOpen = true">
       <span class="chat-toggle-icon">💬</span>
       <span>Tanya Penjual</span>
     </button>
 
-    <!-- Order Modal -->
+    
     <OrderModal v-if="selectedProduct" :product="selectedProduct" @close="selectedProduct = null" />
   </div>
 </template>

@@ -67,10 +67,10 @@
       @product-click="openProductModal"
     />
 
-    <!-- Floating Buttons -->
+    
     <FloatingButtons />
 
-    <!-- Product Detail Modal -->
+    
     <ProductDetailModal 
       :is-open="isModalOpen" 
       :product="selectedProduct"

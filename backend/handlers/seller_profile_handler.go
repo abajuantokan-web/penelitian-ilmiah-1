@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetSellerProfile retrieves the profile for the logged-in seller
 func GetSellerProfile(c *gin.Context) {
 	userIDFloat, exists := c.Get("userID")
 	if !exists {
@@ -20,8 +19,7 @@ func GetSellerProfile(c *gin.Context) {
 	var profile models.SellerProfile
 	err := config.DB.Where("user_id = ?", userID).First(&profile).Error
 	if err != nil {
-		// If profile doesn't exist, return empty data (200 OK)
-		// It's normal for a new seller to not have a profile yet.
+
 		c.JSON(http.StatusOK, models.SellerProfile{
 			UserID: userID,
 		})
@@ -31,7 +29,6 @@ func GetSellerProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, profile)
 }
 
-// UpsertSellerProfile creates or updates the seller profile
 func UpsertSellerProfile(c *gin.Context) {
 	userIDFloat, exists := c.Get("userID")
 	if !exists {
@@ -50,7 +47,7 @@ func UpsertSellerProfile(c *gin.Context) {
 	err := config.DB.Where("user_id = ?", userID).First(&profile).Error
 
 	if err != nil {
-		// Create new
+
 		input.UserID = userID
 		if err := config.DB.Create(&input).Error; err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Gagal menyimpan profil"})
@@ -58,7 +55,7 @@ func UpsertSellerProfile(c *gin.Context) {
 		}
 		c.JSON(http.StatusOK, input)
 	} else {
-		// Update existing
+
 		profile.StoreName = input.StoreName
 		profile.Description = input.Description
 		profile.StoreLogo = input.StoreLogo

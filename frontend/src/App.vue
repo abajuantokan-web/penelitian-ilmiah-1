@@ -1,6 +1,6 @@
 <template>
   <div id="app-root" >
-    <!-- Header -->
+    
     <header :class="headerClass">
       <div class="container header-inner">
         <div class="logo">
@@ -15,7 +15,7 @@
         </nav>
 
         <div class="header-icons">
-          <!-- Search -->
+          
           <button class="icon-btn" aria-label="Search" @click="goToSearch">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"/>
@@ -23,7 +23,7 @@
             </svg>
           </button>
           
-          <!-- Profile/Login -->
+          
           <button 
             :class="['icon-btn', { 'icon-btn--active': authStore.isAuthenticated }]" 
             aria-label="Profile" 
@@ -36,7 +36,7 @@
             <span v-if="authStore.isAuthenticated" class="profile-dot"></span>
           </button>
 
-          <!-- Store / Seller / Order History -->
+          
           <div class="store-menu-wrapper" @mouseleave="isStoreDropdownOpen = false">
             <template v-if="authStore.isAuthenticated && authStore.user?.role !== 'seller'">
               <button class="icon-btn relative" aria-label="Order History" @click="router.push({ path: '/profile', query: { tab: 'orders' } })">
@@ -79,7 +79,7 @@
             </template>
           </div>
 
-          <!-- Cart -->
+          
           <button class="icon-btn cart-btn" aria-label="Cart" @click="cartStore.toggleDrawer">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round">
               <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
@@ -92,18 +92,18 @@
       </div>
     </header>
 
-    <!-- Router View for Pages -->
+    
     <main class="main-content" :class="{ 'with-header-padding': route.path !== '/' }">
       <router-view />
     </main>
 
-    <!-- Cart Drawer -->
+    
     <CartDrawer />
     
-    <!-- Live Chat Widget -->
+    
     <LiveChat v-if="authStore.user?.role !== 'seller'" />
 
-    <!-- Footer -->
+    
     <footer class="site-footer" role="contentinfo">
       <div class="container">
         <div class="footer-grid">
@@ -167,7 +167,7 @@ const authStore = useAuthStore()
 const cartStore = useCartStore()
 const notificationStore = useNotificationStore()
 const dashboardStore = useDashboardStore()
-const websocketStore = useWebsocketStore() // Initializes singleton WS
+const websocketStore = useWebsocketStore() 
 
 const isScrolled = ref(false)
 const isStoreDropdownOpen = ref(false)
@@ -201,7 +201,7 @@ const goToSearch = () => {
   router.push({ path: '/koleksi', query: { search: 1 } })
 }
 
-// IntersectionObserver for scroll reveal animations
+
 let revealObserver = null
 
 const initRevealObserver = () => {
@@ -224,7 +224,7 @@ const initRevealObserver = () => {
   })
 }
 
-// Re-observe when route changes (new elements may appear)
+
 watch(() => router.currentRoute.value, () => {
   nextTick(() => {
     setTimeout(initRevealObserver, 100)
@@ -241,7 +241,7 @@ onMounted(() => {
     }
   }
 
-  // Initial reveal observer setup
+  
   nextTick(() => {
     setTimeout(initRevealObserver, 300)
   })
@@ -254,7 +254,7 @@ onUnmounted(() => {
 </script>
 
 <style>
-/* Profile active dot */
+
 .icon-btn {
   position: relative;
 }
@@ -279,7 +279,7 @@ onUnmounted(() => {
   border-color: #fff;
 }
 
-/* Store Dropdown */
+
 .store-menu-wrapper {
   position: relative;
 }
@@ -352,7 +352,7 @@ onUnmounted(() => {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Enforce Global Navbar Fixed & Layout padding */
+
 .site-header {
   position: fixed !important;
   top: 0 !important;
@@ -363,6 +363,6 @@ onUnmounted(() => {
 }
 
 .with-header-padding {
-  padding-top: 80px; /* mt-20 equivalent */
+  padding-top: 80px; 
 }
 </style>

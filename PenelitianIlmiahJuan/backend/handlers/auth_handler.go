@@ -9,13 +9,13 @@ import (
 	"openpeo-backend/models"
 )
 
-// LoginRequest is the expected JSON payload for the login endpoint.
+
 type LoginRequest struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 }
 
-// RegisterRequest represents the JSON payload for registration.
+
 type RegisterRequest struct {
 	Name     string `json:"name" binding:"required"`
 	Username string `json:"username" binding:"required"`
@@ -25,13 +25,13 @@ type RegisterRequest struct {
 	Address  string `json:"address"`
 }
 
-// Login handles POST /api/login
-// Authenticates a user by matching username and password against the users table.
-// Returns the user's id, username, name, and role on success.
-//
-// In a production system this should use bcrypt password hashing and JWT tokens.
-// For this academic/demo project, passwords are compared as plain text to match
-// the dummy data in db.sql.
+
+
+
+
+
+
+
 func Login(c *gin.Context) {
 	var req LoginRequest
 
@@ -44,7 +44,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Look up user by username
+	
 	var user models.User
 	result := config.DB.Where("username = ?", req.Username).First(&user)
 
@@ -56,7 +56,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Validate password (plain text comparison for demo — use bcrypt in production)
+	
 	if user.Password != req.Password {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"success": false,
@@ -65,7 +65,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// Return user session data
+	
 	c.JSON(http.StatusOK, gin.H{
 		"success": true,
 		"message": "Login berhasil!",
@@ -80,8 +80,8 @@ func Login(c *gin.Context) {
 	})
 }
 
-// RegisterUser handles POST /api/register
-// Registers a new customer into the system.
+
+
 func RegisterUser(c *gin.Context) {
 	var req RegisterRequest
 
@@ -94,7 +94,7 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	// Verify if username is already taken
+	
 	var existing models.User
 	if err := config.DB.Where("username = ?", req.Username).First(&existing).Error; err == nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -104,7 +104,7 @@ func RegisterUser(c *gin.Context) {
 		return
 	}
 
-	// Create user record (role is hardcoded as 'customer' for safety)
+	
 	newUser := models.User{
 		Name:     req.Name,
 		Username: req.Username,
@@ -136,8 +136,8 @@ func RegisterUser(c *gin.Context) {
 	})
 }
 
-// GetCurrentUser handles GET /api/user/:id
-// Returns profile data for a specific user (used for session validation).
+
+
 func GetCurrentUser(c *gin.Context) {
 	userID := c.Param("id")
 
@@ -163,9 +163,9 @@ func GetCurrentUser(c *gin.Context) {
 	})
 }
 
-// GetChatContacts handles GET /api/chat/contacts
-// For admins: returns a list of unique customers who have sent messages.
-// For customers: returns a list of admins/vendors they can chat with.
+
+
+
 func GetChatContacts(c *gin.Context) {
 	userID := c.Query("user_id")
 	role := c.Query("role")
@@ -181,14 +181,14 @@ func GetChatContacts(c *gin.Context) {
 	var contacts []models.User
 
 	if role == "admin" {
-		// For admins: show all customers to allow messaging any registered customer
+		
 		config.DB.Where("role = ?", "customer").Order("name ASC").Find(&contacts)
 	} else {
-		// For customers: show all admins and vendors they can contact
+		
 		config.DB.Where("role IN ('admin', 'vendor')").Find(&contacts)
 	}
 
-	// Calculate unread count for each contact
+	
 	type ContactInfo struct {
 		ID          int32  `json:"id"`
 		Username    string `json:"username"`

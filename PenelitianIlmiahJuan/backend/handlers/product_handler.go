@@ -11,8 +11,8 @@ import (
 	"openpeo-backend/models"
 )
 
-// CreateProduct handles POST /api/products
-// Allows a vendor to upload a new pre-order product with criteria like min_order and po_duration.
+
+
 func CreateProduct(c *gin.Context) {
 	var product models.Product
 
@@ -25,7 +25,7 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
-	// Validate required fields
+	
 	if product.Name == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
@@ -58,7 +58,7 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
-	// Set sensible defaults
+	
 	if product.MinOrder < 1 {
 		product.MinOrder = 1
 	}
@@ -67,7 +67,7 @@ func CreateProduct(c *gin.Context) {
 	}
 	product.IsActive = true
 
-	// Verify vendor exists and has vendor role
+	
 	var vendor models.User
 	if err := config.DB.First(&vendor, product.VendorID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -84,7 +84,7 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
-	// Create the product record
+	
 	if err := config.DB.Create(&product).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -94,7 +94,7 @@ func CreateProduct(c *gin.Context) {
 		return
 	}
 
-	// Reload with vendor data
+	
 	config.DB.Preload("Vendor").First(&product, product.ID)
 
 	c.JSON(http.StatusCreated, gin.H{
@@ -104,20 +104,20 @@ func CreateProduct(c *gin.Context) {
 	})
 }
 
-// GetProducts handles GET /api/products
-// Supports filtering by NTT region, category, search keyword, and pagination.
-//
-// Query Parameters:
-//   - region:   Filter by NTT region (e.g., "Sumba", "Manggarai")
-//   - category: Filter by product category
-//   - search:   Search by product name (partial match)
-//   - page:     Page number (default: 1)
-//   - limit:    Items per page (default: 12)
+
+
+
+
+
+
+
+
+
 func GetProducts(c *gin.Context) {
 	var products []models.Product
 	var total int64
 
-	// Pagination defaults
+	
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "12"))
 	if page < 1 {
@@ -128,28 +128,28 @@ func GetProducts(c *gin.Context) {
 	}
 	offset := (page - 1) * limit
 
-	// Build query with filters
+	
 	query := config.DB.Model(&models.Product{}).Where("is_active = ?", true)
 
-	// Filter by NTT region
+	
 	if region := c.Query("region"); region != "" {
 		query = query.Where("region = ?", region)
 	}
 
-	// Filter by category
+	
 	if category := c.Query("category"); category != "" {
 		query = query.Where("category = ?", category)
 	}
 
-	// Search by product name
+	
 	if search := c.Query("search"); search != "" {
 		query = query.Where("name LIKE ?", "%"+search+"%")
 	}
 
-	// Count total matching records for pagination metadata
+	
 	query.Count(&total)
 
-	// Fetch paginated results with vendor info
+	
 	result := query.
 		Preload("Vendor").
 		Order("created_at DESC").
@@ -180,8 +180,8 @@ func GetProducts(c *gin.Context) {
 	})
 }
 
-// UpdateProduct handles PUT /api/products/:id
-// Allows an authorized user (admin) to modify product details, including stock.
+
+
 func UpdateProduct(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 32)
@@ -212,8 +212,8 @@ func UpdateProduct(c *gin.Context) {
 		return
 	}
 
-	// Update fields
-	// Verify pengubah is admin
+	
+	
 	var adminUser models.User
 	userIDToCheck := req.VendorID
 	if userIDToCheck == 0 {

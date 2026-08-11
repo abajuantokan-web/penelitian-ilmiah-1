@@ -13,13 +13,13 @@ import (
 )
 
 func main() {
-	// ---------------------------------------------------------------
-	// 1. Database Initialization
-	// ---------------------------------------------------------------
+	
+	
+	
 	config.ConnectDatabase()
 
-	// Auto-migrate all models to sync with the MySQL schema.
-	// AutoMigrate only adds missing columns/indexes — it never drops existing ones.
+	
+	
 	err := config.DB.AutoMigrate(
 		&models.User{},
 		&models.Product{},
@@ -31,15 +31,15 @@ func main() {
 	}
 	fmt.Println("✅ Database schema synchronized")
 
-	// Seed a demo vendor and customer if the users table is empty
+	
 	seedDemoData()
 
-	// ---------------------------------------------------------------
-	// 2. Gin Engine Setup
-	// ---------------------------------------------------------------
+	
+	
+	
 	r := gin.Default()
 
-	// CORS configuration for Vue.js dev server (localhost:5173)
+	
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
@@ -48,46 +48,46 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// ---------------------------------------------------------------
-	// 3. RESTful API Routes
-	// ---------------------------------------------------------------
+	
+	
+	
 	api := r.Group("/api")
 	{
-		// Authentication
+		
 		api.POST("/login", handlers.Login)
 		api.POST("/register", handlers.RegisterUser)
 		api.GET("/user/:id", handlers.GetCurrentUser)
 
-		// Product endpoints
+		
 		api.POST("/products", handlers.CreateProduct)
 		api.GET("/products", handlers.GetProducts)
 		api.PUT("/products/:id", handlers.UpdateProduct)
 		api.DELETE("/products/:id", handlers.DeleteProduct)
 
-		// Order endpoints
+		
 		api.POST("/orders", handlers.CreateOrder)
 		api.GET("/orders", handlers.GetOrders)
 		api.DELETE("/orders/:id", handlers.DeleteOrder)
 
-		// Chat endpoints
+		
 		api.GET("/messages", handlers.GetChatHistory)
 		api.GET("/chat/contacts", handlers.GetChatContacts)
 
-		// Admin dashboard (protected — role check done client-side for demo)
+		
 		admin := api.Group("/admin")
 		{
 			admin.GET("/sales-data", handlers.GetSalesData)
 		}
 	}
 
-	// ---------------------------------------------------------------
-	// 4. WebSocket Route
-	// ---------------------------------------------------------------
+	
+	
+	
 	r.GET("/ws/chat", handlers.HandleWebSocket)
 
-	// ---------------------------------------------------------------
-	// 5. Health Check
-	// ---------------------------------------------------------------
+	
+	
+	
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"status":  "healthy",
@@ -96,9 +96,9 @@ func main() {
 		})
 	})
 
-	// ---------------------------------------------------------------
-	// 6. Start Server
-	// ---------------------------------------------------------------
+	
+	
+	
 	fmt.Println("🚀 OpenPeo Backend Engine starting on :8080")
 	fmt.Println("📡 REST API:    http://localhost:8080/api")
 	fmt.Println("🔌 WebSocket:   ws://localhost:8080/ws/chat")
@@ -109,13 +109,13 @@ func main() {
 	}
 }
 
-// seedDemoData populates the database with sample users and products
-// if the tables are empty. This allows the frontend to work immediately.
+
+
 func seedDemoData() {
 	var userCount int64
 	config.DB.Model(&models.User{}).Count(&userCount)
 
-	// 1. Seed users if users table is empty
+	
 	if userCount == 0 {
 		fmt.Println("🌱 Seeding demo users...")
 		users := []models.User{
@@ -162,13 +162,13 @@ func seedDemoData() {
 		fmt.Printf("✅ Seeded %d users\n", len(users))
 	}
 
-	// 2. Seed products if products table is empty or missing items
+	
 	var productCount int64
 	config.DB.Model(&models.Product{}).Count(&productCount)
 	if productCount < 8 {
 		fmt.Println("🌱 Seeding demo products...")
 
-		// Find an admin/vendor to assign products to
+		
 		var adminUser models.User
 		if err := config.DB.Where("role = ?", "admin").First(&adminUser).Error; err != nil {
 			if err := config.DB.First(&adminUser).Error; err != nil {

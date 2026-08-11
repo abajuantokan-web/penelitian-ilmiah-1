@@ -1,14 +1,14 @@
-/**
- * Tenun NTT — Landing Page Scripts
- * Handles: header scroll behavior, mobile nav, scroll reveal animations
- */
+
+
+
+
 
 (function () {
   'use strict';
 
-  // ============================================================
-  // HEADER: Scroll-based background change
-  // ============================================================
+  
+  
+  
   const header = document.getElementById('site-header');
   const SCROLL_THRESHOLD = 60;
 
@@ -21,12 +21,12 @@
   }
 
   window.addEventListener('scroll', handleHeaderScroll, { passive: true });
-  handleHeaderScroll(); // Run on load
+  handleHeaderScroll(); 
 
 
-  // ============================================================
-  // MOBILE NAV: Toggle overlay
-  // ============================================================
+  
+  
+  
   const menuToggle = document.getElementById('menu-toggle');
   const mobileNav = document.getElementById('mobile-nav');
 
@@ -36,7 +36,7 @@
       menuToggle.classList.toggle('active');
       menuToggle.setAttribute('aria-expanded', isOpen);
 
-      // When mobile nav is open, force header to scrolled style for visibility
+      
       if (isOpen) {
         header.classList.add('scrolled');
         document.body.style.overflow = 'hidden';
@@ -46,7 +46,7 @@
       }
     });
 
-    // Close mobile nav when a link is clicked
+    
     mobileNav.querySelectorAll('a').forEach(function (link) {
       link.addEventListener('click', function () {
         mobileNav.classList.remove('open');
@@ -59,9 +59,9 @@
   }
 
 
-  // ============================================================
-  // SCROLL REVEAL: IntersectionObserver for fade-in elements
-  // ============================================================
+  
+  
+  
   const revealElements = document.querySelectorAll('.reveal');
 
   if ('IntersectionObserver' in window && revealElements.length > 0) {
@@ -84,16 +84,16 @@
       revealObserver.observe(el);
     });
   } else {
-    // Fallback: just show everything
+    
     revealElements.forEach(function (el) {
       el.classList.add('visible');
     });
   }
 
 
-  // ============================================================
-  // SMOOTH SCROLL: For anchor links
-  // ============================================================
+  
+  
+  
   document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
     anchor.addEventListener('click', function (e) {
       const targetId = this.getAttribute('href');
@@ -113,9 +113,9 @@
     });
   });
 
-  // ============================================================
-  // PRODUCT DETAIL MODAL (PDP) LOGIC
-  // ============================================================
+  
+  
+  
   const pdpModal = document.getElementById('pdp-modal');
   const pdpClose = document.getElementById('pdp-close');
   const pdpOverlay = document.getElementById('pdp-overlay');
@@ -139,18 +139,18 @@
   }
 
   function openPDP(productId) {
-    // Find product in global productsData
+    
     const product = (typeof productsData !== 'undefined') ? productsData.find(p => p.id === productId) : null;
     if (!product) return;
 
-    // Populate data
+    
     pdpCategory.textContent = product.category;
     pdpTitle.textContent = product.name;
     pdpPrice.textContent = formatRupiah(product.price);
     pdpPreorderText.textContent = `Estimasi Pre-order: ${product.preOrderDays} hari kerja`;
     pdpDescText.textContent = product.description;
     
-    // Custom note for Tenun
+    
     if (product.category === "Koleksi Tenun NTT") {
       pdpDescNote.textContent = "Tersedia layanan custom size (request ukuran sesuai keinginan Anda).";
       pdpDescNote.style.display = "block";
@@ -158,7 +158,7 @@
       pdpDescNote.style.display = "none";
     }
 
-    // Populate images
+    
     pdpMainImg.src = product.images[0];
     pdpMainImg.alt = product.name;
     
@@ -175,21 +175,21 @@
       pdpThumbnails.appendChild(img);
     });
 
-    // Reset Quantity
+    
     currentQty = 1;
     qtyValue.textContent = currentQty;
 
-    // Open Modal
+    
     if (pdpModal) pdpModal.classList.add('open');
-    document.body.style.overflow = 'hidden'; // Lock scroll
+    document.body.style.overflow = 'hidden'; 
   }
 
   function closePDP() {
     if (pdpModal) pdpModal.classList.remove('open');
-    document.body.style.overflow = ''; // Unlock scroll
+    document.body.style.overflow = ''; 
   }
 
-  // Attach events to all product cards
+  
   document.querySelectorAll('.product-card').forEach(card => {
     card.addEventListener('click', function(e) {
       e.preventDefault();
@@ -198,11 +198,11 @@
     });
   });
 
-  // Attach close events
+  
   if(pdpClose) pdpClose.addEventListener('click', closePDP);
   if(pdpOverlay) pdpOverlay.addEventListener('click', closePDP);
 
-  // Quantity Selector
+  
   if(qtyMinus && qtyPlus) {
     qtyMinus.addEventListener('click', () => {
       if (currentQty > 1) {

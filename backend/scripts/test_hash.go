@@ -22,3 +22,4 @@ func main() {
 	newHash, _ := bcrypt.GenerateFromPassword([]byte("password123"), bcrypt.DefaultCost)
 	fmt.Println("New Hash:", string(newHash))
 }
+

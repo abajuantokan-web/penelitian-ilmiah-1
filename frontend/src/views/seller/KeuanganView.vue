@@ -40,7 +40,7 @@
       </table>
     </div>
 
-    <!-- Withdraw Modal -->
+    
     <div v-if="isModalOpen" class="modal-overlay" @click.self="closeModal">
       <div class="modal-content !max-w-md">
         <div class="modal-header">
@@ -143,7 +143,7 @@ const submitWithdrawal = async () => {
     if (response.data.success) {
       alert(response.data.message)
       closeModal()
-      fetchWallet() // refresh data
+      fetchWallet() 
     }
   } catch (error) {
     errorMessage.value = error.response?.data?.message || 'Gagal melakukan penarikan.'

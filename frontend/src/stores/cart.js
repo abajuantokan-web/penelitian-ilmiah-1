@@ -59,7 +59,7 @@ export const useCartStore = defineStore('cart', {
         })
         
         if (response.data.success) {
-          await this.fetchCart() // Refresh cart
+          await this.fetchCart() 
           return true
         }
       } catch (error) {
@@ -75,7 +75,7 @@ export const useCartStore = defineStore('cart', {
       try {
         const response = await axios.delete(`http://localhost:8081/api/cart/${cartItemId}`)
         if (response.data.success) {
-          // Remove locally for instant UI feedback
+          
           this.items = this.items.filter(item => item.id !== cartItemId)
           return true
         }

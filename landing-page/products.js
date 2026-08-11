@@ -1,5 +1,5 @@
 const productsData = [
-  // SECTION 1: Koleksi Tenun NTT
+  
   {
     id: "product-1",
     name: "Kaftan Indigo Sumba",
@@ -81,7 +81,7 @@ const productsData = [
     stockStatus: "Pre-order"
   },
 
-  // SECTION 2: Cita Rasa Lokal
+  
   {
     id: "product-sei-babi",
     name: "Sei Babi Asap Kupang",
@@ -163,7 +163,7 @@ const productsData = [
     stockStatus: "Pre-order"
   },
 
-  // SECTION 3: Koleksi Aksesoris
+  
   {
     id: "product-headband",
     name: "Headband Kain Tenun Sumba",

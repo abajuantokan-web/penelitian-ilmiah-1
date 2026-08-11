@@ -1,14 +1,14 @@
 <template>
   <Teleport to="body">
-    <!-- Backdrop -->
+    
     <Transition name="backdrop">
       <div v-if="cartStore.isOpen" class="cart-backdrop" @click="cartStore.closeDrawer"></div>
     </Transition>
 
-    <!-- Drawer Panel -->
+    
     <Transition name="drawer">
       <aside v-if="cartStore.isOpen" class="cart-drawer" role="dialog" aria-label="Keranjang Belanja">
-        <!-- Header -->
+        
         <div class="cart-drawer__header">
           <h2 class="cart-drawer__title">Keranjang Anda</h2>
           <span class="cart-drawer__count">{{ cartStore.totalItems }} item</span>
@@ -19,15 +19,15 @@
           </button>
         </div>
 
-        <!-- Cart Items -->
+        
         <div class="cart-drawer__body">
-          <!-- Loading State -->
+          
           <div v-if="cartStore.isLoading" class="cart-drawer__loading">
             <div class="cart-spinner"></div>
             <p>Memuat keranjang...</p>
           </div>
 
-          <!-- Empty State -->
+          
           <div v-else-if="!cartStore.items || cartStore.items.length === 0" class="cart-drawer__empty">
             <div class="cart-empty-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
@@ -41,7 +41,7 @@
             <button class="cart-empty-btn" @click="cartStore.closeDrawer">Belanja Sekarang</button>
           </div>
 
-          <!-- Items List -->
+          
           <div v-else class="cart-drawer__items">
             <TransitionGroup name="cart-item">
               <div v-for="item in cartStore.items" :key="item.id" class="cart-item">
@@ -69,7 +69,7 @@
           </div>
         </div>
 
-        <!-- Footer -->
+        
         <div v-if="cartStore.items && cartStore.items.length > 0" class="cart-drawer__footer">
           <div class="cart-drawer__total">
             <span>Total</span>
@@ -130,7 +130,7 @@ const handleCheckout = () => {
 </script>
 
 <style scoped>
-/* Backdrop */
+
 .cart-backdrop {
   position: fixed;
   inset: 0;
@@ -148,7 +148,7 @@ const handleCheckout = () => {
   opacity: 0;
 }
 
-/* Drawer */
+
 .cart-drawer {
   position: fixed;
   top: 0;
@@ -172,7 +172,7 @@ const handleCheckout = () => {
   transform: translateX(100%);
 }
 
-/* Header */
+
 .cart-drawer__header {
   display: flex;
   align-items: center;
@@ -218,14 +218,14 @@ const handleCheckout = () => {
   color: #1a1a1a;
 }
 
-/* Body */
+
 .cart-drawer__body {
   flex: 1;
   overflow-y: auto;
   padding: 0;
 }
 
-/* Loading */
+
 .cart-drawer__loading {
   display: flex;
   flex-direction: column;
@@ -250,7 +250,7 @@ const handleCheckout = () => {
   to { transform: rotate(360deg); }
 }
 
-/* Empty State */
+
 .cart-drawer__empty {
   display: flex;
   flex-direction: column;
@@ -300,7 +300,7 @@ const handleCheckout = () => {
   background-color: #333;
 }
 
-/* Cart Items */
+
 .cart-drawer__items {
   padding: 8px 0;
 }
@@ -399,7 +399,7 @@ const handleCheckout = () => {
   display: block;
 }
 
-/* Cart Item Transitions */
+
 .cart-item-enter-active {
   transition: all 0.3s ease;
 }
@@ -415,7 +415,7 @@ const handleCheckout = () => {
   transform: translateX(-20px);
 }
 
-/* Footer */
+
 .cart-drawer__footer {
   border-top: 1px solid #eee;
   padding: 24px 28px;
@@ -504,7 +504,7 @@ const handleCheckout = () => {
   color: #16a34a;
 }
 
-/* Mobile */
+
 @media (max-width: 480px) {
   .cart-drawer {
     width: 100vw;

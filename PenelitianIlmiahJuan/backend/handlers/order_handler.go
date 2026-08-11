@@ -10,9 +10,9 @@ import (
 	"openpeo-backend/models"
 )
 
-// CreateOrder handles POST /api/orders
-// Allows a customer to purchase or join a specific Pre-Order batch.
-// Validates product availability, minimum order constraints, and calculates total price.
+
+
+
 func CreateOrder(c *gin.Context) {
 	var req models.OrderRequest
 
@@ -25,7 +25,7 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	// Verify customer exists
+	
 	var customer models.User
 	if err := config.DB.First(&customer, req.CustomerID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -35,7 +35,7 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	// Verify product exists and is active
+	
 	var product models.Product
 	if err := config.DB.First(&product, req.ProductID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{
@@ -53,7 +53,7 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	// Validate minimum order quantity
+	
 	if req.Quantity < product.MinOrder {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
@@ -66,7 +66,7 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	// Check stock availability
+	
 	if product.Stock < req.Quantity {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"success": false,
@@ -79,7 +79,7 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	// Decrement stock
+	
 	product.Stock -= req.Quantity
 	if err := config.DB.Save(&product).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -90,10 +90,10 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	// Calculate total price
+	
 	totalPrice := product.Price * float64(req.Quantity)
 
-	// Create the order
+	
 	order := models.Order{
 		CustomerID: req.CustomerID,
 		ProductID:  req.ProductID,
@@ -112,7 +112,7 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	// Reload with associations
+	
 	config.DB.Preload("Customer").Preload("Product").Preload("Product.Vendor").First(&order, order.ID)
 
 	c.JSON(http.StatusCreated, gin.H{
@@ -122,25 +122,25 @@ func CreateOrder(c *gin.Context) {
 	})
 }
 
-// GetOrders handles GET /api/orders
-// Supports filtering by customer_id, product_id, status, and pagination.
+
+
 func GetOrders(c *gin.Context) {
 	var orders []models.Order
 	var total int64
 
 	query := config.DB.Model(&models.Order{})
 
-	// Filter by customer
+	
 	if customerID := c.Query("customer_id"); customerID != "" {
 		query = query.Where("customer_id = ?", customerID)
 	}
 
-	// Filter by product
+	
 	if productID := c.Query("product_id"); productID != "" {
 		query = query.Where("product_id = ?", productID)
 	}
 
-	// Filter by status
+	
 	if status := c.Query("status"); status != "" {
 		query = query.Where("status = ?", status)
 	}
@@ -169,8 +169,8 @@ func GetOrders(c *gin.Context) {
 	})
 }
 
-// DeleteOrder handles DELETE /api/orders/:id
-// Restricted to admin — deletes the transaction log.
+
+
 func DeleteOrder(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.ParseInt(idStr, 10, 32)
@@ -182,7 +182,7 @@ func DeleteOrder(c *gin.Context) {
 		return
 	}
 
-	// Verify pengapus is admin
+	
 	userIDStr := c.Query("user_id")
 	if userIDStr == "" {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -224,7 +224,7 @@ func DeleteOrder(c *gin.Context) {
 		return
 	}
 
-	// Hard delete to clean up dashboard lists immediately
+	
 	if err := config.DB.Unscoped().Delete(&order).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,

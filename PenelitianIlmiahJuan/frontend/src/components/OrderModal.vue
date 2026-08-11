@@ -2,14 +2,14 @@
   <Teleport to="body">
     <div class="modal-overlay" @click.self="$emit('close')">
       <div class="modal-container glass-strong" ref="modalRef">
-        <!-- Close Button -->
+        
         <button class="modal-close" @click="$emit('close')" aria-label="Close modal">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M18 6L6 18M6 6l12 12"/>
           </svg>
         </button>
 
-        <!-- Modal Header -->
+        
         <div class="modal-header">
           <div class="modal-badge badge badge-amber">Pre-Order</div>
           <h2 class="modal-title">{{ product.name }}</h2>
@@ -22,7 +22,7 @@
           </p>
         </div>
 
-        <!-- Product Info -->
+        
         <div class="modal-product-info">
           <div class="info-row">
             <span class="info-label">Harga per item</span>
@@ -42,7 +42,7 @@
           </div>
         </div>
 
-        <!-- Order Form -->
+        
         <form @submit.prevent="submitOrder" class="modal-form">
           <div class="form-group">
             <label class="form-label" for="order-qty">Jumlah Pesanan</label>
@@ -81,13 +81,13 @@
             ></textarea>
           </div>
 
-          <!-- Total -->
+          
           <div class="order-total">
             <span class="total-label">Total Pembayaran</span>
             <span class="total-value text-gradient">{{ formatPrice(totalPrice) }}</span>
           </div>
 
-          <!-- Actions -->
+          
           <div class="modal-actions">
             <button type="button" class="btn btn-secondary" @click="$emit('close')">
               Batal
@@ -106,7 +106,7 @@
             </button>
           </div>
 
-          <!-- Status Messages -->
+          
           <div v-if="statusMessage" class="status-message" :class="statusType">
             {{ statusMessage }}
           </div>
@@ -184,7 +184,7 @@ async function submitOrder() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        customer_id: 4, // Demo customer ID
+        customer_id: 4, 
         product_id: props.product.id,
         quantity: quantity.value,
         note: note.value
@@ -209,7 +209,7 @@ async function submitOrder() {
   }
 }
 
-// Entrance animation
+
 onMounted(() => {
   if (modalRef.value) {
     animate(modalRef.value, {
@@ -266,7 +266,7 @@ onMounted(() => {
   color: var(--color-text-primary);
 }
 
-/* Header */
+
 .modal-header {
   margin-bottom: var(--space-lg);
 }
@@ -294,7 +294,7 @@ onMounted(() => {
   color: var(--color-amber);
 }
 
-/* Product Info */
+
 .modal-product-info {
   background: rgba(255, 255, 255, 0.03);
   border-radius: var(--radius-lg);
@@ -321,7 +321,7 @@ onMounted(() => {
   font-weight: 600;
 }
 
-/* Form */
+
 .modal-form {
   display: flex;
   flex-direction: column;
@@ -388,7 +388,7 @@ onMounted(() => {
   margin-top: 0.2rem;
 }
 
-/* Total */
+
 .order-total {
   display: flex;
   align-items: center;
@@ -409,7 +409,7 @@ onMounted(() => {
   font-weight: 800;
 }
 
-/* Actions */
+
 .modal-actions {
   display: flex;
   gap: var(--space-sm);
@@ -420,7 +420,7 @@ onMounted(() => {
   flex: 1;
 }
 
-/* Status */
+
 .status-message {
   padding: var(--space-md);
   border-radius: var(--radius-md);
@@ -441,7 +441,7 @@ onMounted(() => {
   border: 1px solid rgba(231, 76, 60, 0.2);
 }
 
-/* Spinner */
+
 .spinner {
   width: 16px;
   height: 16px;

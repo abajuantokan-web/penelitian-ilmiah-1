@@ -1,18 +1,5 @@
 //go:build ignore
 
-// update_curated_images.go — Contextual Curated Image Seeder v4
-// Assigns highly relevant, ethnic/rustic Unsplash images to every product
-// using keyword matching on product name + ID-based modulo cycling for variety.
-//
-// Photo Banks:
-//   tenunImages    → woven fabrics, artisan weaving, ethnic textiles
-//   kopiImages     → rustic coffee beans / brewing scenes
-//   makananImages  → honey jars, smoked meat, artisan spices
-//   aksesorisImages → ethnic bracelets, artisan jewelry
-//
-// Usage (run from the /backend directory):
-//
-//	go run scripts/update_curated_images.go
 package main
 
 import (
@@ -25,51 +12,39 @@ import (
 	"gorm.io/gorm/logger"
 )
 
-// ---------------------------------------------------------------------------
-// Minimal Product model
-// ---------------------------------------------------------------------------
-
 type Product struct {
-	ID       int32  `gorm:"primaryKey"`
-	Name     string `gorm:"size:200"`
-	Category string `gorm:"size:100"`
-	ImageURL string `gorm:"column:image_url;size:512"`
+	ID		int32	`gorm:"primaryKey"`
+	Name		string	`gorm:"size:200"`
+	Category	string	`gorm:"size:100"`
+	ImageURL	string	`gorm:"column:image_url;size:512"`
 }
 
-func (Product) TableName() string { return "products" }
-
-// ---------------------------------------------------------------------------
-// Photo Banks — curated for ethnic / rustic Indonesian vibe
-// ---------------------------------------------------------------------------
+func (Product) TableName() string	{ return "products" }
 
 var tenunImages = []string{
-	"https://images.unsplash.com/photo-1605814511559-009c95d90610?q=80&w=600&auto=format&fit=crop", // Woven fabric texture
-	"https://images.unsplash.com/photo-1528813860492-bb99459b68a7?q=80&w=600&auto=format&fit=crop", // Artisan weaving on loom
-	"https://images.unsplash.com/photo-1589547562479-79a405fbba76?q=80&w=600&auto=format&fit=crop", // Ethnic draped textile
+	"https://images.unsplash.com/photo-1605814511559-009c95d90610?q=80&w=600&auto=format&fit=crop",
+	"https://images.unsplash.com/photo-1528813860492-bb99459b68a7?q=80&w=600&auto=format&fit=crop",
+	"https://images.unsplash.com/photo-1589547562479-79a405fbba76?q=80&w=600&auto=format&fit=crop",
 }
 
 var kopiImages = []string{
-	"https://images.unsplash.com/photo-1559525839-b184a4d698c7?q=80&w=600&auto=format&fit=crop", // Coffee beans in wooden scoop
-	"https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=600&auto=format&fit=crop", // Rustic coffee brewing
+	"https://images.unsplash.com/photo-1559525839-b184a4d698c7?q=80&w=600&auto=format&fit=crop",
+	"https://images.unsplash.com/photo-1511920170033-f8396924c348?q=80&w=600&auto=format&fit=crop",
 }
 
 var makananImages = []string{
-	"https://images.unsplash.com/photo-1587049352847-8d4c0b4c3116?q=80&w=600&auto=format&fit=crop", // Rustic honey jar
-	"https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=600&auto=format&fit=crop", // Smoked meat / spices
+	"https://images.unsplash.com/photo-1587049352847-8d4c0b4c3116?q=80&w=600&auto=format&fit=crop",
+	"https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=600&auto=format&fit=crop",
 }
 
 var aksesorisImages = []string{
-	"https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=600&auto=format&fit=crop", // Ethnic beaded bracelet
-	"https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=600&auto=format&fit=crop", // Artisan jewelry on velvet
+	"https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=600&auto=format&fit=crop",
+	"https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?q=80&w=600&auto=format&fit=crop",
 }
 
-// ---------------------------------------------------------------------------
-// classify returns the right photo bank and label for a product name
-// ---------------------------------------------------------------------------
-
 type result struct {
-	pool  []string
-	label string
+	pool	[]string
+	label	string
 }
 
 func classify(name string) result {
@@ -98,14 +73,10 @@ func classify(name string) result {
 		return result{aksesorisImages, "aksesoris"}
 
 	default:
-		// Fallback: woven fabric — fits the general NTT artisan theme
+
 		return result{tenunImages, "fallback "}
 	}
 }
-
-// ---------------------------------------------------------------------------
-// Entry point
-// ---------------------------------------------------------------------------
 
 func main() {
 	dsn := "root:@tcp(127.0.0.1:3306)/db_openpeo?charset=utf8mb4&parseTime=True&loc=Local"
@@ -158,10 +129,10 @@ func main() {
 	}
 }
 
-// truncate shortens s to at most n chars, appending "…" if needed.
 func truncate(s string, n int) string {
 	if len(s) <= n {
 		return s
 	}
 	return s[:n-1] + "…"
 }
+

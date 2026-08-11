@@ -2,7 +2,7 @@
   <div class="pengaturan-toko">
     <form @submit.prevent="saveSettings" class="settings-form">
       
-      <!-- Section 1: Store Profile -->
+      
       <section class="settings-card fade-in">
         <h2 class="card-title">Profil Toko</h2>
         <p class="card-subtitle">Informasi dasar mengenai toko Anda yang akan dilihat oleh pembeli.</p>
@@ -10,7 +10,7 @@
         <div class="form-group mb-6">
           <label>Logo Toko</label>
           <div class="image-upload-flex">
-            <!-- Hidden file input -->
+            
             <input type="file" ref="logoInput" accept="image/*" class="hidden" @change="uploadLogo" style="display: none;" />
             
             <div class="logo-preview-container">
@@ -39,7 +39,7 @@
         </div>
       </section>
 
-      <!-- Section 2: Contact & Location -->
+      
       <section class="settings-card fade-in" style="animation-delay: 0.1s;">
         <h2 class="card-title">Kontak & Lokasi</h2>
         <p class="card-subtitle">Detail kontak dan alamat pengiriman asal produk Anda.</p>
@@ -75,7 +75,7 @@
         </div>
       </section>
 
-      <!-- Section 3: Bank Information -->
+      
       <section class="settings-card fade-in" style="animation-delay: 0.2s;">
         <h2 class="card-title">Informasi Rekening Bank</h2>
         <p class="card-subtitle">Rekening yang akan digunakan untuk pencairan dana hasil penjualan.</p>
@@ -98,7 +98,7 @@
         </div>
       </section>
 
-      <!-- Action Footer -->
+      
       <div class="settings-action">
         <span v-if="saveMessage" :class="['save-message', saveStatus]">{{ saveMessage }}</span>
         <button type="submit" class="btn-primary--solid-dark save-btn" :disabled="isSaving">
@@ -138,7 +138,7 @@ const form = ref({
 })
 
 onMounted(async () => {
-  // Seed from seller_profile object first (authoritative source)
+  
   const sp = authStore.user?.seller_profile
   if (sp?.store_name) {
     form.value.store_name = sp.store_name
@@ -151,7 +151,7 @@ onMounted(async () => {
 const fetchProfile = async () => {
   try {
     const response = await axios.get('http://localhost:8081/api/seller/profile')
-    // Populate if data exists
+    
     if (response.data && response.data.id) {
       form.value = {
         store_name: response.data.store_name || form.value.store_name,
@@ -211,7 +211,7 @@ const saveSettings = async () => {
     await axios.put('http://localhost:8081/api/seller/profile', form.value)
     
     authStore.updateSellerProfileLocally(form.value)
-    // Global Reactivity: Trigger refetch of products to update Store Name globally
+    
     await productStore.fetchProducts()
     
     saveMessage.value = 'Pengaturan berhasil disimpan!'
@@ -376,11 +376,11 @@ const saveSettings = async () => {
 }
 
 .save-message.success {
-  color: #10b981; /* emerald-500 */
+  color: #10b981; 
 }
 
 .save-message.error {
-  color: #ef4444; /* red-500 */
+  color: #ef4444; 
 }
 
 .mb-6 { margin-bottom: 24px; }

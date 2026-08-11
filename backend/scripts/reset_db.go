@@ -17,7 +17,6 @@ func main() {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
-	// Drop tables
 	err = db.Exec("DROP TABLE IF EXISTS order_items, orders, cart_items, products, users").Error
 	if err != nil {
 		log.Fatalf("Failed to drop tables: %v", err)
@@ -25,3 +24,4 @@ func main() {
 
 	fmt.Println("Tables dropped successfully.")
 }
+

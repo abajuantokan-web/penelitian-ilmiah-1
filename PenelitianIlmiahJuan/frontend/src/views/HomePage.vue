@@ -1,6 +1,6 @@
 <template>
   <div class="home-page">
-    <!-- ═══════════════ NAVIGATION ═══════════════ -->
+    
     <nav class="navbar glass-strong">
       <div class="navbar-container">
         <div class="navbar-brand">
@@ -45,7 +45,7 @@
       </div>
     </nav>
 
-    <!-- ═══════════════ HERO ═══════════════ -->
+    
     <section id="beranda" class="hero">
       <div class="hero-bg">
         <div class="hero-orb hero-orb-1"></div>
@@ -84,12 +84,12 @@
       </div>
     </section>
 
-    <!-- ═══════════════ PRODUCTS ═══════════════ -->
+    
     <section id="produk" class="section-products">
       <ProductList @order="openOrderModal" />
     </section>
 
-    <!-- ═══════════════ ABOUT ═══════════════ -->
+    
     <section id="tentang" class="section-about">
       <div class="about-container">
         <div class="about-header">

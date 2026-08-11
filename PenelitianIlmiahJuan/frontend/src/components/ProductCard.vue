@@ -6,10 +6,10 @@
     @mousemove="onMouseMove"
     @mouseleave="onMouseLeave"
   >
-    <!-- Glare overlay for 3D lighting effect -->
+    
     <div class="card-glare" ref="glareRef"></div>
 
-    <!-- Product Image -->
+    
     <div class="card-image-wrapper">
       <img
         :src="product.image_url"
@@ -20,18 +20,18 @@
       />
       <div class="card-image-overlay"></div>
 
-      <!-- Region Badge -->
+      
       <span class="card-region badge badge-amber">
         {{ product.region }}
       </span>
 
-      <!-- Category Badge -->
+      
       <span v-if="product.category" class="card-category badge badge-indigo">
         {{ product.category }}
       </span>
     </div>
 
-    <!-- Card Body -->
+    
     <div class="card-body">
       <h3 class="card-title">{{ product.name }}</h3>
 
@@ -138,7 +138,7 @@ function onImageError(e) {
   `)
 }
 
-// ── 3D Perspective Hover Effect ──
+
 function onMouseEnter() {
   isHovering.value = true
   if (cardRef.value) {
@@ -152,18 +152,18 @@ function onMouseMove(e) {
   const card = cardRef.value
   const rect = card.getBoundingClientRect()
 
-  // Calculate mouse position relative to card center (range: -1 to 1)
+  
   const x = (e.clientX - rect.left) / rect.width
   const y = (e.clientY - rect.top) / rect.height
 
-  // Calculate rotation (max ±12 degrees)
+  
   const rotateX = (0.5 - y) * 24
   const rotateY = (x - 0.5) * 24
 
-  // Apply 3D transform with perspective
+  
   card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`
 
-  // Move glare effect
+  
   if (glareRef.value) {
     glareRef.value.style.background = `radial-gradient(circle at ${x * 100}% ${y * 100}%, rgba(255,255,255,0.15) 0%, transparent 60%)`
     glareRef.value.style.opacity = '1'
@@ -174,7 +174,7 @@ function onMouseLeave() {
   isHovering.value = false
   if (!cardRef.value) return
 
-  // Smooth reset animation using anime.js
+  
   animate(cardRef.value, {
     rotateX: 0,
     rotateY: 0,
@@ -188,14 +188,14 @@ function onMouseLeave() {
   }
 }
 
-// ── Entrance Animation ──
+
 onMounted(() => {
   if (cardRef.value) {
-    // Set initial state
+    
     cardRef.value.style.opacity = '0'
     cardRef.value.style.transform = 'translateY(60px) scale(0.95)'
 
-    // Staggered entrance based on card index
+    
     animate(cardRef.value, {
       opacity: [0, 1],
       translateY: [60, 0],
@@ -225,7 +225,7 @@ onMounted(() => {
   box-shadow: var(--shadow-lg), var(--shadow-glow);
 }
 
-/* Glare overlay */
+
 .card-glare {
   position: absolute;
   inset: 0;
@@ -236,7 +236,7 @@ onMounted(() => {
   border-radius: var(--radius-xl);
 }
 
-/* Image */
+
 .card-image-wrapper {
   position: relative;
   width: 100%;
@@ -279,7 +279,7 @@ onMounted(() => {
   z-index: 2;
 }
 
-/* Body */
+
 .card-body {
   padding: var(--space-lg);
   display: flex;
@@ -323,7 +323,7 @@ onMounted(() => {
   flex-shrink: 0;
 }
 
-/* Footer */
+
 .card-footer {
   display: flex;
   align-items: center;
