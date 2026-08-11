@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"log"
+	"os" // 1. Tambahkan package os di sini
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -13,8 +14,38 @@ import (
 var DB *gorm.DB
 
 func ConnectDatabase() {
+	// Mengambil variabel dari Environment Vercel/Railway, atau fallback ke lokal (XAMPP)
+	dbHost := os.Getenv("MYSQLHOST")
+	if dbHost == "" {
+		dbHost = "127.0.0.1"
+	}
 
-	dsn := "root:@tcp(127.0.0.1:3306)/db_openpeo?charset=utf8mb4&parseTime=True&loc=Local"
+	dbUser := os.Getenv("MYSQLUSER")
+	if dbUser == "" {
+		dbUser = "root"
+	}
+
+	dbPassword := os.Getenv("MYSQL_ROOT_PASSWORD")
+	// Jika di lokal password kosong, biarkan kosong
+
+	dbName := os.Getenv("MYSQL_DATABASE")
+	if dbName == "" {
+		dbName = "db_openpeo"
+	}
+
+	dbPort := os.Getenv("MYSQLPORT")
+	if dbPort == "" {
+		dbPort = "3306"
+	}
+
+	// Menyusun DSN secara dinamis
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		dbUser,
+		dbPassword,
+		dbHost,
+		dbPort,
+		dbName,
+	)
 
 	var err error
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
