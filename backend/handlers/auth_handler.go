@@ -222,7 +222,7 @@ func RegisterSeller(c *gin.Context) {
 		if err := tx.Create(&newUser).Error; err != nil {
 			return err
 		}
-		// Always create SellerProfile on seller registration — store_name lives here only
+
 		sellerProfile := models.SellerProfile{
 			UserID:    newUser.ID,
 			StoreName: req.StoreName,
@@ -252,8 +252,7 @@ func RegisterSeller(c *gin.Context) {
 	})
 }
 
-// GetCurrentUser handles GET /api/user/:id
-// Returns profile data for a specific user (used for session validation).
+
 func GetCurrentUser(c *gin.Context) {
 	userID := c.Param("id")
 
