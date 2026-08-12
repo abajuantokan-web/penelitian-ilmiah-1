@@ -39,12 +39,19 @@ func ConnectDatabase() {
 		dbPassword = os.Getenv("DB_PASSWORD")
 	}
 
+	// dbName := os.Getenv("MYSQL_DATABASE")
+	// if dbName == "" {
+	// 	dbName = os.Getenv("DB_NAME")
+	// }
+	// if dbName == "" {
+	// 	dbName = "db_openpeo"
+	// }
 	dbName := os.Getenv("MYSQL_DATABASE")
 	if dbName == "" {
-		dbName = os.Getenv("DB_NAME")
+		dbName = os.Getenv("MYSQLDATABASE")
 	}
 	if dbName == "" {
-		dbName = "db_openpeo"
+		dbName = os.Getenv("DB_NAME")
 	}
 
 	dbPort := os.Getenv("MYSQLPORT")
