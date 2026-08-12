@@ -43,10 +43,12 @@ func ConnectDatabase() {
 		dbPort,
 		dbName,
 	)
+	
 	log.Println("MYSQLHOST =", os.Getenv("MYSQLHOST"))
 	log.Println("MYSQLPORT =", os.Getenv("MYSQLPORT"))
 	log.Println("MYSQLUSER =", os.Getenv("MYSQLUSER"))
 	log.Println("MYSQL_DATABASE =", os.Getenv("MYSQL_DATABASE"))
+
 	var err error
 
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{
