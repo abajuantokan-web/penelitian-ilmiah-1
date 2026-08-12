@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -32,8 +33,6 @@ func main() {
 		log.Fatalf("❌ AutoMigrate failed: %v", err)
 	}
 	fmt.Println("✅ Database schema synchronized")
-
-	
 
 	r := gin.Default()
 
@@ -135,12 +134,17 @@ func main() {
 		})
 	})
 
-	fmt.Println("🚀 OpenPeo Backend Engine starting on :8081")
-	fmt.Println("📡 REST API:    http://localhost:8081/api")
-	fmt.Println("🔌 WebSocket:   ws://localhost:8081/ws/chat")
-	fmt.Println("❤️  Health:      http://localhost:8081/health")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8081" // Default untuk lokal di laptop
+	}
 
-	if err := r.Run(":8081"); err != nil {
+	fmt.Println("🚀 OpenPeo Backend Engine starting on :" + port)
+	fmt.Println("📡 REST API:     http://localhost:" + port + "/api")
+	fmt.Println("🔌 WebSocket:    ws://localhost:" + port + "/ws/chat")
+	fmt.Println("❤️  Health:       http://localhost:" + port + "/health")
+
+	if err := r.Run(":" + port); err != nil {
 		log.Fatalf("❌ Server failed to start: %v", err)
 	}
 }
