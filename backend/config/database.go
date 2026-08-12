@@ -25,8 +25,10 @@ func ConnectDatabase() {
 		dbUser = "root"
 	}
 
-	dbPassword := os.Getenv("MYSQL_ROOT_PASSWORD")
-	// Jika di lokal password kosong, biarkan kosong
+	dbPassword := os.Getenv("MYSQLPASSWORD")
+	if dbPassword == "" {
+		dbPassword = os.Getenv("MYSQL_ROOT_PASSWORD") // Cadangan untuk lokal
+	}
 
 	dbName := os.Getenv("MYSQL_DATABASE")
 	if dbName == "" {
