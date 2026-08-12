@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import apiClient from '../axios'
 import { useAuthStore } from './auth'
 
 export const useCartStore = defineStore('cart', {
@@ -36,7 +36,7 @@ export const useCartStore = defineStore('cart', {
       
       this.isLoading = true
       try {
-        const response = await axios.get('http://localhost:8081/api/cart')
+        const response = await apiClient.get('/api/cart')
         if (response.data.success) {
           this.items = response.data.data || []
         }
@@ -53,7 +53,7 @@ export const useCartStore = defineStore('cart', {
       if (!auth.isAuthenticated) return false
       
       try {
-        const response = await axios.post('http://localhost:8081/api/cart', {
+        const response = await apiClient.post('/api/cart', {
           product_id: productId,
           quantity: quantity
         })
@@ -73,7 +73,7 @@ export const useCartStore = defineStore('cart', {
       if (!auth.isAuthenticated) return false
 
       try {
-        const response = await axios.delete(`http://localhost:8081/api/cart/${cartItemId}`)
+        const response = await apiClient.delete(`/api/cart/${cartItemId}`)
         if (response.data.success) {
           
           this.items = this.items.filter(item => item.id !== cartItemId)
@@ -91,7 +91,7 @@ export const useCartStore = defineStore('cart', {
       
       this.isLoading = true
       try {
-        const response = await axios.post('http://localhost:8081/api/orders', {})
+        const response = await apiClient.post('/api/orders', {})
         if (response.data.success) {
           this.clearLocalCart()
           return { success: true, message: 'Pesanan berhasil dibuat' }

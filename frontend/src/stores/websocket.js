@@ -4,6 +4,7 @@ import { useAuthStore } from './auth'
 import { useChatStore } from './chat'
 import { useNotificationStore } from './notification'
 import { useDashboardStore } from './dashboard'
+import { BASE_URL } from '../axios'
 
 export const useWebsocketStore = defineStore('websocket', () => {
   const ws = ref(null)
@@ -48,7 +49,8 @@ export const useWebsocketStore = defineStore('websocket', () => {
     isReconnecting.value = true
     const token = authStore.token || localStorage.getItem('token')
     
-    ws.value = new WebSocket(`ws://localhost:8081/ws/chat?token=${token}`)
+    const wsUrl = BASE_URL.replace(/^http/, 'ws')
+    ws.value = new WebSocket(`${wsUrl}/ws/chat?token=${token}`)
 
     ws.value.onopen = () => {
       console.log('🔗 WebSocket Connected (Singleton)')

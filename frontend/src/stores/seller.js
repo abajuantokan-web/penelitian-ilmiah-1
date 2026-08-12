@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import apiClient from '../axios'
 import { useAuthStore } from './auth'
 
 export const useSellerStore = defineStore('seller', {
@@ -19,7 +19,7 @@ export const useSellerStore = defineStore('seller', {
       
       this.isLoading = true
       try {
-        const response = await axios.get('http://localhost:8081/api/seller/products')
+        const response = await apiClient.get('/api/seller/products')
         if (response.data.success) {
           this.products = response.data.data || []
         }
@@ -33,7 +33,7 @@ export const useSellerStore = defineStore('seller', {
     
     async createProduct(productData) {
       try {
-        const response = await axios.post('http://localhost:8081/api/seller/products', productData)
+        const response = await apiClient.post('/api/seller/products', productData)
         if (response.data.success) {
           await this.fetchProducts()
           return { success: true, message: response.data.message }
@@ -48,7 +48,7 @@ export const useSellerStore = defineStore('seller', {
     
     async updateProduct(id, productData) {
       try {
-        const response = await axios.put(`http://localhost:8081/api/seller/products/${id}`, productData)
+        const response = await apiClient.put(`/api/seller/products/${id}`, productData)
         if (response.data.success) {
           await this.fetchProducts()
           return { success: true, message: response.data.message }
@@ -63,7 +63,7 @@ export const useSellerStore = defineStore('seller', {
     
     async deleteProduct(id) {
       try {
-        const response = await axios.delete(`http://localhost:8081/api/seller/products/${id}`)
+        const response = await apiClient.delete(`/api/seller/products/${id}`)
         if (response.data.success) {
           await this.fetchProducts()
           return { success: true, message: response.data.message }

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import apiClient from '../axios'
 import { useAuthStore } from './auth'
 
 export const useOrderStore = defineStore('orders', {
@@ -19,7 +19,7 @@ export const useOrderStore = defineStore('orders', {
 
       this.isLoading = true
       try {
-        const response = await axios.get('http://localhost:8081/api/user/orders')
+        const response = await apiClient.get('/api/user/orders')
         if (response.data.success) {
           this.orders = response.data.data || []
         }

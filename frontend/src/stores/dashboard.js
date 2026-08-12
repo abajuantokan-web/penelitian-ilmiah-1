@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import axios from 'axios'
+import apiClient from '../axios'
 import { useAuthStore } from './auth'
 
 export const useDashboardStore = defineStore('dashboard', () => {
@@ -22,11 +22,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
     isLoading.value = true
     error.value = null
     try {
-      const response = await axios.get('http://localhost:8081/api/seller/dashboard/stats', {
-        headers: {
-          Authorization: `Bearer ${authStore.token || localStorage.getItem('token')}`
-        }
-      })
+      const response = await apiClient.get('/api/seller/dashboard/stats')
       if (response.data.success) {
         const data = response.data.data
         pendingCount.value = data.total_orders_pending || 0
@@ -45,11 +41,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
 
   const fetchChartData = async (range = '7_days') => {
     try {
-      const response = await axios.get(`http://localhost:8081/api/seller/dashboard/chart?range=${range}`, {
-        headers: {
-          Authorization: `Bearer ${authStore.token || localStorage.getItem('token')}`
-        }
-      })
+      const response = await apiClient.get(`/api/seller/dashboard/chart?range=${range}`)
       if (response.data.success) {
         const dbData = response.data.data || []
         

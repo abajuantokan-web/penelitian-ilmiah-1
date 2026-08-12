@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import apiClient from '../axios'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -24,7 +24,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(email, password) {
       try {
-        const response = await axios.post('http://localhost:8081/api/login', {
+        const response = await apiClient.post('/api/login', {
           email,
           password
         })
@@ -36,8 +36,6 @@ export const useAuthStore = defineStore('auth', {
           localStorage.setItem('openpeo_token', this.token)
           localStorage.setItem('openpeo_user', JSON.stringify(this.user))
           
-          
-          axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
           
           return { success: true }
         }
@@ -52,7 +50,7 @@ export const useAuthStore = defineStore('auth', {
     async fetchProfile() {
       if (!this.isAuthenticated) return
       try {
-        const response = await axios.get('http://localhost:8081/api/user/profile')
+        const response = await apiClient.get('/api/user/profile')
         if (response.data.success) {
           this.user = response.data.data
           localStorage.setItem('openpeo_user', JSON.stringify(this.user))
@@ -76,7 +74,7 @@ export const useAuthStore = defineStore('auth', {
 
     async updateProfile(data) {
       try {
-        const response = await axios.put('http://localhost:8081/api/user/profile', data)
+        const response = await apiClient.put('/api/user/profile', data)
         if (response.data.success) {
           this.user = response.data.data
           localStorage.setItem('openpeo_user', JSON.stringify(this.user))
@@ -92,7 +90,7 @@ export const useAuthStore = defineStore('auth', {
 
     async changePassword(currentPassword, newPassword) {
       try {
-        const response = await axios.put('http://localhost:8081/api/user/password', {
+        const response = await apiClient.put('/api/user/password', {
           current_password: currentPassword,
           new_password: newPassword,
         })
@@ -109,7 +107,7 @@ export const useAuthStore = defineStore('auth', {
 
     async registerSeller(data) {
       try {
-        const response = await axios.post('http://localhost:8081/api/register-seller', data)
+        const response = await apiClient.post('/api/register-seller', data)
         if (response.data.success) {
           return { success: true, message: response.data.message }
         }
@@ -131,7 +129,7 @@ export const useAuthStore = defineStore('auth', {
       this.user = null
       localStorage.removeItem('openpeo_token')
       localStorage.removeItem('openpeo_user')
-      delete axios.defaults.headers.common['Authorization']
+      // Token dihapus dari localStorage, interceptor apiClient tidak akan menyisipkannya lagi
     }
   }
 })

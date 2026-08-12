@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
+import apiClient from '../axios'
 
 export const useProductStore = defineStore('products', {
   state: () => ({
@@ -17,7 +17,7 @@ export const useProductStore = defineStore('products', {
     async fetchProducts() {
       this.isLoading = true
       try {
-        const response = await axios.get('http://localhost:8081/api/products?limit=100')
+        const response = await apiClient.get('/api/products?limit=100')
         if (response.data.success) {
           this.allProducts = response.data.data
         }
