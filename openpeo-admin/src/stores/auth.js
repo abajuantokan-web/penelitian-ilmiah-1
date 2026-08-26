@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import { BASE_URL } from '../axios'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -12,7 +13,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(email, password) {
       try {
-        const response = await axios.post('http://localhost:8081/api/login', {
+        const response = await axios.post(`${BASE_URL}api/login`, {
           email,
           password
         })

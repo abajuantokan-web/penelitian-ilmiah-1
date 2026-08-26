@@ -267,6 +267,7 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import axios from 'axios'
+import { BASE_URL } from '../axios'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -292,7 +293,7 @@ const getImageUrl = (product) => {
   }
   
   if (raw && (raw.startsWith('/images/') || raw.startsWith('images/'))) {
-    return `http://localhost:5173${raw.startsWith('/') ? raw : '/' + raw}`
+    return `${BASE_URL}${raw.startsWith('/') ? raw.slice(1) : raw}`
   }
 
   const categoryFallback = CATEGORY_FALLBACKS[product?.category]
@@ -323,13 +324,15 @@ const handleLogout = () => {
 }
 
 const fetchData = async () => {
+  const token = authStore.token
+  const headers = token ? { Authorization: `Bearer ${token}` } : {}
   try {
     const [statsRes, usersRes, productsRes, ordersRes, logsRes] = await Promise.all([
-      axios.get('http://localhost:8081/api/admin/stats'),
-      axios.get('http://localhost:8081/api/admin/users'),
-      axios.get('http://localhost:8081/api/admin/products'),
-      axios.get('http://localhost:8081/api/admin/orders'),
-      axios.get('http://localhost:8081/api/admin/activity-logs')
+      axios.get(`${BASE_URL}api/admin/stats`, { headers }),
+      axios.get(`${BASE_URL}api/admin/users`, { headers }),
+      axios.get(`${BASE_URL}api/admin/products`, { headers }),
+      axios.get(`${BASE_URL}api/admin/orders`, { headers }),
+      axios.get(`${BASE_URL}api/admin/activity-logs`, { headers })
     ])
     
     if (statsRes.data.success) stats.value = statsRes.data.data
@@ -349,7 +352,10 @@ const deleteProduct = async (id) => {
   if (!confirm('Apakah Anda yakin ingin menghapus produk ini secara permanen?')) return
   
   try {
-    const res = await axios.delete(`http://localhost:8081/api/admin/products/${id}`)
+    const token = authStore.token
+    const res = await axios.delete(`${BASE_URL}api/admin/products/${id}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
     if (res.data.success) {
       products.value = products.value.filter(p => p.id !== id)
       
@@ -399,7 +405,10 @@ const cancelOrder = async (id) => {
   if (!confirm('Apakah Anda yakin ingin membatalkan pesanan ini (Force Cancel)?')) return
   
   try {
-    const res = await axios.put(`http://localhost:8081/api/admin/orders/${id}/cancel`)
+    const token = authStore.token
+    const res = await axios.put(`${BASE_URL}api/admin/orders/${id}/cancel`, {}, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
     if (res.data.success) {
       
       const order = orders.value.find(o => o.id === id)

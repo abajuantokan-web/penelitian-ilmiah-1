@@ -47,10 +47,14 @@ export const useWebsocketStore = defineStore('websocket', () => {
     }
 
     isReconnecting.value = true
-    const token = authStore.token || localStorage.getItem('token')
+    const token = authStore.token || localStorage.getItem('openpeo_token')
     
-    const wsUrl = BASE_URL.replace(/^http/, 'ws')
-    ws.value = new WebSocket(`${wsUrl}/ws/chat?token=${token}`)
+    // Konversi URL HTTP/HTTPS ke WS/WSS dengan benar
+    // https://... → wss://... | http://... → ws://...
+    const wsUrl = BASE_URL.replace(/^https:\/\//, 'wss://').replace(/^http:\/\//, 'ws://')
+    // Hapus trailing slash jika ada agar path tidak double-slash
+    const wsBase = wsUrl.replace(/\/$/, '')
+    ws.value = new WebSocket(`${wsBase}/ws/chat?token=${token}`)
 
     ws.value.onopen = () => {
       console.log('🔗 WebSocket Connected (Singleton)')

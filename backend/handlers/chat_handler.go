@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 	"sync"
 	"time"
@@ -105,7 +106,11 @@ func HandleWebSocket(c *gin.Context) {
 	}
 
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		return []byte("my_super_secret_key_for_openpeo_platform"), nil
+		secret := os.Getenv("JWT_SECRET")
+		if secret == "" {
+			secret = "my_super_secret_key_for_openpeo_platform" // fallback lokal
+		}
+		return []byte(secret), nil
 	})
 
 	if err != nil || !token.Valid {

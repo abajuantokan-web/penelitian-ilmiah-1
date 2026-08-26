@@ -3,13 +3,22 @@ package middleware
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtKey = []byte("my_super_secret_key_for_openpeo_platform")
+// getJWTKey membaca secret dari environment variable JWT_SECRET.
+// Jika tidak ada, fallback ke nilai default untuk development lokal.
+func getJWTKey() []byte {
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		secret = "my_super_secret_key_for_openpeo_platform" // fallback lokal
+	}
+	return []byte(secret)
+}
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -31,7 +40,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 			}
-			return jwtKey, nil
+			return getJWTKey(), nil
 		})
 
 		if err != nil || !token.Valid {
@@ -59,7 +68,7 @@ func GenerateJWT(userID int32, role string) (string, error) {
 		"role":		role,
 	})
 
-	return token.SignedString(jwtKey)
+	return token.SignedString(getJWTKey())
 }
 
 func RequireAdmin() gin.HandlerFunc {
