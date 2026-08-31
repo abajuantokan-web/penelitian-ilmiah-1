@@ -57,8 +57,14 @@
                 {{ getInitials(contact.name) }}
               </div>
               <div class="contact-info">
-                <span class="contact-name">{{ contact.name }}</span>
-                <span v-if="contact.unread_count > 0" class="contact-unread">{{ contact.unread_count }}</span>
+                <div class="contact-name-row">
+                  <span class="contact-name">{{ contact.name }}</span>
+                  <span class="contact-time" v-if="contact.last_activity">{{ formatTime(contact.last_activity) }}</span>
+                </div>
+                <div class="contact-msg-row">
+                  <span class="contact-last-msg">{{ contact.last_message || 'Belum ada pesan' }}</span>
+                  <span v-if="contact.unread_count > 0" class="contact-unread">{{ contact.unread_count }}</span>
+                </div>
               </div>
             </li>
           </ul>
@@ -560,8 +566,29 @@ onUnmounted(() => {
 .contact-info {
   flex: 1;
   display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.contact-name-row, .contact-msg-row {
+  display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.contact-time {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.contact-last-msg {
+  font-size: 0.8rem;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 160px;
 }
 
 .contact-name {

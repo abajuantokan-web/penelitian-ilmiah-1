@@ -314,6 +314,7 @@ func GetChatContacts(c *gin.Context) {
 		query := `
 		SELECT u.id, u.name, 
 			(SELECT COUNT(*) FROM messages m WHERE m.sender_id = u.id AND m.receiver_id = ? AND m.is_read = 0) as unread_count,
+			(SELECT content FROM messages m2 WHERE (m2.sender_id = u.id AND m2.receiver_id = ?) OR (m2.receiver_id = u.id AND m2.sender_id = ?) ORDER BY m2.created_at DESC LIMIT 1) as last_message,
 			MAX(m.created_at) as last_activity
 		FROM users u
 		JOIN messages m ON (m.sender_id = u.id AND m.receiver_id = ?) OR (m.receiver_id = u.id AND m.sender_id = ?)
@@ -321,11 +322,12 @@ func GetChatContacts(c *gin.Context) {
 		GROUP BY u.id, u.name
 		ORDER BY last_activity DESC
 		`
-		config.DB.Raw(query, userID, userID, userID).Scan(&contacts)
+		config.DB.Raw(query, userID, userID, userID, userID, userID).Scan(&contacts)
 	} else {
 		query := `
 		SELECT u.id, COALESCE(NULLIF(u.store_name, ''), u.name) as name,
 			(SELECT COUNT(*) FROM messages m WHERE m.sender_id = u.id AND m.receiver_id = ? AND m.is_read = 0) as unread_count,
+			(SELECT content FROM messages m2 WHERE (m2.sender_id = u.id AND m2.receiver_id = ?) OR (m2.receiver_id = u.id AND m2.sender_id = ?) ORDER BY m2.created_at DESC LIMIT 1) as last_message,
 			MAX(m.created_at) as last_activity
 		FROM users u
 		JOIN messages m ON (m.sender_id = u.id AND m.receiver_id = ?) OR (m.receiver_id = u.id AND m.sender_id = ?)
@@ -333,7 +335,7 @@ func GetChatContacts(c *gin.Context) {
 		GROUP BY u.id, u.name, u.store_name
 		ORDER BY last_activity DESC
 		`
-		config.DB.Raw(query, userID, userID, userID).Scan(&contacts)
+		config.DB.Raw(query, userID, userID, userID, userID, userID).Scan(&contacts)
 	}
 
 	c.JSON(http.StatusOK, gin.H{"success": true, "data": contacts})
