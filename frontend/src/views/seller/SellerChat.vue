@@ -208,12 +208,13 @@ const fetchChatHistory = async () => {
       
       const contact = contacts.value.find(c => c.id === activeContact.value.id)
       if (contact) contact.unread_count = 0
-      await scrollToBottom()
     }
   } catch (err) {
     console.error('Failed to fetch chat history:', err)
   } finally {
     isLoadingHistory.value = false
+    await nextTick()
+    await scrollToBottom()
   }
 }
 

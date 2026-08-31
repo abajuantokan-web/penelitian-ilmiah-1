@@ -274,13 +274,13 @@ const fetchChatHistory = async () => {
         const totalUnread = contacts.value.reduce((sum, c) => sum + (c.unread_count || 0), 0)
         notificationStore.setBuyerUnreadChats(totalUnread)
       }
-      
-      await scrollToBottom()
     }
   } catch (err) {
     console.error('Failed to fetch chat history:', err)
   } finally {
     isLoadingHistory.value = false
+    await nextTick()
+    await scrollToBottom()
   }
 }
 

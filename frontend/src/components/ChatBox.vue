@@ -206,6 +206,9 @@ function onReceiverChange() {
 
 function toggleMinimize() {
   isMinimized.value = !isMinimized.value
+  if (!isMinimized.value) {
+    scrollToBottom()
+  }
 }
 
 async function scrollToBottom() {
