@@ -170,8 +170,7 @@ import { useAuthStore } from '../stores/auth'
 import { useChatStore } from '../stores/chat'
 import { useNotificationStore } from '../stores/notification'
 import { useWebsocketStore } from '../stores/websocket'
-import axios from 'axios'
-import { BASE_URL } from '../axios'
+import axios from '../axios'
 
 const authStore = useAuthStore()
 const chatStore = useChatStore()
@@ -227,7 +226,7 @@ const fetchContacts = async () => {
   if (!authStore.user?.id) return
   isLoadingContacts.value = true
   try {
-    const res = await axios.get(`${BASE_URL}api/chat/contacts`, {
+    const res = await axios.get(`/api/chat/contacts`, {
       params: { user_id: authStore.user.id, role: authStore.user.role }
     })
     if (res.data.success) {
@@ -248,7 +247,7 @@ const fetchChatHistory = async () => {
   
   isLoadingHistory.value = true
   try {
-    const res = await axios.get(`${BASE_URL}api/messages`, {
+    const res = await axios.get(`/api/messages`, {
       params: {
         sender_id: authStore.user.id,
         receiver_id: chatStore.currentReceiverId,

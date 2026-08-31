@@ -75,7 +75,7 @@ import { useAuthStore } from '../stores/auth'
 import { useCartStore } from '../stores/cart'
 import { useChatStore } from '../stores/chat'
 import { getImageUrl } from '../utils/imageUtils'
-import axios from 'axios'
+
 
 const props = defineProps({
   isOpen: Boolean,

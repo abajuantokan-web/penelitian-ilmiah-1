@@ -102,7 +102,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCartStore } from '../stores/cart'
 import { useAuthStore } from '../stores/auth'
-import axios from 'axios'
+
 
 const router = useRouter()
 const cartStore = useCartStore()
