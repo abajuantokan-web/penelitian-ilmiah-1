@@ -105,6 +105,10 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
 import { animate } from 'animejs'
+import axios from '../axios'
+import { useAuthStore } from '../stores/auth'
+import { useWebsocketStore } from '../stores/websocket'
+import { useChatStore } from '../stores/chat'
 
 const props = defineProps({
   visible: {
@@ -115,20 +119,21 @@ const props = defineProps({
 
 const emit = defineEmits(['close', 'update-unread'])
 
-const API_BASE = 'http://localhost:8080/api'
-const WS_BASE = 'ws://localhost:8080/ws/chat'
+const authStore = useAuthStore()
+const websocketStore = useWebsocketStore()
+const chatStore = useChatStore()
 
-
-const senderId = ref(4) 
-const receiverId = ref(1) 
 const contacts = ref([])
-const messages = ref([])
 const newMessage = ref('')
 const unreadCounts = ref({})
-const isConnected = ref(false)
 const isMinimized = ref(false)
 const messagesRef = ref(null)
 const wrapperRef = ref(null)
+
+const senderId = computed(() => authStore.user?.id)
+const receiverId = ref(null)
+const messages = computed(() => websocketStore.messages)
+const isConnected = computed(() => websocketStore.isConnected)
 
 const totalUnread = computed(() => {
   return Object.values(unreadCounts.value).reduce((sum, count) => sum + count, 0)
@@ -138,35 +143,27 @@ watch(totalUnread, (newVal) => {
   emit('update-unread', newVal)
 }, { immediate: true })
 
-let ws = null
-let tempIdCounter = 0
-let reconnectTimer = null
-
+// Re-fetch contacts when a new message arrives
+watch(() => websocketStore.messages.length, (newVal, oldVal) => {
+  if (newVal > oldVal) {
+    loadContacts()
+  }
+})
 
 async function loadContacts() {
+  if (!authStore.user?.id) return
   try {
-    const user = JSON.parse(localStorage.getItem('openpeo_user') || 'null')
-    if (!user) return
-    const params = new URLSearchParams({
-      user_id: user.id.toString(),
-      role: user.role
+    const res = await axios.get('/api/chat/contacts', {
+      params: { user_id: authStore.user.id, role: authStore.user.role }
     })
-    const response = await fetch(`${API_BASE}/chat/contacts?${params}`)
-    const data = await response.json()
-    if (data.success && data.data) {
-      contacts.value = data.data
-      
-      
+    if (res.data.success && res.data.data) {
+      contacts.value = res.data.data
       contacts.value.forEach(c => {
         unreadCounts.value[c.id] = c.unread_count || 0
       })
-
-      if (contacts.value.length > 0) {
-        
-        const hasReceiver = contacts.value.some(c => c.id === receiverId.value)
-        if (!hasReceiver) {
-          receiverId.value = contacts.value[0].id
-        }
+      if (contacts.value.length > 0 && !receiverId.value) {
+        receiverId.value = contacts.value[0].id
+        chatStore.currentReceiverId = receiverId.value
       }
     }
   } catch (error) {
@@ -174,149 +171,38 @@ async function loadContacts() {
   }
 }
 
-
-function connectWebSocket() {
-  
-  if (ws) {
-    ws.close()
-    ws = null
-  }
-
-  const url = `${WS_BASE}?sender_id=${senderId.value}`
-
+async function loadChatHistory() {
+  if (!senderId.value || !receiverId.value) return
   try {
-    ws = new WebSocket(url)
-
-    ws.onopen = () => {
-      console.log('🔗 WebSocket connected')
-      isConnected.value = true
-      if (reconnectTimer) {
-        clearTimeout(reconnectTimer)
-        reconnectTimer = null
-      }
-    }
-
-    ws.onmessage = async (event) => {
-      try {
-        const data = JSON.parse(event.data)
-
-        
-        const isFromPartner = data.sender_id === receiverId.value && data.receiver_id === senderId.value
-        const isFromMe = data.sender_id === senderId.value && data.receiver_id === receiverId.value
-
-        if (!isFromPartner && !isFromMe) {
-          const otherUserId = data.sender_id
-          
-          
-          const contactExists = contacts.value.some(c => c.id === otherUserId)
-          if (!contactExists) {
-            await loadContacts()
-          }
-          
-          unreadCounts.value[otherUserId] = (unreadCounts.value[otherUserId] || 0) + 1
-          console.log("Pesan baru dari user lain:", otherUserId)
-          return
-        }
-
-        
-        const tempIndex = messages.value.findIndex(m =>
-          m._tempId && m.sender_id === data.sender_id && m.content === data.content
-        )
-
-        if (tempIndex !== -1) {
-          
-          messages.value[tempIndex] = { ...data }
-        } else {
-          
-          const exists = messages.value.some(m =>
-            m.id === data.id && m.id !== undefined
-          )
-          if (!exists) {
-            messages.value.push(data)
-            scrollToBottom()
-          }
-        }
-      } catch (e) {
-        console.warn('Invalid message format:', e)
-      }
-    }
-
-    ws.onclose = (event) => {
-      console.log('🔌 WebSocket disconnected:', event.code)
-      isConnected.value = false
-
-      
-      if (event.code !== 1000) {
-        reconnectTimer = setTimeout(() => {
-          console.log('🔄 Reconnecting WebSocket...')
-          connectWebSocket()
-        }, 3000)
-      }
-    }
-
-    ws.onerror = (error) => {
-      console.warn('⚠️ WebSocket error:', error)
-      isConnected.value = false
+    const res = await axios.get('/api/messages', {
+      params: { sender_id: senderId.value, receiver_id: receiverId.value, limit: 50 }
+    })
+    if (res.data.success && res.data.data) {
+      websocketStore.setMessages(res.data.data)
+      scrollToBottom()
     }
   } catch (error) {
-    console.warn('Failed to create WebSocket:', error)
-    isConnected.value = false
+    console.warn('Could not load chat history:', error)
   }
 }
 
-
 function sendMessage() {
-  if (!newMessage.value.trim() || !ws || ws.readyState !== WebSocket.OPEN) return
-
-  const payload = {
+  if (!newMessage.value.trim() || !isConnected.value || !receiverId.value) return
+  websocketStore.sendMessage({
     sender_id: senderId.value,
     receiver_id: receiverId.value,
     content: newMessage.value.trim()
-  }
-
-  
-  const tempMsg = {
-    _tempId: ++tempIdCounter,
-    ...payload,
-    created_at: new Date().toISOString()
-  }
-  messages.value.push(tempMsg)
-
-  
-  ws.send(JSON.stringify(payload))
-
+  })
   newMessage.value = ''
   scrollToBottom()
 }
 
-
-async function loadChatHistory() {
-  try {
-    const params = new URLSearchParams({
-      sender_id: senderId.value.toString(),
-      receiver_id: receiverId.value.toString(),
-      limit: '50'
-    })
-
-    const response = await fetch(`${API_BASE}/messages?${params}`)
-    const data = await response.json()
-
-    if (data.success && data.data) {
-      messages.value = data.data
-      scrollToBottom()
-    }
-  } catch (error) {
-    console.warn('Could not load chat history:', error.message)
-  }
-}
-
-
 function onReceiverChange() {
-  messages.value = []
+  chatStore.currentReceiverId = receiverId.value
+  websocketStore.setMessages([])
   unreadCounts.value[receiverId.value] = 0
   loadChatHistory()
 }
-
 
 function toggleMinimize() {
   isMinimized.value = !isMinimized.value
@@ -329,21 +215,17 @@ async function scrollToBottom() {
   }
 }
 
+watch(() => messages.value.length, async () => {
+  await scrollToBottom()
+})
+
 function formatTime(dateStr) {
   if (!dateStr) return ''
   const date = new Date(dateStr)
   return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })
 }
 
-
 onMounted(async () => {
-  
-  const user = JSON.parse(localStorage.getItem('openpeo_user') || 'null')
-  if (user) {
-    senderId.value = user.id
-  }
-
-  
   if (wrapperRef.value) {
     animate(wrapperRef.value, {
       opacity: [0, 1],
@@ -355,18 +237,14 @@ onMounted(async () => {
   }
 
   await loadContacts()
-  loadChatHistory()
-  connectWebSocket()
+  if (receiverId.value) {
+    await loadChatHistory()
+  }
 })
 
 onUnmounted(() => {
-  if (ws) {
-    ws.close(1000) 
-    ws = null
-  }
-  if (reconnectTimer) {
-    clearTimeout(reconnectTimer)
-  }
+  chatStore.currentReceiverId = null
+  websocketStore.setMessages([])
 })
 </script>
 

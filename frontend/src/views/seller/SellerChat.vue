@@ -129,7 +129,7 @@ watch(contacts, (newContacts) => {
   emit('update-unread', total)
 }, { deep: true })
 
-watch(() => notificationStore.sellerUnreadChats, (newVal, oldVal) => {
+watch(() => notificationStore.sellerUnreadChatsCount, (newVal, oldVal) => {
   if (newVal > oldVal) {
     fetchContacts()
   }

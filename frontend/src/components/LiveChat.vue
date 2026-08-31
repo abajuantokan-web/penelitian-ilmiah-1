@@ -325,7 +325,7 @@ watch(() => chatStore.isOpen, (isOpen) => {
   }
 })
 
-watch(() => notificationStore.buyerUnreadChats, (newVal, oldVal) => {
+watch(() => notificationStore.buyerUnreadChatsCount, (newVal, oldVal) => {
   if (newVal > oldVal) {
     fetchContacts()
   }

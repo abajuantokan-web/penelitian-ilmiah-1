@@ -66,8 +66,8 @@ export const useWebsocketStore = defineStore('websocket', () => {
     ws.value.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data)
-        
-        
+
+        // Handle system events (orders, etc)
         if (data.type) {
           if (data.type === 'NEW_ORDER_CREATED') {
             dashboardStore.handleNewOrder(data.data)
@@ -75,45 +75,56 @@ export const useWebsocketStore = defineStore('websocket', () => {
           } else if (data.type === 'ORDER_STATUS_UPDATED') {
             dashboardStore.handleOrderStatusUpdated(data.data)
           }
-          return 
-        }
-        
-        
-        if (data.sender_id === authStore.user?.id) {
-          
-          
           return
         }
-        
-        
-        if (chatStore.currentReceiverId && (data.sender_id === chatStore.currentReceiverId || data.receiver_id === chatStore.currentReceiverId)) {
-          const exists = messages.value.some(m => m.id === data.id)
-          if (!exists) {
-            messages.value.push(data)
+
+        // Determine if this message belongs to the active chat conversation
+        const myId = authStore.user?.id
+        const partnerId = chatStore.currentReceiverId
+
+        const isActiveConversation = partnerId && (
+          (data.sender_id === myId && data.receiver_id === partnerId) ||
+          (data.sender_id === partnerId && data.receiver_id === myId)
+        )
+
+        if (isActiveConversation) {
+          // For my own sent message: replace the optimistic temp message with the confirmed one
+          if (data.sender_id === myId) {
+            const tempIndex = messages.value.findIndex(m =>
+              !m.id && m.sender_id === myId && m.content === data.content
+            )
+            if (tempIndex !== -1) {
+              messages.value[tempIndex] = data
+            } else {
+              const exists = messages.value.some(m => m.id === data.id)
+              if (!exists) messages.value.push(data)
+            }
+          } else {
+            // Incoming message from partner
+            const exists = messages.value.some(m => m.id === data.id)
+            if (!exists) messages.value.push(data)
           }
         }
-        
-        
-        
-        const isFromOther = !chatStore.currentReceiverId || (data.sender_id !== chatStore.currentReceiverId && data.receiver_id !== chatStore.currentReceiverId)
-        
+
+        // Notification logic (only for messages from others)
+        if (data.sender_id === myId) return
+
+        const isFromOther = !partnerId || data.sender_id !== partnerId
         const isBuyer = authStore.user?.role !== 'seller'
         const isSeller = authStore.user?.role === 'seller'
 
         if (isBuyer) {
-          
           if (!chatStore.isOpen || isFromOther) {
             notificationStore.incrementBuyerUnreadChats()
             playNotificationSound()
           }
         } else if (isSeller) {
-          
           if (!chatStore.isSellerChatOpen || isFromOther) {
             notificationStore.incrementSellerUnreadChats()
             playNotificationSound()
           }
         }
-        
+
       } catch (err) {
         console.error('Failed to parse incoming message:', err)
       }
@@ -153,16 +164,16 @@ export const useWebsocketStore = defineStore('websocket', () => {
   const sendMessage = (payload) => {
     if (ws.value && isConnected.value) {
       ws.value.send(JSON.stringify(payload))
-      
-      
+
+      // Optimistic temp message — id is null so server echo can replace it
       const tempMessage = {
-        id: Date.now(), 
+        id: null,
         sender_id: payload.sender_id,
         receiver_id: payload.receiver_id,
         content: payload.content,
         created_at: new Date().toISOString()
       }
-      
+
       messages.value.push(tempMessage)
     }
   }
