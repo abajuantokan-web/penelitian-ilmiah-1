@@ -129,6 +129,18 @@ watch(contacts, (newContacts) => {
   emit('update-unread', total)
 }, { deep: true })
 
+watch(() => notificationStore.sellerUnreadChats, (newVal, oldVal) => {
+  if (newVal > oldVal) {
+    fetchContacts()
+  }
+})
+
+watch(() => websocketStore.messages.length, (newVal, oldVal) => {
+  if (newVal > oldVal) {
+    fetchContacts()
+  }
+})
+
 const getInitials = (name) => {
   if (!name) return 'U'
   return name.substring(0, 2).toUpperCase()
@@ -162,6 +174,10 @@ const fetchContacts = async () => {
     })
     if (res.data.success) {
       contacts.value = res.data.data || []
+      if (activeContact.value) {
+        const current = contacts.value.find(c => c.id === activeContact.value.id)
+        if (current) current.unread_count = 0
+      }
     }
   } catch (err) {
     console.error('Gagal mengambil kontak:', err)
@@ -217,12 +233,15 @@ const selectContact = (contact) => {
 }
 
 onMounted(() => {
+  chatStore.isSellerChatOpen = true
   chatStore.currentReceiverId = null
   notificationStore.resetSellerUnreadChats()
   fetchContacts()
 })
 
 onUnmounted(() => {
+  chatStore.isSellerChatOpen = false
+  chatStore.currentReceiverId = null
 })
 
 defineExpose({

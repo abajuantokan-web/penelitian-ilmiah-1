@@ -231,6 +231,10 @@ const fetchContacts = async () => {
     })
     if (res.data.success) {
       contacts.value = res.data.data || []
+      if (chatStore.currentReceiverId) {
+        const c = contacts.value.find(c => c.id === chatStore.currentReceiverId)
+        if (c) c.unread_count = 0
+      }
       const totalUnread = contacts.value.reduce((sum, c) => sum + (c.unread_count || 0), 0)
       notificationStore.setBuyerUnreadChats(totalUnread)
     }
@@ -318,6 +322,18 @@ watch(() => chatStore.isOpen, (isOpen) => {
     } else {
       scrollToBottom() 
     }
+  }
+})
+
+watch(() => notificationStore.buyerUnreadChats, (newVal, oldVal) => {
+  if (newVal > oldVal) {
+    fetchContacts()
+  }
+})
+
+watch(() => websocketStore.messages.length, (newVal, oldVal) => {
+  if (newVal > oldVal) {
+    fetchContacts()
   }
 })
 
