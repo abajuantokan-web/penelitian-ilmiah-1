@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia'
-import axios from 'axios'
-import { BASE_URL } from '../axios'
+import apiClient from '../axios'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -13,7 +12,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(email, password) {
       try {
-        const response = await axios.post(`${BASE_URL}api/login`, {
+        const response = await apiClient.post('api/login', {
           email,
           password
         })
@@ -29,8 +28,6 @@ export const useAuthStore = defineStore('auth', {
           localStorage.setItem('admin_token', this.token)
           localStorage.setItem('admin_user', JSON.stringify(this.user))
           
-          axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
-          
           return { success: true }
         }
       } catch (error) {
@@ -45,7 +42,6 @@ export const useAuthStore = defineStore('auth', {
       this.user = null
       localStorage.removeItem('admin_token')
       localStorage.removeItem('admin_user')
-      delete axios.defaults.headers.common['Authorization']
     }
   }
 })
