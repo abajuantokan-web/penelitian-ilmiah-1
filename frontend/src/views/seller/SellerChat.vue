@@ -101,7 +101,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick, watch } from 'vue'
-import axios from 'axios'
+import axios from '../../axios'
 import { useAuthStore } from '../../stores/auth'
 import { useNotificationStore } from '../../stores/notification'
 import { useWebsocketStore } from '../../stores/websocket'
@@ -157,7 +157,7 @@ const fetchContacts = async () => {
   if (!authStore.user?.id) return
   isLoadingContacts.value = true
   try {
-    const res = await axios.get('http://localhost:8081/api/chat/contacts', {
+    const res = await axios.get(`/api/chat/contacts`, {
       params: { user_id: authStore.user.id, role: authStore.user.role }
     })
     if (res.data.success) {
@@ -174,7 +174,7 @@ const fetchChatHistory = async () => {
   if (!activeContact.value) return
   isLoadingHistory.value = true
   try {
-    const res = await axios.get('http://localhost:8081/api/messages', {
+    const res = await axios.get(`/api/messages`, {
       params: {
         sender_id: authStore.user.id,
         receiver_id: activeContact.value.id,

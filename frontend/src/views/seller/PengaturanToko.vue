@@ -112,7 +112,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import axios from '../../axios'
 import { useAuthStore } from '../../stores/auth'
 import { useProductStore } from '../../stores/products'
 
@@ -150,7 +150,7 @@ onMounted(async () => {
 
 const fetchProfile = async () => {
   try {
-    const response = await axios.get('http://localhost:8081/api/seller/profile')
+    const response = await axios.get(`/api/seller/profile`)
     
     if (response.data && response.data.id) {
       form.value = {
@@ -185,7 +185,7 @@ const uploadLogo = async (event) => {
   formData.append('image', file)
   
   try {
-    const response = await axios.post('http://localhost:8081/api/upload', formData, {
+    const response = await axios.post(`/api/upload`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
     
@@ -208,7 +208,7 @@ const saveSettings = async () => {
   saveMessage.value = ''
   
   try {
-    await axios.put('http://localhost:8081/api/seller/profile', form.value)
+    await axios.put(`/api/seller/profile`, form.value)
     
     authStore.updateSellerProfileLocally(form.value)
     

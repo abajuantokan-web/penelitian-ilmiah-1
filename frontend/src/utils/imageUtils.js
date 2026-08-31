@@ -10,23 +10,23 @@
 
 
 export const getImageUrl = (path) => {
-  
+
   if (!path) return _svgPlaceholder()
 
-  
+
   if (path.startsWith('http://') || path.startsWith('https://')) return path
 
   const cleanPath = path.startsWith('/') ? path.slice(1) : path
 
-  
-  
+
+
   if (/^images\/upload_/.test(cleanPath)) {
-    const backendBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8081'
+    const backendBase = import.meta.env.VITE_API_BASE_URL || 'https://penelitian-ilmiah-1-production.up.railway.app/'
     return `${backendBase.replace(/\/$/, '')}/${cleanPath}`
   }
 
-  
-  
+
+
   return `/${cleanPath}`
 }
 

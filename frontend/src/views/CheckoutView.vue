@@ -134,7 +134,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useCartStore } from '../stores/cart'
 import { getImageUrl } from '../utils/imageUtils'
-import axios from 'axios'
+import axios from '../axios'
 
 const router = useRouter()
 const route = useRoute()
@@ -267,7 +267,7 @@ const handleBuatPesanan = async () => {
         price: item.product.price
       }));
 
-      checkoutRes = await axios.post('http://localhost:8081/api/orders', {
+      checkoutRes = await axios.post('/api/orders', {
         items: payloadItems,
         note: customerNote.value
       }, {
@@ -278,7 +278,7 @@ const handleBuatPesanan = async () => {
         cartStore.clearLocalCart()
       }
     } else {
-      checkoutRes = await axios.post('http://localhost:8081/api/orders/direct', {
+      checkoutRes = await axios.post('/api/orders/direct', {
         product_id: checkoutItems.value[0].product.id,
         quantity: checkoutItems.value[0].qty,
         price: checkoutItems.value[0].product.price,
@@ -293,7 +293,7 @@ const handleBuatPesanan = async () => {
     
     
     if (!snap_token && checkoutRes.data.success) {
-      const fallbackRes = await axios.post('http://localhost:8081/api/checkout', {
+      const fallbackRes = await axios.post('/api/checkout', {
         total_amount: totalAmount.value,
         first_name: shippingName.value,
         last_name: '',
@@ -310,7 +310,7 @@ const handleBuatPesanan = async () => {
           console.log('✅ PAYMENT SUCCESS:', result)
           try {
             const refId = checkoutRes.data.payment_reference || checkoutRes.data.data.id;
-            await axios.put(`http://localhost:8081/api/orders/${refId}/confirm-payment`, {}, {
+            await axios.put(`/api/orders/${refId}/confirm-payment`, {}, {
               headers: { Authorization: `Bearer ${authStore.token}` }
             })
           } catch (e) {
@@ -322,7 +322,7 @@ const handleBuatPesanan = async () => {
           console.log('⏳ PAYMENT PENDING:', result)
           try {
             const refId = checkoutRes.data.payment_reference || checkoutRes.data.data.id;
-            await axios.put(`http://localhost:8081/api/orders/${refId}/confirm-payment`, {}, {
+            await axios.put(`/api/orders/${refId}/confirm-payment`, {}, {
               headers: { Authorization: `Bearer ${authStore.token}` }
             })
           } catch (e) {

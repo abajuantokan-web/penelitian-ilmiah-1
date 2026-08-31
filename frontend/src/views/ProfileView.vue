@@ -246,7 +246,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useOrderStore } from '../stores/orders'
 import { useCartStore } from '../stores/cart'
-import axios from 'axios'
+import axios from '../axios'
 
 const router = useRouter()
 const route = useRoute()
@@ -393,7 +393,7 @@ const confirmCompleteOrder = async () => {
   if (!orderToComplete.value) return;
   
   try {
-    const response = await axios.put(`http://localhost:8081/api/orders/${orderToComplete.value}/complete`, {}, {
+    const response = await axios.put(`/api/orders/${orderToComplete.value}/complete`, {}, {
       headers: { Authorization: `Bearer ${authStore.token || localStorage.getItem('token')}` }
     })
     if (response.data.success) {

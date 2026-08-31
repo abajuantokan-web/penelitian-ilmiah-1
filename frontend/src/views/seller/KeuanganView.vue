@@ -79,7 +79,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import axios from '../../axios'
 import { useAuthStore } from '../../stores/auth'
 
 const authStore = useAuthStore()
@@ -98,7 +98,7 @@ const errorMessage = ref('')
 
 const fetchWallet = async () => {
   try {
-    const response = await axios.get('http://localhost:8081/api/seller/wallet', {
+    const response = await axios.get(`/api/seller/wallet`, {
       headers: { Authorization: `Bearer ${authStore.token || localStorage.getItem('token')}` }
     })
     if (response.data.success) {
@@ -135,7 +135,7 @@ const submitWithdrawal = async () => {
   isSubmitting.value = true
   errorMessage.value = ''
   try {
-    const response = await axios.post('http://localhost:8081/api/seller/wallet/withdraw', {
+    const response = await axios.post(`/api/seller/wallet/withdraw`, {
       amount: Number(withdrawAmount.value)
     }, {
       headers: { Authorization: `Bearer ${authStore.token || localStorage.getItem('token')}` }

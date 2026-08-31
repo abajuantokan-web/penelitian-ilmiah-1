@@ -383,7 +383,7 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import axios from '../../axios'
 import { Line as LineChart } from 'vue-chartjs'
 import {
   Chart as ChartJS,
@@ -524,7 +524,7 @@ const isProcessingOrder = ref(null)
 const fetchSellerOrders = async () => {
   isLoadingOrders.value = true
   try {
-    const response = await axios.get('http://localhost:8081/api/orders/seller', {
+    const response = await axios.get(`/api/orders/seller`, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     })
     console.log("Seller Orders API Response:", response.data)
@@ -551,7 +551,7 @@ const getOrderStatusClass = (status) => {
 const processOrder = async (id) => {
   isProcessingOrder.value = id
   try {
-    const response = await axios.put(`http://localhost:8081/api/orders/seller/${id}/process`, {}, {
+    const response = await axios.put(`/api/orders/seller/${id}/process`, {}, {
       headers: { Authorization: `Bearer ${authStore.token}` }
     })
     if (response.data.success) {
@@ -688,7 +688,7 @@ const uploadImage = async (event) => {
   formData.append('image', file)
   
   try {
-    const response = await axios.post('http://localhost:8081/api/upload', formData, {
+    const response = await axios.post(`/api/upload`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

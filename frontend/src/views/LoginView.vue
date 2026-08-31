@@ -119,7 +119,7 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useCartStore } from '../stores/cart'
-import axios from 'axios'
+import axios from '../axios'
 
 const router = useRouter()
 const route = useRoute()
@@ -172,7 +172,7 @@ const handleRegister = async () => {
   successMsg.value = ''
   
   try {
-    const response = await axios.post('http://localhost:8081/api/register', {
+    const response = await axios.post(`/api/register`, {
       name: regName.value,
       email: regEmail.value,
       password: regPassword.value,
