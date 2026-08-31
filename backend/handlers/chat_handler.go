@@ -199,16 +199,7 @@ func HandleWebSocket(c *gin.Context) {
 			payload.ReceiverID = receiverID
 		}
 
-		var senderUser models.User
-		if config.DB.Where("id = ?", payload.SenderID).First(&senderUser).Error == nil && senderUser.Role == "customer" {
-			var targetUser models.User
-			if err := config.DB.Where("id = ?", payload.ReceiverID).First(&targetUser).Error; err != nil || (targetUser.Role != "seller" && targetUser.Role != "admin" && targetUser.Role != "vendor") {
-				var sp models.SellerProfile
-				if err := config.DB.Where("id = ?", payload.ReceiverID).First(&sp).Error; err == nil {
-					payload.ReceiverID = sp.UserID
-				}
-			}
-		}
+
 
 		message := models.Message{
 			SenderID:	payload.SenderID,
@@ -249,18 +240,7 @@ func GetChatHistory(c *gin.Context) {
 		return
 	}
 
-	var senderUser models.User
-	if config.DB.Where("id = ?", senderID).First(&senderUser).Error == nil && senderUser.Role == "customer" {
-		if id, err := strconv.Atoi(receiverID); err == nil {
-			var targetUser models.User
-			if err := config.DB.Where("id = ?", id).First(&targetUser).Error; err != nil || (targetUser.Role != "seller" && targetUser.Role != "admin" && targetUser.Role != "vendor") {
-				var sp models.SellerProfile
-				if err := config.DB.Where("id = ?", id).First(&sp).Error; err == nil {
-					receiverID = strconv.Itoa(int(sp.UserID))
-				}
-			}
-		}
-	}
+
 
 	limit, _ := strconv.Atoi(c.DefaultQuery("limit", "50"))
 	if limit < 1 || limit > 200 {
@@ -325,14 +305,15 @@ func GetChatContacts(c *gin.Context) {
 		config.DB.Raw(query, userID, userID, userID, userID, userID).Scan(&contacts)
 	} else {
 		query := `
-		SELECT u.id, COALESCE(NULLIF(u.store_name, ''), u.name) as name,
+		SELECT u.id, COALESCE(NULLIF(sp.store_name, ''), u.name) as name,
 			(SELECT COUNT(*) FROM messages m WHERE m.sender_id = u.id AND m.receiver_id = ? AND m.is_read = 0) as unread_count,
 			(SELECT content FROM messages m2 WHERE (m2.sender_id = u.id AND m2.receiver_id = ?) OR (m2.receiver_id = u.id AND m2.sender_id = ?) ORDER BY m2.created_at DESC LIMIT 1) as last_message,
 			MAX(m.created_at) as last_activity
 		FROM users u
+		LEFT JOIN seller_profiles sp ON sp.user_id = u.id
 		JOIN messages m ON (m.sender_id = u.id AND m.receiver_id = ?) OR (m.receiver_id = u.id AND m.sender_id = ?)
 		WHERE u.role IN ('seller', 'admin', 'vendor')
-		GROUP BY u.id, u.name, u.store_name
+		GROUP BY u.id, u.name, sp.store_name
 		ORDER BY last_activity DESC
 		`
 		config.DB.Raw(query, userID, userID, userID, userID, userID).Scan(&contacts)
