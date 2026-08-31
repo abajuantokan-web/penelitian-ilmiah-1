@@ -5,7 +5,8 @@ import axios from 'axios'
 //  Contoh production : 'https://api.namadomain.com'
 //  Contoh lokal      : 'http://localhost:8081'
 // =============================================================
-export const BASE_URL = 'https://penelitian-ilmiah-1-production.up.railway.app/'
+// export const BASE_URL = 'https://penelitian-ilmiah-1-production.up.railway.app/'
+export const BASE_URL = 'http://localhost:8081'
 
 // Instance axios dengan baseURL sudah terset otomatis
 const apiClient = axios.create({

@@ -20,7 +20,8 @@ export default defineConfig({
     },
     proxy: {
       "/api": {
-        target: "https://penelitian-ilmiah-1-production.up.railway.app",
+        target: "http://localhost:8080",
+        // target: "https://penelitian-ilmiah-1-production.up.railway.app",
         changeOrigin: true,
         secure: false,
       },
