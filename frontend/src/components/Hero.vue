@@ -1,11 +1,36 @@
 <template>
   <section class="hero" id="hero" aria-label="Hero banner">
     <div class="hero-image">
-      <img src="/images/hero.png"
-           alt="Seorang perempuan mengenakan kain tenun ikat tradisional NTT dengan latar bebatuan alam"
-           loading="eager"
-           fetchpriority="high">
+      <!--
+        Performance: <picture> delivers the smallest format each browser supports.
+        Build pipeline (vite-plugin-image-optimizer) generates hero.avif + hero.webp
+        automatically from hero.png during `vite build`.
+        The <link rel="preload"> in index.html ensures hero.webp starts fetching
+        before this element is even parsed — minimising LCP to near-zero network wait.
+
+        IMPORTANT: :srcset uses dynamic binding (v-bind) intentionally.
+        Vite 8 / rolldown statically resolves bare string srcset attributes as module
+        imports at build time. Since .avif/.webp are generated *after* the JS bundle
+        step, static paths would cause UNRESOLVED_IMPORT errors. Dynamic bindings
+        are treated as runtime strings and bypass static analysis entirely.
+      -->
+      <picture>
+        <!-- AVIF responsive sources -->
+        <source :srcset="'/images/hero-480.avif 480w, /images/hero-800.avif 800w, /images/hero-1200.avif 1200w, /images/hero.avif 1920w'" sizes="(max-width: 480px) 480px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, 100vw" type="image/avif">
+        <!-- WebP responsive sources -->
+        <source :srcset="'/images/hero-480.webp 480w, /images/hero-800.webp 800w, /images/hero-1200.webp 1200w, /images/hero.webp 1920w'" sizes="(max-width: 480px) 480px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, 100vw" type="image/webp">
+        <!-- PNG fallback: static src is fine — hero.png always exists in public/ -->
+        <img
+          src="/images/hero.png"
+          alt="Seorang perempuan mengenakan kain tenun ikat tradisional NTT dengan latar bebatuan alam"
+          loading="eager"
+          fetchpriority="high"
+          width="1920"
+          height="1080"
+        >
+      </picture>
     </div>
+
     <div class="hero-overlay" aria-hidden="true"></div>
 
     <div class="hero-motif hero-motif--top-left" aria-hidden="true">

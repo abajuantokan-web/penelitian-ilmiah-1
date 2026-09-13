@@ -1,22 +1,50 @@
 <!DOCTYPE html>
-<html lang="">
+<html lang="id">
 
 <head>
   <meta charset="UTF-8">
-  <link rel="icon" href="/favicon.ico">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vite App</title>
-  
-  <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
-    data-client-key="Mid-client-cEhbTGIznJtWo6_e"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      corePlugins: {
-        preflight: false,
-      }
-    }
+
+  <!-- ============================================================
+       SEO & Identity
+  ============================================================ -->
+  <title>OpenPeo — Pasar Produk Autentik Nusa Tenggara Timur</title>
+  <meta name="description" content="Platform e-commerce pre-order yang menghubungkan Anda langsung dengan UMKM kreatif NTT. Temukan tenun ikat, kopi Flores, madu Timor, dan kerajinan tangan autentik.">
+  <link rel="icon" href="/favicon.ico">
+
+  <!-- ============================================================
+       LCP Optimisation — Preload the hero image
+       The browser will start fetching hero.webp immediately,
+       before it even parses the Vue JS bundle.
+       Modern browsers use WebP; the <picture> fallback in Hero.vue
+       serves hero.png for older browsers that ignore this hint.
+  ============================================================ -->
+  <link rel="preload" as="image" href="/images/hero.webp" type="image/webp"
+        fetchpriority="high">
+
+  <!-- ============================================================
+       Midtrans Snap.js
+       `defer` — loads in parallel, executes after HTML is parsed.
+       Safe because window.snap is only called on checkout click.
+  ============================================================ -->
+  <script
+    defer
+    type="text/javascript"
+    src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="Mid-client-cEhbTGIznJtWo6_e">
   </script>
+
+  <!-- ============================================================
+       Critical Fonts Preloading
+       Prevents Flash of Invisible Text (FOIT) for main fonts
+  ============================================================ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800&display=swap">
+  </noscript>
 </head>
 
 <body style="width: 100vw; overflow-x: hidden;">
@@ -24,4 +52,4 @@
   <script type="module" src="/src/main.js"></script>
 </body>
 
-</html>
+</html>
