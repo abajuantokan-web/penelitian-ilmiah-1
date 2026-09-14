@@ -7,6 +7,7 @@
           <router-link to="/">OpenPeo</router-link>
         </div>
 
+        <!-- Desktop nav -->
         <nav class="nav-links" aria-label="Main Navigation">
           <router-link to="/">Beranda</router-link>
           <router-link to="/koleksi">Koleksi</router-link>
@@ -88,9 +89,87 @@
             </svg>
             <span v-if="cartStore.totalItems > 0" class="cart-badge">{{ cartStore.totalItems }}</span>
           </button>
+
+          <!-- Hamburger toggle – mobile only -->
+          <button
+            id="mobile-menu-toggle"
+            :class="['menu-toggle', { active: isMobileMenuOpen }]"
+            aria-label="Toggle navigation menu"
+            :aria-expanded="isMobileMenuOpen"
+            @click="isMobileMenuOpen = !isMobileMenuOpen"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
         </div>
       </div>
     </header>
+
+    <!-- Mobile nav drawer -->
+    <Transition name="mobile-nav">
+      <div
+        v-if="isMobileMenuOpen"
+        id="mobile-nav-drawer"
+        class="mobile-nav-overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Mobile navigation"
+      >
+        <!-- Backdrop -->
+        <div class="mobile-nav-backdrop" @click="isMobileMenuOpen = false"></div>
+
+        <!-- Drawer panel -->
+        <nav class="mobile-nav-panel" aria-label="Mobile Navigation">
+          <div class="mobile-nav-header">
+            <span class="mobile-nav-brand">OpenPeo</span>
+            <button
+              class="mobile-nav-close"
+              aria-label="Close menu"
+              @click="isMobileMenuOpen = false"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="mobile-nav-links">
+            <router-link to="/" @click="isMobileMenuOpen = false">Beranda</router-link>
+            <router-link to="/koleksi" @click="isMobileMenuOpen = false">Koleksi</router-link>
+            <router-link to="/#cerita-kami" @click="isMobileMenuOpen = false">Cerita Kami</router-link>
+            <router-link to="/tentang" @click="isMobileMenuOpen = false">Tentang</router-link>
+          </div>
+
+          <div class="mobile-nav-actions">
+            <button class="mobile-nav-action-btn" @click="goToSearch(); isMobileMenuOpen = false">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              Cari Produk
+            </button>
+            <button class="mobile-nav-action-btn" @click="handleProfileClick(); isMobileMenuOpen = false">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              {{ authStore.isAuthenticated ? 'Profil Saya' : 'Masuk' }}
+            </button>
+            <button class="mobile-nav-action-btn" @click="cartStore.toggleDrawer(); isMobileMenuOpen = false">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                <line x1="3" y1="6" x2="21" y2="6"/>
+                <path d="M16 10a4 4 0 0 1-8 0"/>
+              </svg>
+              Keranjang
+              <span v-if="cartStore.totalItems > 0" class="mobile-nav-badge">{{ cartStore.totalItems }}</span>
+            </button>
+          </div>
+        </nav>
+      </div>
+    </Transition>
 
     
     <main class="main-content" :class="{ 'with-header-padding': route.path !== '/' }">
@@ -171,6 +250,7 @@ const websocketStore = useWebsocketStore()
 
 const isScrolled = ref(false)
 const isStoreDropdownOpen = ref(false)
+const isMobileMenuOpen = ref(false)
 const pendingOrdersCount = computed(() => dashboardStore.pendingCount || 0)
 
 const headerClass = computed(() => {
@@ -226,6 +306,8 @@ const initRevealObserver = () => {
 
 
 watch(() => router.currentRoute.value, () => {
+  // Close mobile menu on route change
+  isMobileMenuOpen.value = false
   nextTick(() => {
     setTimeout(initRevealObserver, 100)
   })

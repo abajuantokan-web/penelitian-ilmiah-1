@@ -1780,3 +1780,264 @@ button {
   .fixed-btn--wishlist { left: 16px; }
   .fixed-btn--chat { right: 16px; }
 }
+
+/* ============================================================
+   RESPONSIVE HEADER – MOBILE & TABLET
+   ============================================================ */
+
+/* Reduce container padding on mobile */
+@media (max-width: 768px) {
+  .container {
+    padding-left: var(--padding-mobile);
+    padding-right: var(--padding-mobile);
+  }
+}
+
+/* Show hamburger, hide desktop nav on small screens */
+@media (max-width: 768px) {
+  /* Desktop nav hidden on mobile */
+  .nav-links {
+    display: none;
+  }
+
+  /* Tighten the header bar */
+  .header-inner {
+    height: 60px;
+  }
+
+  /* Smaller icon gap */
+  .header-icons {
+    gap: var(--space-4);
+  }
+
+  /* Hide icon buttons that aren't essential on mobile
+     (search, profile, store stay; cart stays) */
+  .header-icons > .icon-btn:not(.cart-btn),
+  .header-icons > .store-menu-wrapper {
+    display: none;
+  }
+
+  /* Show the hamburger toggle */
+  .menu-toggle {
+    display: flex;
+  }
+}
+
+/* Tablet (769px – 1024px): show nav but tighten spacing */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .nav-links {
+    gap: var(--space-20);
+  }
+
+  /* Hide hamburger on tablet and larger */
+  .menu-toggle {
+    display: none;
+  }
+}
+
+/* Hide hamburger on desktop */
+@media (min-width: 1025px) {
+  .menu-toggle {
+    display: none;
+  }
+}
+
+/* ============================================================
+   MOBILE NAV DRAWER
+   ============================================================ */
+
+/* Full-screen overlay */
+.mobile-nav-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+}
+
+/* Semi-transparent backdrop */
+.mobile-nav-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+}
+
+/* Slide-in drawer panel */
+.mobile-nav-panel {
+  position: relative;
+  width: min(320px, 85vw);
+  height: 100%;
+  background-color: var(--color-white-pure);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 4px 0 32px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+}
+
+/* Drawer header row */
+.mobile-nav-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--color-gray-light);
+}
+
+.mobile-nav-brand {
+  font-size: 18px;
+  font-weight: var(--fw-display);
+  letter-spacing: var(--ls);
+  color: var(--color-black-pure);
+}
+
+.mobile-nav-close {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-circle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-black-deep);
+  transition: background-color var(--transition-base);
+}
+
+.mobile-nav-close:hover {
+  background-color: var(--color-white-off);
+}
+
+.mobile-nav-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Nav links list */
+.mobile-nav-links {
+  display: flex;
+  flex-direction: column;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--color-gray-light);
+}
+
+.mobile-nav-links a {
+  display: block;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: var(--fw-body);
+  letter-spacing: var(--ls);
+  color: var(--color-black-deep);
+  transition: background-color var(--transition-base), color var(--transition-base);
+  position: relative;
+}
+
+.mobile-nav-links a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 3px;
+  height: 60%;
+  background-color: var(--color-black-pure);
+  border-radius: 2px;
+  transition: transform var(--transition-base);
+}
+
+.mobile-nav-links a:hover,
+.mobile-nav-links a.router-link-exact-active {
+  background-color: var(--color-white-off);
+  color: var(--color-black-pure);
+}
+
+.mobile-nav-links a:hover::before,
+.mobile-nav-links a.router-link-exact-active::before {
+  transform: translateY(-50%) scaleY(1);
+}
+
+/* Quick-action buttons at bottom of drawer */
+.mobile-nav-actions {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.mobile-nav-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 16px;
+  background: none;
+  border: 1px solid var(--color-gray-light);
+  border-radius: 8px;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: var(--fw-body);
+  color: var(--color-black-deep);
+  cursor: pointer;
+  transition: background-color var(--transition-base), border-color var(--transition-base);
+  text-align: left;
+}
+
+.mobile-nav-action-btn:hover {
+  background-color: var(--color-white-off);
+  border-color: #bbb;
+}
+
+.mobile-nav-action-btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Cart badge inside drawer */
+.mobile-nav-badge {
+  margin-left: auto;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background-color: var(--color-black-pure);
+  color: var(--color-white-pure);
+  font-size: 11px;
+  font-weight: var(--fw-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ============================================================
+   DRAWER TRANSITION (Vue <Transition name="mobile-nav">)
+   ============================================================ */
+
+.mobile-nav-enter-active,
+.mobile-nav-leave-active {
+  transition: opacity 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mobile-nav-enter-active .mobile-nav-panel,
+.mobile-nav-leave-active .mobile-nav-panel {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.mobile-nav-enter-from,
+.mobile-nav-leave-to {
+  opacity: 0;
+}
+
+.mobile-nav-enter-from .mobile-nav-panel,
+.mobile-nav-leave-to .mobile-nav-panel {
+  transform: translateX(-100%);
+}
+
