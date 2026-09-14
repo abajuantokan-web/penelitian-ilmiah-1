@@ -15,13 +15,13 @@
         are treated as runtime strings and bypass static analysis entirely.
       -->
       <picture>
-        <!-- AVIF responsive sources -->
-        <source srcset="/images/hero-480.avif 480w, /images/hero-800.avif 800w, /images/hero-1200.avif 1200w, /images/hero.avif 1920w" sizes="(max-width: 480px) 480px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, 100vw" type="image/avif">
-        <!-- WebP responsive sources -->
-        <source srcset="/images/hero-480.webp 480w, /images/hero-800.webp 800w, /images/hero-1200.webp 1200w, /images/hero.webp 1920w" sizes="(max-width: 480px) 480px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, 100vw" type="image/webp">
-        <!-- PNG fallback: static src is fine — hero.png always exists in public/ -->
+        <!-- AVIF responsive sources —— :srcset bypasses Vite 8 static-import resolution -->
+        <source :srcset="'/images/hero-480.avif 480w, /images/hero-800.avif 800w, /images/hero-1200.avif 1200w, /images/hero.avif 1920w'" sizes="(max-width: 480px) 480px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, 100vw" type="image/avif">
+        <!-- WebP responsive sources —— :srcset bypasses Vite 8 static-import resolution -->
+        <source :srcset="'/images/hero-480.webp 480w, /images/hero-800.webp 800w, /images/hero-1200.webp 1200w, /images/hero.webp 1920w'" sizes="(max-width: 480px) 480px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, 100vw" type="image/webp">
+        <!-- PNG fallback: :src also wrapped to stay consistent -->
         <img
-          src="/images/hero.png"
+          :src="'/images/hero.png'"
           alt="Seorang perempuan mengenakan kain tenun ikat tradisional NTT dengan latar bebatuan alam"
           loading="eager"
           fetchpriority="high"
