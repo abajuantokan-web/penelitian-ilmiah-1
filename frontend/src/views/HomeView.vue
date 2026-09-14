@@ -85,7 +85,9 @@ const openProductModal = (product) => {
 }
 
 onMounted(async () => {
-  await productStore.fetchProducts()
+  // Load only 8 products above-the-fold on initial render.
+  // The user can trigger a larger fetch via the "Lihat Lebih Banyak" button in the template.
+  await productStore.fetchProducts(8)
   
   const pendingAction = localStorage.getItem('pendingProductAction')
   if (pendingAction && authStore.isAuthenticated) {

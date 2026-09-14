@@ -465,6 +465,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import ChatBox from '../components/ChatBox.vue'
+import apiClient from '../axios'
 
 const router = useRouter()
 const salesData = ref({
@@ -523,10 +524,27 @@ const filteredProducts = computed(() => {
 })
 
 
-async function fetchProducts() {
+/**
+ * Fetch products for the admin product table.
+ *
+ * @param {number|null} customLimit - Optional limit. Defaults to null (API decides).
+ *   Example: fetchProducts(50) to load 50 rows, or fetchProducts() for the API default.
+ *
+ * Template usage examples:
+ *   <button @click="fetchProducts(10)">Load 10 Products</button>
+ *   <button @click="fetchProducts(50)">Load 50 Products</button>
+ *   <button @click="fetchProducts()">Load All (API Default)</button>
+ */
+async function fetchProducts(customLimit = null) {
   try {
-    const response = await fetch('http://localhost:8080/api/products?limit=100')
-    const data = await response.json()
+    // Build params conditionally — no ?limit=100 baked into the URL
+    const params = {}
+    if (customLimit !== null && customLimit !== undefined) {
+      params.limit = customLimit
+    }
+
+    const response = await apiClient.get('/api/products', { params })
+    const data = response.data
     if (data.success && data.data) {
       products.value = data.data
     }

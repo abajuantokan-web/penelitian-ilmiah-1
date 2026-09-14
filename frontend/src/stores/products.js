@@ -14,10 +14,24 @@ export const useProductStore = defineStore('products', {
   },
   
   actions: {
-    async fetchProducts() {
+    /**
+     * Fetch products from the API.
+     *
+     * @param {number|null} customLimit - Optional limit. When null/undefined the
+     *   API's own default page size is used — no aggressive ?limit=100 is sent.
+     *   Pass a small number (4–8) for initial "above-the-fold" loads, and a
+     *   larger number only when the user explicitly requests more.
+     */
+    async fetchProducts(customLimit = null) {
       this.isLoading = true
       try {
-        const response = await apiClient.get('/api/products?limit=100')
+        // Build params conditionally so the URL stays clean when no limit is needed
+        const params = {}
+        if (customLimit !== null && customLimit !== undefined) {
+          params.limit = customLimit
+        }
+
+        const response = await apiClient.get('/api/products', { params })
         if (response.data.success) {
           this.allProducts = response.data.data
         }
