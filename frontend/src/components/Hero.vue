@@ -16,9 +16,9 @@
       -->
       <picture>
         <!-- AVIF responsive sources -->
-        <source :srcset="'/images/hero-480.avif 480w, /images/hero-800.avif 800w, /images/hero-1200.avif 1200w, /images/hero.avif 1920w'" sizes="(max-width: 480px) 480px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, 100vw" type="image/avif">
+        <source srcset="/images/hero-480.avif 480w, /images/hero-800.avif 800w, /images/hero-1200.avif 1200w, /images/hero.avif 1920w" sizes="(max-width: 480px) 480px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, 100vw" type="image/avif">
         <!-- WebP responsive sources -->
-        <source :srcset="'/images/hero-480.webp 480w, /images/hero-800.webp 800w, /images/hero-1200.webp 1200w, /images/hero.webp 1920w'" sizes="(max-width: 480px) 480px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, 100vw" type="image/webp">
+        <source srcset="/images/hero-480.webp 480w, /images/hero-800.webp 800w, /images/hero-1200.webp 1200w, /images/hero.webp 1920w" sizes="(max-width: 480px) 480px, (max-width: 800px) 800px, (max-width: 1200px) 1200px, 100vw" type="image/webp">
         <!-- PNG fallback: static src is fine — hero.png always exists in public/ -->
         <img
           src="/images/hero.png"

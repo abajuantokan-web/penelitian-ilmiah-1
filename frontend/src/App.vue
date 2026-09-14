@@ -151,7 +151,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, nextTick, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick, watch, defineAsyncComponent } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from './stores/auth'
 import { useCartStore } from './stores/cart'
@@ -159,7 +159,7 @@ import { useNotificationStore } from './stores/notification'
 import { useDashboardStore } from './stores/dashboard'
 import { useWebsocketStore } from './stores/websocket'
 import CartDrawer from './components/CartDrawer.vue'
-import LiveChat from './components/LiveChat.vue'
+const LiveChat = defineAsyncComponent(() => import('./components/LiveChat.vue'))
 
 const router = useRouter()
 const route = useRoute()
